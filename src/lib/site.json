@@ -1,0 +1,36 @@
+{
+  "name": "No Comfort Zone",
+  "shortName": "NCZ",
+  "titleSuffix": "No Comfort Zone",
+  "defaultDescription": "No Comfort Zone Karlsruhe: Sport, Gemeinschaft und persönliche Entwicklung. Community-Training und professionelles 1:1 Coaching mit Haki Sports — draußen, mitten in der Gesellschaft.",
+  "claim": "Wir bauen keine Sportgruppe. Wir bauen eine Bewegung.",
+  "hakiClaim": "Professionelles 1:1 Coaching innerhalb von No Comfort Zone.",
+  "city": "Karlsruhe",
+  "contact": {
+    "email": "nocomfortzone@gmail.com",
+    "phoneDisplay": "0176/23927293",
+    "phoneHref": "+4917623927293",
+    "whatsappNumber": "4917623927293",
+    "address": "Karlsruhe, Deutschland"
+  },
+  "social": [
+    { "label": "Instagram", "url": "#", "placeholder": true },
+    { "label": "TikTok", "url": "#", "placeholder": true },
+    { "label": "WhatsApp Community", "url": "#", "placeholder": true }
+  ],
+  "nav": [
+    { "label": "Home", "url": "/" },
+    { "label": "Vision & Werte", "url": "/vision-werte/" },
+    { "label": "Angebote", "url": "/angebote/" },
+    { "label": "Zielgruppe", "url": "/zielgruppe/" },
+    { "label": "Mitgliedschaft", "url": "/mitgliedschaft/" },
+    { "label": "Buchung", "url": "/buchung/" },
+    { "label": "Community", "url": "/community/" },
+    { "label": "Haki Sports", "url": "/haki-sports/" },
+    { "label": "Kontakt", "url": "/kontakt/" }
+  ],
+  "footerLegal": [
+    { "label": "Impressum", "url": "/impressum/" },
+    { "label": "Datenschutz", "url": "/datenschutz/" }
+  ]
+}
