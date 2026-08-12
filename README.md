@@ -45,8 +45,43 @@ Keine `npm install` nötig — es gibt keine externen Abhängigkeiten.
 ## Wichtige Hinweise vor dem echten Live-Betrieb
 
 - **Preise** (`src/lib/pricing.json`): aktuell klar markierte Beispielpreise ("Beispielpreis"-Badge auf der Seite). Vor dem Launch durch echte Konditionen ersetzen.
-- **Impressum / Datenschutz** (`src/pages/impressum.js`, `datenschutz.js`): Platzhalter-Entwürfe, rechtlich noch zu prüfen (z. B. durch einen Anwalt), bevor die Seite live geht.
+- **Impressum / Datenschutz** (`src/pages/impressum.js`, `datenschutz.js`): rechtlich vollständig strukturiert (§ 5 TMG / DSGVO), es fehlen aber noch **Name, Anschrift und USt-Status** der verantwortlichen Person — direkt in `src/lib/site.json` unter `legal` eintragen (`responsibleName`, `street`, `postalCode`, `vatStatus`). Vor dem echten Live-Betrieb zusätzlich kurz rechtlich prüfen lassen, insbesondere solange noch kein Gewerbe angemeldet ist.
 - **Formulare**: Buchungs-/Kontaktformulare senden nicht an ein Backend, sondern öffnen eine vorausgefüllte E-Mail (`mailto:`) oder WhatsApp-Nachricht (`wa.me`). Kontaktdaten in `src/lib/site.json` pflegen.
+
+## Fonts & Skripte lokal einbinden (vorbereitet, noch nicht ausgeführt)
+
+Die Website lädt aktuell die Schriftarten (Anton, Space Mono, Inter) von Google Fonts und das Animations-Framework GSAP von cdnjs.cloudflare.com — beides wird in `datenschutz.js` korrekt offengelegt, ist aber ein bekanntes Abmahnrisiko (Google Fonts) und macht die Seite von externen Servern abhängig. Empfehlung: lokal einbinden. Das konnte in der Entwicklungsumgebung, in der diese Seite gebaut wurde, nicht automatisch erledigt werden (kein Netzwerkzugriff auf `fonts.gstatic.com`/`cdnjs.cloudflare.com`) — daher hier die fertige Anleitung zum Nachziehen:
+
+1. **Schriftdateien herunterladen** (als `.woff2`) und in `src/assets/fonts/` ablegen:
+   - Anton (400)
+   - Space Mono (400, 700)
+   - Inter (400, 500, 600, 700, 800)
+
+   Am einfachsten über [google-webfonts-helper](https://gwfh.mranftl.com/fonts) — dort die jeweilige Schriftart, die genannten Schnitte und "modern" (woff2) auswählen und herunterladen.
+
+2. **GSAP-Dateien herunterladen** (Version 3.12.5, passend zum aktuell verlinkten CDN) und ablegen unter:
+   - `src/assets/js/vendor/gsap.min.js`
+   - `src/assets/js/vendor/ScrollTrigger.min.js`
+
+   Quelle: [gsap.com/install](https://gsap.com/install) oder `https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js` bzw. `.../ScrollTrigger.min.js` direkt herunterladen.
+
+3. **In `src/assets/css/styles.css`** ein `@font-face`-Set für jede Datei ergänzen (oben in der Datei, vor `:root`), z. B.:
+   ```css
+   @font-face { font-family:'Anton'; src:url('/assets/fonts/anton-v25-latin-regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+   /* ... eine @font-face-Regel pro Schriftschnitt */
+   ```
+
+4. **In `src/lib/layout.js`** die drei Google-Fonts-`<link>`-Tags (`preconnect` ×2 + `stylesheet`) entfernen — die `@font-face`-Regeln aus Schritt 3 übernehmen das jetzt.
+
+5. **In `src/lib/layout.js`** die beiden `<script src="https://cdnjs...">`-Tags ersetzen durch:
+   ```html
+   <script src="/assets/js/vendor/gsap.min.js"></script>
+   <script src="/assets/js/vendor/ScrollTrigger.min.js"></script>
+   ```
+
+6. **In `src/pages/datenschutz.js`** die Abschnitte "Externe Schriftarten (Google Fonts)" und "Externes Animations-Skript (GSAP)" entfernen bzw. durch einen kurzen Satz ersetzen, dass Schriftarten und Skripte lokal ausgeliefert werden und keine Verbindung zu Drittservern mehr besteht.
+
+7. `node build.js` neu bauen und visuell prüfen, dass alle Fonts/Animationen weiterhin korrekt aussehen.
 
 ## Geplante Erweiterungen
 

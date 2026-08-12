@@ -13,6 +13,13 @@
     "whatsappNumber": "4917623927293",
     "address": "Karlsruhe, Deutschland"
   },
+  "legal": {
+    "responsibleName": "[Vor- und Nachname folgt]",
+    "street": "[Straße und Hausnummer folgen]",
+    "postalCode": "[PLZ folgt]",
+    "city": "Karlsruhe",
+    "vatStatus": "[Umsatzsteuer-Status folgt — z. B. Kleinunternehmer nach § 19 UStG oder USt-IdNr.]"
+  },
   "social": [
     { "label": "Instagram", "url": "#", "placeholder": true },
     { "label": "TikTok", "url": "#", "placeholder": true },
