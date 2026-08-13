@@ -42,6 +42,10 @@ Keine `npm install` nötig — es gibt keine externen Abhängigkeiten.
 
 `.github/workflows/pages.yml` baut die Seite bei jedem Push auf `main` und deployt `_site/` auf GitHub Pages. In den Repository-Einstellungen muss unter **Settings → Pages** die Quelle einmalig auf **GitHub Actions** gestellt werden.
 
+**Live-URL:** `https://dodekagamer.github.io/NoComfortZone/`
+
+GitHub Pages liefert dieses Repo (kein `<owner>.github.io`-Repo, keine eigene Domain) unter diesem Unterpfad aus. Deshalb rechnet `build.js` alle internen Links/Asset-Pfade über `src/lib/base-path.js` auf `/NoComfortZone` um (`SITE_BASE_PATH`/`SITE_ORIGIN` per Env-Variable überschreibbar). **Falls später eine eigene Domain per CNAME eingerichtet wird**, `SITE_BASE_PATH=""` und `SITE_ORIGIN` auf die eigene Domain setzen (z. B. als Env-Variablen im Workflow) — sonst zeigen alle Links weiterhin auf `/NoComfortZone/...`.
+
 ## Wichtige Hinweise vor dem echten Live-Betrieb
 
 - **Preise** (`src/lib/pricing.json`): aktuell klar markierte Beispielpreise ("Beispielpreis"-Badge auf der Seite). Vor dem Launch durch echte Konditionen ersetzen.

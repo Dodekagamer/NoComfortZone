@@ -1,4 +1,5 @@
 const site = require('./site.json');
+const { SITE_URL } = require('./base-path');
 
 function renderNav(currentUrl) {
   const items = site.nav
@@ -50,13 +51,28 @@ function renderFooter() {
 
 function renderPage({ title, description, bodyClass, url, content }) {
   const bodyClassAttr = bodyClass ? ` class="${bodyClass}"` : '';
+  const pageTitle = title || site.name;
+  const pageDescription = description || site.defaultDescription;
+  const canonicalUrl = `${SITE_URL}${url}`;
+  const ogImage = `${SITE_URL}/assets/img/hero-bg.jpg`;
   return `<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title || site.name}</title>
-<meta name="description" content="${description || site.defaultDescription}">
+<title>${pageTitle}</title>
+<meta name="description" content="${pageDescription}">
+<link rel="canonical" href="${canonicalUrl}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="${site.name}">
+<meta property="og:title" content="${pageTitle}">
+<meta property="og:description" content="${pageDescription}">
+<meta property="og:url" content="${canonicalUrl}">
+<meta property="og:image" content="${ogImage}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${pageTitle}">
+<meta name="twitter:description" content="${pageDescription}">
+<meta name="twitter:image" content="${ogImage}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
