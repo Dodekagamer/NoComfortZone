@@ -1,0 +1,91 @@
+{
+  "note": "Beispielpreise — werden von No Comfort Zone final bestätigt. Für aktuelle Konditionen sprich uns direkt an.",
+  "nczMemberships": [
+    {
+      "id": "schnupper",
+      "name": "Schnupper",
+      "price": 0,
+      "unit": "1 Training",
+      "placeholder": true,
+      "highlight": false,
+      "tagline": "Zum Reinschnuppern",
+      "features": [
+        "1x kostenloses Probetraining",
+        "Kennenlernen der Gruppe & Trainer",
+        "Unverbindlich, keine Anmeldung nötig"
+      ]
+    },
+    {
+      "id": "community",
+      "name": "Community",
+      "price": 39,
+      "unit": "Monat",
+      "placeholder": true,
+      "highlight": true,
+      "tagline": "Das Herzstück von No Comfort Zone",
+      "features": [
+        "Alle Community-Trainings (Boxen, Calisthenics, Outdoor)",
+        "Zugang zur Trainingsgruppe & Community-Events",
+        "Monatlich kündbar"
+      ]
+    },
+    {
+      "id": "familie",
+      "name": "Familie",
+      "price": 65,
+      "unit": "Monat",
+      "placeholder": true,
+      "highlight": false,
+      "tagline": "Für Eltern & Kinder gemeinsam",
+      "features": [
+        "Zugang für bis zu 2 Erwachsene + Kinder",
+        "Kindertraining & Familien-Events inklusive",
+        "Monatlich kündbar"
+      ]
+    }
+  ],
+  "hakiCoaching": [
+    {
+      "id": "einzeltraining",
+      "name": "Einzeltraining",
+      "price": 60,
+      "unit": "Einheit",
+      "placeholder": true,
+      "highlight": false,
+      "tagline": "Einzeln, flexibel buchbar",
+      "features": [
+        "60 Minuten 1:1 Coaching",
+        "Individuelle Trainingsplanung",
+        "Terminvereinbarung nach Absprache"
+      ]
+    },
+    {
+      "id": "paket10",
+      "name": "10er-Paket",
+      "price": 550,
+      "unit": "Paket",
+      "placeholder": true,
+      "highlight": true,
+      "tagline": "Für kontinuierliche Fortschritte",
+      "features": [
+        "10x 60 Minuten 1:1 Coaching",
+        "Individueller Trainings- & Entwicklungsplan",
+        "Laufende Anpassung & Betreuung"
+      ]
+    },
+    {
+      "id": "coaching-programm",
+      "name": "Coaching-Programm",
+      "price": null,
+      "unit": "auf Anfrage",
+      "placeholder": true,
+      "highlight": false,
+      "tagline": "Langfristige Begleitung",
+      "features": [
+        "Individuelles Programm über mehrere Monate",
+        "Trainings-, Ernährungs- und Mentalcoaching kombinierbar",
+        "Konditionen im persönlichen Gespräch"
+      ]
+    }
+  ]
+}
