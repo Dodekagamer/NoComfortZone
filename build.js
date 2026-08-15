@@ -99,11 +99,6 @@ function build404() {
       description: 'Diese Seite existiert nicht (mehr).',
       url: '/404/',
       content: `
-<style>
-  .error-404 .page-hero{ text-align:center; }
-  .error-404 .page-hero p.lead{ margin-left:auto; margin-right:auto; }
-  .error-404 .page-hero .cta-row{ justify-content:center; }
-</style>
 <div class="error-404">
 ${pageHero('404', 'Diese Seite gibt es nicht.', 'Der Link ist entweder veraltet oder falsch getippt. Auf der Startseite findest du alles Wichtige.', 'Zur Startseite', '/', 'Kontakt aufnehmen', '/kontakt/')}
 </div>

@@ -48,7 +48,7 @@ function priceCard(plan) {
   <span class="price-tagline">${plan.tagline}</span>
   <h3>${plan.name}</h3>
   <div class="price">${priceValue(plan)}</div>
-  <span class="price-badge">Beispielpreis</span>
+  ${plan.price ? '<span class="price-badge">Beispielpreis</span>' : '<span class="price-badge">Unverbindlich</span>'}
   <ul>
     ${features}
   </ul>
@@ -102,26 +102,26 @@ function inquiryForm(formId, type, title, intro, messagePlaceholder) {
   <div class="form-row">
     <div class="form-field">
       <label for="${formId}-name">Name</label>
-      <input type="text" id="${formId}-name" name="name" required>
+      <input type="text" id="${formId}-name" name="name" autocomplete="name" enterkeyhint="next" required>
     </div>
     <div class="form-field">
       <label for="${formId}-email">E-Mail</label>
-      <input type="email" id="${formId}-email" name="email" required>
+      <input type="email" id="${formId}-email" name="email" autocomplete="email" inputmode="email" spellcheck="false" enterkeyhint="next" required>
     </div>
   </div>
   <div class="form-row">
     <div class="form-field">
       <label for="${formId}-phone">Telefon (optional)</label>
-      <input type="tel" id="${formId}-phone" name="phone">
+      <input type="tel" id="${formId}-phone" name="phone" autocomplete="tel" inputmode="tel" enterkeyhint="next">
     </div>
     <div class="form-field">
       <label for="${formId}-preferred">Wunschtermin (optional)</label>
-      <input type="text" id="${formId}-preferred" name="preferred" placeholder="z. B. Di. abends">
+      <input type="text" id="${formId}-preferred" name="preferred" placeholder="z. B. Di. abends" enterkeyhint="next">
     </div>
   </div>
   <div class="form-field">
     <label for="${formId}-message">Nachricht</label>
-    <textarea id="${formId}-message" name="message" placeholder="${messagePlaceholder}"></textarea>
+    <textarea id="${formId}-message" name="message" placeholder="${messagePlaceholder}" enterkeyhint="done"></textarea>
   </div>
   <div class="form-actions">
     <button type="submit" class="btn solid">Per E-Mail senden</button>

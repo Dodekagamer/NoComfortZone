@@ -116,7 +116,7 @@ module.exports = {
         <p>Wir übernehmen Verantwortung gegenüber unserer Community — für Ehrlichkeit und respektvollen Umgang miteinander.</p>
       </div>
     </div>
-    <div style="margin-top:40px;">
+    <div class="stack-top">
       <a href="/vision-werte/" class="btn">Vision &amp; Werte im Detail</a>
     </div>
   </div>
@@ -149,7 +149,7 @@ module.exports = {
         <p>Kindertraining, Familienmitgliedschaften und Veranstaltungen — Eltern und Kinder gemeinsam in Bewegung.</p>
       </div>
     </div>
-    <div style="margin-top:40px; display:flex; gap:16px; flex-wrap:wrap;">
+    <div class="stack-top btn-row">
       <a href="/angebote/" class="btn solid">Alle Angebote ansehen</a>
       <a href="/zielgruppe/" class="btn">Alle Zielgruppen ansehen</a>
     </div>
@@ -178,7 +178,7 @@ module.exports = {
         <div class="who">Teilnehmer:in, Jugendtraining</div>
       </div>
     </div>
-    <div style="margin-top:40px;">
+    <div class="stack-top">
       <a href="/community/" class="btn solid">Mehr aus der Community</a>
     </div>
   </div>

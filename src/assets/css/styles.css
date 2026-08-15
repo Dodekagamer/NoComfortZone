@@ -20,13 +20,18 @@
   --accent-dim: var(--hazard-dim);
 }
 *{box-sizing:border-box; margin:0; padding:0;}
-html{scroll-behavior:smooth;}
+html{
+  scroll-behavior:smooth;
+  /* verhindert, dass iOS im Querformat die Schrift eigenmächtig vergrößert */
+  -webkit-text-size-adjust:100%; text-size-adjust:100%;
+}
 body{
   background:var(--asphalt);
   color:var(--white);
   font-family:'Inter', sans-serif;
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
+  overflow-wrap:break-word;
 }
 img{max-width:100%; display:block;}
 a{color:inherit; text-decoration:none;}
@@ -40,23 +45,25 @@ h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em
   color:var(--accent);
 }
 .btn{
-  display:inline-block;
+  display:inline-flex; align-items:center; justify-content:center;
   font-family:'Space Mono', monospace;
   font-weight:700;
   font-size:13px;
   letter-spacing:0.08em;
   text-transform:uppercase;
-  padding:16px 30px;
+  padding:15px 30px;
+  min-height:48px;
   border:2px solid var(--white);
   color:var(--white);
   background:none;
   cursor:pointer;
+  text-align:center;
   transition:all .2s ease;
 }
 .btn:hover{background:var(--white); color:var(--asphalt);}
 .btn.solid{background:var(--accent); border-color:var(--accent); color:var(--asphalt);}
 .btn.solid:hover{background:var(--white); border-color:var(--white); color:var(--asphalt);}
-.btn.small{padding:10px 20px; font-size:11px;}
+.btn.small{padding:10px 18px; font-size:11px; min-height:44px;}
 :focus-visible{outline:3px solid var(--safety); outline-offset:2px;}
 
 /* HAZARD STRIPE — signature element */
@@ -79,27 +86,44 @@ header{
 }
 .navbar{
   display:flex; align-items:center; justify-content:space-between;
-  padding:18px 0;
-  gap:20px;
+  padding:12px 0;
+  gap:16px;
+  min-height:64px;
 }
-.logo{font-family:'Anton', sans-serif; font-size:21px; letter-spacing:0.01em; white-space:nowrap;}
+.logo{
+  font-family:'Anton', sans-serif; font-size:21px; letter-spacing:0.01em; white-space:nowrap;
+  display:flex; align-items:center; min-height:44px; min-width:0;
+}
 .logo span{color:var(--accent);}
 nav ul{display:flex; gap:22px; list-style:none; flex-wrap:wrap;}
 nav a{font-family:'Space Mono', monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; opacity:0.85;}
 nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 .nav-toggle{
   display:none; background:none; border:2px solid var(--line); color:var(--white);
-  width:42px; height:42px; font-size:20px; cursor:pointer; flex-shrink:0;
+  width:44px; height:44px; font-size:20px; cursor:pointer; flex-shrink:0;
+  align-items:center; justify-content:center;
 }
-.navbar-cta{display:flex; align-items:center; gap:16px;}
+.navbar-cta{display:flex; align-items:center; gap:12px; flex-shrink:0;}
+/* Nur im Mobile-Menü sichtbar (der Header-CTA wird dort ausgeblendet, s. u.) */
+.nav-cta-mobile{display:none;}
 
-/* SCROLL INTRO (pinned scrollytelling hero — homepage only) */
-.scroll-intro{position:relative; height:440vh;}
+/* SCROLL INTRO (pinned scrollytelling hero — homepage only)
+   Progressive Enhancement: OHNE JavaScript ist der fertige Hero (Panel 4 mit
+   Headline + Buttons) sofort sichtbar und die Sektion nur eine Bildschirmhöhe
+   hoch. Erst wenn JS läuft, setzt main.js `.js` auf <html> und schaltet auf
+   die gescrollte Sequenz um. */
+.scroll-intro{position:relative; height:100vh;}
+.js .scroll-intro{height:440vh;}
 .intro-pin{
   position:sticky; top:0; height:100vh; overflow:hidden;
   background:
     linear-gradient(180deg, rgba(21,22,26,0.62), rgba(21,22,26,0.94)),
     url('../img/hero-bg.jpg') center center / cover no-repeat;
+}
+/* dvh = sichtbare Höhe ohne Browser-Adressleiste (verhindert Springen am Handy) */
+@supports (height:100dvh){
+  .scroll-intro{height:100dvh;}
+  .intro-pin{height:100dvh;}
 }
 .intro-sweep{
   position:absolute; top:0; left:-20%; width:60%; height:100%;
@@ -110,15 +134,20 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 .intro-panel{
   position:absolute; inset:0; z-index:2;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; padding:0 24px; opacity:0;
+  text-align:center; padding:0 24px;
 }
+/* Ohne JS: nur der finale Hero ist sichtbar (Headline + CTAs erreichbar).
+   Mit JS: Sequenz startet bei Panel 1, die übrigen blendet main.js ein. */
+.intro-panel.p1, .intro-panel.p2, .intro-panel.p3{opacity:0;}
+.js .intro-panel{opacity:0;}
+.js .intro-panel.p1{opacity:1;}
+.js .intro-panel.final{opacity:0;}
 .intro-panel h2{
   font-family:'Anton', sans-serif; text-transform:uppercase;
   font-size:clamp(34px, 7.4vw, 92px); max-width:17ch; line-height:1.04;
 }
 .intro-panel .tool{color:var(--concrete);}
 .intro-panel .center{color:var(--accent);}
-.intro-panel.p1{opacity:1;}
 .intro-panel.final{align-items:flex-start; text-align:left; max-width:var(--maxw); margin:0 auto; width:100%;}
 .intro-panel.final h1{
   font-family:'Anton', sans-serif; text-transform:uppercase;
@@ -142,8 +171,16 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 @keyframes scrollcue{0%{transform:scaleY(0); transform-origin:top;} 50%{transform:scaleY(1); transform-origin:top;} 50.01%{transform-origin:bottom;} 100%{transform:scaleY(0); transform-origin:bottom;}}
 @media (max-width:860px){
   .intro-panel.final{align-items:center; text-align:center;}
-  .intro-panel.final .cta-row{justify-content:center;}
+  .intro-panel.final .cta-row{justify-content:center; width:100%;}
+  .intro-panel.final .cta-row .btn{flex:1 1 240px; text-align:center;}
+  .intro-panel.final p.lead{font-size:16px; margin-bottom:28px;}
+  /* Handy: Story bleibt identisch, aber die Scroll-Distanz wird von 4,4 auf
+     ~2 Bildschirme gekürzt — sonst scrollt man ~3.700px bis zum ersten Button. */
+  .js .scroll-intro{height:200vh;}
 }
+/* Ohne JS gibt es keine Sequenz -> Scroll-Hinweis wäre irreführend */
+.scroll-cue{display:none;}
+.js .scroll-cue{display:flex;}
 
 /* SECTION SCAFFOLDING */
 section{padding:100px 0;}
@@ -183,7 +220,11 @@ section{padding:100px 0;}
 .audience-row h3{font-family:'Inter'; font-weight:800; font-size:20px; text-transform:none; letter-spacing:0;}
 .audience-row p{color:var(--concrete); font-size:15px;}
 .audience-row:hover{background:var(--asphalt-2);}
-.audience-row .row-cta{margin-top:10px; display:inline-block; font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase; color:var(--accent); letter-spacing:0.05em;}
+.audience-row .row-cta{
+  margin-top:6px; display:inline-flex; align-items:center; min-height:44px;
+  font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase;
+  color:var(--accent); letter-spacing:0.05em;
+}
 .audience-row .row-cta:hover{color:var(--white);}
 
 /* COMMUNITY / TESTIMONIAL STRIP */
@@ -212,27 +253,39 @@ section{padding:100px 0;}
 footer{padding:80px 0 40px;}
 .footer-grid{display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:40px; margin-bottom:60px;}
 .footer-grid h3{font-family:'Inter'; font-weight:800; font-size:15px; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:18px; color:var(--concrete);}
-.footer-grid p, .footer-grid a{font-size:15px; color:var(--white); opacity:0.9; display:block; margin-bottom:8px;}
+.footer-grid p{font-size:15px; color:var(--white); opacity:0.9; display:block; margin-bottom:8px;}
+/* Tap-Ziel: Padding statt größerer Schrift — Optik bleibt, Fläche wächst */
+.footer-grid a{
+  font-size:15px; color:var(--white); opacity:0.9;
+  display:flex; align-items:center; min-height:44px; margin-bottom:0;
+}
 .footer-grid a:hover{color:var(--accent);}
 .footer-bottom{
   display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
   border-top:1px solid var(--line); padding-top:26px;
   font-family:'Space Mono', monospace; font-size:12px; color:var(--concrete); text-transform:uppercase; letter-spacing:0.04em;
 }
-.footer-legal{display:flex; gap:18px;}
-.footer-legal a{opacity:0.8;}
+.footer-legal{display:flex; gap:18px; flex-wrap:wrap;}
+.footer-legal a{opacity:0.8; display:inline-flex; align-items:center; min-height:44px;}
 .footer-legal a:hover{opacity:1; color:var(--accent);}
 
 @media (max-width:980px){
-  nav ul{display:none;}
-  .nav-toggle{display:block;}
+  /* Die komplette Navigation einklappen — nicht nur die Liste. Sonst würden
+     Elemente darin (z. B. der Mitmachen-CTA) weiter in der Kopfzeile liegen. */
+  nav{display:none;}
+  .nav-toggle{display:flex;}
   header[data-open="true"] nav{
     display:block; position:absolute; top:100%; left:0; right:0;
     background:var(--asphalt); border-bottom:1px solid var(--line);
-    padding:10px 0;
+    padding:10px 0; max-height:calc(100vh - 100%); overflow-y:auto;
   }
   header[data-open="true"] nav ul{display:flex; flex-direction:column; gap:0;}
-  header[data-open="true"] nav a{display:block; padding:14px 28px; border-bottom:1px solid var(--line);}
+  header[data-open="true"] nav a{
+    display:flex; align-items:center; min-height:48px;
+    padding:12px 28px; border-bottom:1px solid var(--line);
+  }
+  /* Menü offen -> Hintergrund nicht mitscrollen */
+  body.nav-open{overflow:hidden;}
 }
 @media (max-width:860px){
   .values-grid{grid-template-columns:1fr;}
@@ -240,6 +293,38 @@ footer{padding:80px 0 40px;}
   .footer-grid{grid-template-columns:1fr;}
   .audience-row{grid-template-columns:1fr; gap:8px;}
 }
+
+/* ---- HANDY: Header-Überlauf verhindern + Abstände straffen ---------------
+   Ursache des früheren Overflows: Logo (nowrap) + "Mitmachen"-Button +
+   Hamburger brauchten ~434px, ein typisches Handy hat 360–390px.
+   Lösung: Header-CTA wandert ins Menü, Logo wird kleiner.            */
+@media (max-width:620px){
+  .wrap{padding:0 20px;}
+  section{padding:60px 0;}
+  .navbar-cta .btn.solid.small{display:none;}   /* CTA steckt jetzt im Menü */
+  header[data-open="true"] .nav-cta-mobile{display:block;}
+  header[data-open="true"] .nav-cta-mobile a{
+    display:flex; align-items:center; justify-content:center;
+    margin:12px 20px 6px; min-height:48px;
+    background:var(--accent); border-color:var(--accent); color:var(--asphalt);
+  }
+  .logo{font-size:18px;}
+  .section-head{margin-bottom:36px;}
+  footer{padding:56px 0 32px;}
+  .footer-grid{gap:28px; margin-bottom:36px;}
+  .form{padding:24px 18px;}
+  .pillar-card{padding:30px 22px;}
+  .value-card{padding:28px 22px; min-height:0;}
+  .qf-card{padding:22px 20px;}
+  .price-card{padding:28px 22px;}
+  .cta-band{padding:52px 0;}
+  .page-hero{padding:52px 0 40px;}
+}
+@media (max-width:380px){
+  .logo{font-size:16px;}
+  .wrap{padding:0 16px;}
+}
+
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto;}
   *{transition:none !important;}
@@ -255,7 +340,11 @@ footer{padding:80px 0 40px;}
 .qf-card .qf-q{font-family:'Space Mono', monospace; font-size:12px; color:var(--accent); text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:10px;}
 .qf-card h3{font-size:17px; text-transform:none; font-family:'Inter'; font-weight:800; margin-bottom:10px;}
 .qf-card p{color:var(--concrete); font-size:14.5px; margin-bottom:12px;}
-.qf-card a{font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase; color:var(--white); letter-spacing:0.04em; border-bottom:1px solid var(--accent);}
+.qf-card a{
+  font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase; color:var(--white);
+  letter-spacing:0.04em; display:inline-flex; align-items:center; min-height:44px;
+  border-bottom:1px solid var(--accent);
+}
 .qf-card a:hover{color:var(--accent);}
 @media (max-width:860px){ .quickfacts-grid{grid-template-columns:1fr;} }
 
@@ -317,9 +406,11 @@ footer{padding:80px 0 40px;}
 .form-field label{font-family:'Space Mono', monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--concrete);}
 .form-field input, .form-field textarea, .form-field select{
   background:var(--asphalt); border:1px solid var(--line); color:var(--white);
-  padding:12px 14px; font-family:'Inter', sans-serif; font-size:15px; width:100%;
+  padding:13px 14px; font-family:'Inter', sans-serif; width:100%;
+  /* 16px ist Pflicht: darunter zoomt iOS Safari beim Antippen automatisch rein */
+  font-size:16px; min-height:48px;
 }
-.form-field textarea{resize:vertical; min-height:100px;}
+.form-field textarea{resize:vertical; min-height:110px;}
 .form-field input:focus, .form-field textarea:focus, .form-field select:focus{outline:2px solid var(--accent); border-color:var(--accent);}
 .form-actions{display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; align-items:center;}
 .btn.whatsapp{border-color:#25D366; color:#25D366;}
@@ -356,6 +447,34 @@ footer{padding:80px 0 40px;}
 body.theme-haki{ --accent: var(--safety); --accent-dim: #e0ac1f; }
 body.theme-haki .intro-panel .center,
 body.theme-haki .mission blockquote .center{ color: var(--safety); }
+
+/* Einzelner Haki-Sports-Block auf einer sonst NCZ-Seite (z. B. /buchung/):
+   setzt denselben gelben Akzent nur für diesen Abschnitt, damit die Trennung
+   Community vs. 1:1-Coaching auch dort sofort sichtbar ist. */
+.theme-haki-section{
+  --accent: var(--safety); --accent-dim:#e0ac1f;
+  background:var(--asphalt-2);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+
+/* 404 */
+.error-404 .page-hero{text-align:center;}
+.error-404 .page-hero h1{margin-left:auto; margin-right:auto;}
+.error-404 .page-hero p.lead{margin-left:auto; margin-right:auto;}
+.error-404 .page-hero .cta-row{justify-content:center;}
+
+/* Kleine Layout-Utilities — ersetzen wiederkehrende inline styles, damit
+   Abstände zentral (auch mobil) angepasst werden können. */
+.stack-top{margin-top:40px;}
+.stack-top-sm{margin-top:20px;}
+.inline-link{text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px;}
+.inline-link:hover{color:var(--accent);}
+.btn-row{display:flex; gap:16px; flex-wrap:wrap;}
+.note-small{margin-top:36px; font-size:13px;}
+@media (max-width:620px){
+  .stack-top{margin-top:28px;}
+  .btn-row .btn{flex:1 1 100%;}
+}
 
 /* LEGAL / PROSE PAGES */
 .legal{max-width:760px;}

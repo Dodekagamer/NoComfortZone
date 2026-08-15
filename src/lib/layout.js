@@ -12,6 +12,7 @@ function renderNav(currentUrl) {
   <ul>
         ${items}
   </ul>
+  <div class="nav-cta-mobile"><a href="/buchung/" class="btn solid">Mitmachen</a></div>
 </nav>`;
 }
 
@@ -59,7 +60,12 @@ function renderPage({ title, description, bodyClass, url, content }) {
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- frame-ancestors fehlt bewusst: per <meta> ignorieren Browser die Direktive,
+     und GitHub Pages kann keine echten HTTP-Header setzen. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#15161a">
 <title>${pageTitle}</title>
 <meta name="description" content="${pageDescription}">
 <link rel="canonical" href="${canonicalUrl}">
@@ -74,6 +80,7 @@ function renderPage({ title, description, bodyClass, url, content }) {
 <meta name="twitter:description" content="${pageDescription}">
 <meta name="twitter:image" content="${ogImage}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -99,8 +106,6 @@ ${content}
 
 ${renderFooter()}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="/assets/js/main.js"></script>
 </body>
 </html>
