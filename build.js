@@ -80,8 +80,14 @@ function writeStaticFile(relPath, content) {
 }
 
 function buildSitemap(pages) {
+  const lastmod = new Date().toISOString().slice(0, 10);
   const urls = pages
-    .map((p) => `  <url><loc>${SITE_URL}${p.url}</loc></url>`)
+    .map((p) => {
+      // Startseite höher priorisieren, Rechtstexte niedriger — hilft Crawlern
+      // bei der Einordnung, welche Seiten die eigentlichen Inhalte sind.
+      const priority = p.url === '/' ? '1.0' : /impressum|datenschutz/.test(p.url) ? '0.3' : '0.8';
+      return `  <url><loc>${SITE_URL}${p.url}</loc><lastmod>${lastmod}</lastmod><priority>${priority}</priority></url>`;
+    })
     .join('\n');
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
   writeStaticFile('sitemap.xml', xml);

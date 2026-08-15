@@ -9,7 +9,7 @@ module.exports = {
 <section>
   <div class="wrap legal">
     <span class="draft-badge">Struktur vollständig · Name/Anschrift noch einzutragen</span>
-    <h2>Datenschutzerklärung</h2>
+    <h1>Datenschutzerklärung</h1>
     <p>Wir freuen uns über dein Interesse an No Comfort Zone. Der Schutz deiner personenbezogenen Daten ist uns wichtig. Nachfolgend informieren wir dich gemäß Art. 13 DSGVO über die Verarbeitung deiner Daten beim Besuch dieser Website.</p>
 
     <h2>Verantwortlicher</h2>

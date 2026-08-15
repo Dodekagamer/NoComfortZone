@@ -9,6 +9,7 @@ module.exports = {
 <section>
   <div class="wrap legal">
     <span class="draft-badge">Struktur vollständig · Name/Anschrift &amp; USt-Status noch einzutragen</span>
+    <h1>Impressum</h1>
     <h2>Angaben gemäß § 5 TMG</h2>
     <p>${esc(site.legal.responsibleName)}<br>
     ${esc(site.legal.street)}<br>

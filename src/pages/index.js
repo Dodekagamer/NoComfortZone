@@ -13,15 +13,15 @@ module.exports = {
 
     <div class="intro-panel p1" id="p1">
       <span class="eyebrow hero-eyebrow">Unsere Mission</span>
-      <h2>Sport ist nicht<br>unser Ziel.</h2>
+      <p class="intro-line">Sport ist nicht<br>unser Ziel.</p>
     </div>
 
     <div class="intro-panel p2" id="p2">
-      <h2 class="tool">Es ist unser<br>Werkzeug.</h2>
+      <p class="intro-line tool">Es ist unser<br>Werkzeug.</p>
     </div>
 
     <div class="intro-panel p3" id="p3">
-      <h2>Unser Ziel sind<br><span class="center">stärkere Menschen.</span></h2>
+      <p class="intro-line">Unser Ziel sind<br><span class="center">stärkere Menschen.</span></p>
     </div>
 
     <div class="intro-panel final" id="p4">

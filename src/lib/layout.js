@@ -1,6 +1,7 @@
 const site = require('./site.json');
 const { SITE_URL } = require('./base-path');
 const { esc, safeUrl } = require('./escape');
+const { structuredData } = require('./structured-data');
 
 function renderNav(currentUrl) {
   const items = site.nav
@@ -63,7 +64,7 @@ function renderPage({ title, description, bodyClass, url, content }) {
   // sonst erst nach dem CSS entdeckt wird (spürbar auf Mobilfunk).
   const preloadHero =
     url === '/'
-      ? '\n<link rel="preload" as="image" href="/assets/img/hero-bg.jpg" fetchpriority="high">'
+      ? '\n<link rel="preload" as="image" href="/assets/img/hero-bg.webp" type="image/webp" fetchpriority="high">'
       : '';
   return `<!DOCTYPE html>
 <html lang="de">
@@ -86,6 +87,9 @@ function renderPage({ title, description, bodyClass, url, content }) {
 <meta property="og:description" content="${esc(pageDescription)}">
 <meta property="og:url" content="${esc(canonicalUrl)}">
 <meta property="og:image" content="${esc(ogImage)}">
+<meta property="og:image:width" content="1500">
+<meta property="og:image:height" content="730">
+<meta property="og:image:alt" content="Gruppenfoto der No-Comfort-Zone-Community nach einem gemeinsamen Outdoor-Training in Karlsruhe">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(pageTitle)}">
@@ -97,6 +101,7 @@ function renderPage({ title, description, bodyClass, url, content }) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/styles.css">${preloadHero}
+${structuredData({ url, title: pageTitle })}
 </head>
 <body${bodyClassAttr}>
 
