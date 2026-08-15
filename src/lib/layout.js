@@ -1,14 +1,15 @@
 const site = require('./site.json');
 const { SITE_URL } = require('./base-path');
+const { esc, safeUrl } = require('./escape');
 
 function renderNav(currentUrl) {
   const items = site.nav
     .map((item) => {
       const active = item.url === currentUrl ? ' aria-current="page"' : '';
-      return `<li><a href="${item.url}"${active}>${item.label}</a></li>`;
+      return `<li><a href="${safeUrl(item.url)}"${active}>${esc(item.label)}</a></li>`;
     })
     .join('\n        ');
-  return `<nav id="siteNav">
+  return `<nav id="siteNav" aria-label="Hauptnavigation">
   <ul>
         ${items}
   </ul>
@@ -17,22 +18,24 @@ function renderNav(currentUrl) {
 }
 
 function renderFooter() {
-  const navLinks = site.nav.map((item) => `<a href="${item.url}">${item.label}</a>`).join('\n        ');
+  const navLinks = site.nav
+    .map((item) => `<a href="${safeUrl(item.url)}">${esc(item.label)}</a>`)
+    .join('\n        ');
   const legalLinks = site.footerLegal
-    .map((item) => `<a href="${item.url}">${item.label}</a>`)
+    .map((item) => `<a href="${safeUrl(item.url)}">${esc(item.label)}</a>`)
     .join('\n        ');
   return `<footer id="kontakt-footer">
   <div class="wrap">
     <div class="footer-grid">
       <div>
         <h3>No Comfort Zone</h3>
-        <p style="max-width:38ch; opacity:0.75;">Eine Gemeinschaft von Menschen, die gemeinsam wachsen möchten. Nicht perfekt. Nicht elitär. Sondern ehrlich. Haki Sports ist unser professionelles 1:1-Coaching-Angebot innerhalb der Bewegung.</p>
+        <p class="footer-claim">Eine Gemeinschaft von Menschen, die gemeinsam wachsen möchten. Nicht perfekt. Nicht elitär. Sondern ehrlich. Haki Sports ist unser professionelles 1:1-Coaching-Angebot innerhalb der Bewegung.</p>
       </div>
       <div>
         <h3>Kontakt</h3>
-        <a href="mailto:${site.contact.email}">${site.contact.email}</a>
-        <a href="tel:${site.contact.phoneHref}">${site.contact.phoneDisplay}</a>
-        <p>${site.contact.address}</p>
+        <a href="mailto:${esc(site.contact.email)}">${esc(site.contact.email)}</a>
+        <a href="tel:${esc(site.contact.phoneHref)}">${esc(site.contact.phoneDisplay)}</a>
+        <p>${esc(site.contact.address)}</p>
       </div>
       <div>
         <h3>Navigation</h3>
@@ -40,7 +43,7 @@ function renderFooter() {
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 No Comfort Zone · ${site.city}</span>
+      <span>© 2026 No Comfort Zone · ${esc(site.city)}</span>
       <span class="footer-legal">
         ${legalLinks}
       </span>
@@ -51,50 +54,61 @@ function renderFooter() {
 }
 
 function renderPage({ title, description, bodyClass, url, content }) {
-  const bodyClassAttr = bodyClass ? ` class="${bodyClass}"` : '';
+  const bodyClassAttr = bodyClass ? ` class="${esc(bodyClass)}"` : '';
   const pageTitle = title || site.name;
   const pageDescription = description || site.defaultDescription;
   const canonicalUrl = `${SITE_URL}${url}`;
   const ogImage = `${SITE_URL}/assets/img/hero-bg.jpg`;
+  // Nur die Startseite zeigt das Hero-Foto — dort lohnt der Vorabruf, weil es
+  // sonst erst nach dem CSS entdeckt wird (spürbar auf Mobilfunk).
+  const preloadHero =
+    url === '/'
+      ? '\n<link rel="preload" as="image" href="/assets/img/hero-bg.jpg" fetchpriority="high">'
+      : '';
   return `<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- frame-ancestors fehlt bewusst: per <meta> ignorieren Browser die Direktive,
-     und GitHub Pages kann keine echten HTTP-Header setzen. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'">
+<!-- Kein 'unsafe-inline' mehr: die Seite kommt ohne Inline-Style-Attribute aus,
+     dadurch greift CSS-Injection ins Leere. frame-ancestors fehlt bewusst —
+     per <meta> ignorieren Browser die Direktive, und GitHub Pages kann keine
+     echten HTTP-Header setzen. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; manifest-src 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#15161a">
-<title>${pageTitle}</title>
-<meta name="description" content="${pageDescription}">
-<link rel="canonical" href="${canonicalUrl}">
+<title>${esc(pageTitle)}</title>
+<meta name="description" content="${esc(pageDescription)}">
+<link rel="canonical" href="${esc(canonicalUrl)}">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="${site.name}">
-<meta property="og:title" content="${pageTitle}">
-<meta property="og:description" content="${pageDescription}">
-<meta property="og:url" content="${canonicalUrl}">
-<meta property="og:image" content="${ogImage}">
+<meta property="og:site_name" content="${esc(site.name)}">
+<meta property="og:title" content="${esc(pageTitle)}">
+<meta property="og:description" content="${esc(pageDescription)}">
+<meta property="og:url" content="${esc(canonicalUrl)}">
+<meta property="og:image" content="${esc(ogImage)}">
+<meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${pageTitle}">
-<meta name="twitter:description" content="${pageDescription}">
-<meta name="twitter:image" content="${ogImage}">
+<meta name="twitter:title" content="${esc(pageTitle)}">
+<meta name="twitter:description" content="${esc(pageDescription)}">
+<meta name="twitter:image" content="${esc(ogImage)}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/styles.css">
+<link rel="stylesheet" href="/assets/css/styles.css">${preloadHero}
 </head>
 <body${bodyClassAttr}>
 
+<a href="#top" class="skip-link">Zum Inhalt springen</a>
+
 <header id="siteHeader">
   <div class="wrap navbar">
-    <a href="/" class="logo">NO COMFORT<span>.</span>ZONE</a>
+    <a href="/" class="logo" aria-label="No Comfort Zone — zur Startseite">NO COMFORT<span>.</span>ZONE</a>
     ${renderNav(url)}
     <div class="navbar-cta">
       <a href="/buchung/" class="btn solid small">Mitmachen</a>
-      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Menü öffnen">☰</button>
+      <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Menü öffnen">☰</button>
     </div>
   </div>
 </header>

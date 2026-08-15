@@ -36,6 +36,16 @@ body{
 img{max-width:100%; display:block;}
 a{color:inherit; text-decoration:none;}
 .wrap{max-width:var(--maxw); margin:0 auto; padding:0 28px;}
+.wrap-flush{padding:0;}
+
+/* Tastatur-Nutzer: springt direkt zum Inhalt, sichtbar nur bei Fokus */
+.skip-link{
+  position:absolute; left:-9999px; top:0; z-index:100;
+  background:var(--safety); color:var(--asphalt);
+  font-family:'Space Mono', monospace; font-size:13px; font-weight:700;
+  padding:14px 20px; text-transform:uppercase; letter-spacing:0.06em;
+}
+.skip-link:focus{left:0;}
 h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em; text-transform:uppercase; line-height:1.02;}
 .eyebrow{
   font-family:'Space Mono', monospace;
@@ -156,6 +166,7 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 .intro-panel.final h1 em{font-style:normal; color:var(--accent);}
 .intro-panel.final p.lead{font-size:19px; max-width:56ch; color:var(--concrete); margin-bottom:36px;}
 .intro-panel.final .cta-row{display:flex; gap:16px; flex-wrap:wrap;}
+.hero-eyebrow{margin-bottom:18px;}
 .hero-tag{
   display:inline-flex; align-items:center; gap:10px;
   font-family:'Space Mono', monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
@@ -254,6 +265,7 @@ footer{padding:80px 0 40px;}
 .footer-grid{display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:40px; margin-bottom:60px;}
 .footer-grid h3{font-family:'Inter'; font-weight:800; font-size:15px; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:18px; color:var(--concrete);}
 .footer-grid p{font-size:15px; color:var(--white); opacity:0.9; display:block; margin-bottom:8px;}
+.footer-claim{max-width:38ch; opacity:0.75;}
 /* Tap-Ziel: Padding statt größerer Schrift — Optik bleibt, Fläche wächst */
 .footer-grid a{
   font-size:15px; color:var(--white); opacity:0.9;
@@ -416,6 +428,17 @@ footer{padding:80px 0 40px;}
 .btn.whatsapp{border-color:#25D366; color:#25D366;}
 .btn.whatsapp:hover{background:#25D366; color:var(--asphalt);}
 .form-note{font-size:12.5px; color:var(--concrete); margin-top:14px;}
+.form-field label .req{color:var(--accent);}
+/* Rückmeldung nach dem Absenden — leer, solange nichts zu sagen ist */
+.form-status{font-size:14px; margin-top:14px; color:var(--white);}
+.form-status:empty{display:none;}
+.form-status.is-warn{
+  color:var(--safety); border-left:3px solid var(--safety); padding-left:12px;
+}
+.form-note-warn{
+  color:var(--white); border-left:3px solid var(--safety);
+  padding-left:12px; font-size:14px;
+}
 @media (max-width:640px){ .form-row{grid-template-columns:1fr;} }
 
 /* PAGE HERO (statischer Innenseiten-Header) */

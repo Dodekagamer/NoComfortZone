@@ -36,7 +36,9 @@ const server = http.createServer((req, res) => {
   if (urlPath.endsWith('/')) urlPath += 'index.html';
   let filePath = path.join(ROOT, urlPath);
 
-  if (!filePath.startsWith(ROOT)) {
+  // Pfad muss innerhalb von _site/ liegen. Der Vergleich mit ROOT + Trenner
+  // verhindert, dass ein Geschwisterordner wie "_site-privat" durchrutscht.
+  if (filePath !== ROOT && !filePath.startsWith(ROOT + path.sep)) {
     res.writeHead(403);
     res.end('Forbidden');
     return;

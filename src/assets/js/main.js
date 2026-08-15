@@ -33,7 +33,14 @@ document.documentElement.classList.add('js');
 
   toggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    isOpen() ? closeMenu() : openMenu();
+    if (isOpen()) {
+      closeMenu();
+    } else {
+      openMenu();
+      // Fokus ins Menü, damit Tastatur-/Screenreader-Nutzer direkt drin sind
+      const first = nav.querySelector('a');
+      if (first) first.focus();
+    }
   });
 
   // Klick auf einen Menüpunkt schließt das Menü
@@ -148,32 +155,70 @@ document.documentElement.classList.add('js');
   }
 
   forms.forEach((form) => {
+    const status = form.querySelector('[data-form-status]');
+    const mail = form.getAttribute('data-mailto');
+
+    function say(message, kind) {
+      if (!status) return;
+      status.textContent = message;
+      status.className = 'form-status' + (kind ? ' is-' + kind : '');
+    }
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (!form.reportValidity()) return;
+      // novalidate im Markup -> wir lösen die Prüfung selbst aus, damit die
+      // Meldung erst nach dem Absenden erscheint und nicht beim Tippen.
+      if (!form.reportValidity()) {
+        say('Bitte fülle Name und E-Mail aus, dann kann es losgehen.', 'warn');
+        return;
+      }
       try {
         const { subject, body } = buildMessage(form);
+        say('Dein E-Mail-Programm sollte sich jetzt öffnen …');
         window.location.href =
-          `mailto:${form.getAttribute('data-mailto')}` +
-          `?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          `mailto:${mail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        // Öffnet sich nichts (kein Mailprogramm eingerichtet — auf dem Handy
+        // häufig), bleibt die Seite sichtbar. Dann den Weg per Hand anbieten.
+        window.setTimeout(() => {
+          if (!document.hidden) {
+            say(
+              'Falls sich kein E-Mail-Programm geöffnet hat: schreib uns direkt an ' +
+                mail +
+                ' — oder nutze den WhatsApp-Button.',
+              'warn'
+            );
+          }
+        }, 1500);
       } catch (err) {
         console.error('Anfrage konnte nicht vorbereitet werden:', err);
+        say('Das hat leider nicht geklappt. Schreib uns bitte direkt an ' + mail + '.', 'warn');
       }
     });
 
     const waBtn = form.querySelector('[data-whatsapp-trigger]');
     if (waBtn) {
       waBtn.addEventListener('click', () => {
+        if (!form.reportValidity()) {
+          say('Bitte fülle Name und E-Mail aus, dann kann es losgehen.', 'warn');
+          return;
+        }
         try {
           const { subject, body } = buildMessage(form);
           const text = `${subject}\n\n${body}`;
-          window.open(
+          const win = window.open(
             `https://wa.me/${form.getAttribute('data-whatsapp-number')}?text=${encodeURIComponent(text)}`,
             '_blank',
             'noopener'
           );
+          say(
+            win
+              ? 'WhatsApp wird geöffnet …'
+              : 'Dein Browser hat das Fenster blockiert — bitte Pop-ups erlauben oder per E-Mail schreiben.',
+            win ? null : 'warn'
+          );
         } catch (err) {
           console.error('WhatsApp-Anfrage konnte nicht vorbereitet werden:', err);
+          say('Das hat leider nicht geklappt. Schreib uns bitte direkt an ' + mail + '.', 'warn');
         }
       });
     }

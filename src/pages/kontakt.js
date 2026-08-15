@@ -1,5 +1,6 @@
 const { pageHero, inquiryForm } = require('../lib/components');
 const { site } = require('../lib/layout');
+const { esc, safeUrl } = require('../lib/escape');
 
 module.exports = {
   url: '/kontakt/',
@@ -18,13 +19,13 @@ ${pageHero(
     <div class="footer-grid">
       <div>
         <h3>Direkt erreichen</h3>
-        <a href="mailto:${site.contact.email}">${site.contact.email}</a>
-        <a href="tel:${site.contact.phoneHref}">${site.contact.phoneDisplay}</a>
-        <p>${site.contact.address}</p>
+        <a href="mailto:${esc(site.contact.email)}">${esc(site.contact.email)}</a>
+        <a href="tel:${esc(site.contact.phoneHref)}">${esc(site.contact.phoneDisplay)}</a>
+        <p>${esc(site.contact.address)}</p>
       </div>
       <div>
         <h3>Social</h3>
-        ${site.social.map((s) => `<a href="${s.url}">${s.label}${s.placeholder ? ' (bald)' : ''}</a>`).join('\n        ')}
+        ${site.social.map((s) => `<a href="${safeUrl(s.url)}">${esc(s.label)}${s.placeholder ? ' (bald)' : ''}</a>`).join('\n        ')}
       </div>
     </div>
     ${inquiryForm('form-kontakt', 'Allgemeine Anfrage', 'Allgemeine Anfrage', 'Schreib uns, wobei wir helfen können.', 'Deine Nachricht an uns')}

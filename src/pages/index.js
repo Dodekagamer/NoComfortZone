@@ -12,7 +12,7 @@ module.exports = {
     <div class="intro-sweep" id="introSweep"></div>
 
     <div class="intro-panel p1" id="p1">
-      <span class="eyebrow" style="margin-bottom:18px;">Unsere Mission</span>
+      <span class="eyebrow hero-eyebrow">Unsere Mission</span>
       <h2>Sport ist nicht<br>unser Ziel.</h2>
     </div>
 
@@ -25,7 +25,7 @@ module.exports = {
     </div>
 
     <div class="intro-panel final" id="p4">
-      <div class="wrap" style="padding:0;">
+      <div class="wrap wrap-flush">
         <div class="hero-tag">Karlsruhe · Draußen · Für alle</div>
         <h1>Wir bauen keine Sportgruppe.<br>Wir bauen <em>eine Bewegung.</em></h1>
         <p class="lead">Sport verbindet Menschen, stärkt Charakter, schafft Disziplin und verändert Leben. No Comfort Zone bringt Menschen zusammen — unabhängig von Alter, Herkunft oder Leistungsniveau. Draußen, mitten in der Gesellschaft.</p>

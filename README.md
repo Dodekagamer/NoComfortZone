@@ -41,9 +41,10 @@ Keine `npm install` nötig — es gibt keine externen Abhängigkeiten. Der Vorsc
 ## Sicherheit
 
 - **Keine externen Skripte.** Alles JavaScript kommt vom eigenen Server; die Scroll-Animation der Startseite ist eigener Code (kein GSAP/CDN mehr) — damit kein Supply-Chain-Risiko über Dritt-CDNs.
-- **Content-Security-Policy** als `<meta>` in `src/lib/layout.js`: `script-src 'self'`, `object-src 'none'`, `base-uri 'none'`, `form-action 'none'`. `frame-ancestors` fehlt bewusst — die Direktive wirkt nur als echter HTTP-Header, und GitHub Pages kann keine Header setzen. Wer Clickjacking-Schutz braucht, muss hinter einen Proxy/CDN mit Header-Kontrolle (z. B. Cloudflare) wechseln.
-- **Formulare** senden nichts an einen Server; Eingaben werden ausschließlich URL-encodiert in `mailto:`/`wa.me`-Links eingesetzt (getestet gegen CRLF- und Parameter-Injection).
-- **Externe Links** tragen durchgängig `rel="noopener"`.
+- **Content-Security-Policy** als `<meta>` in `src/lib/layout.js`: `default-src 'none'`, `script-src 'self'`, `style-src` ohne `'unsafe-inline'`, dazu `object-src`/`base-uri`/`form-action`/`frame-src` auf `'none'`. Damit die Policy so streng bleiben kann, enthält die Seite **keine Inline-Style-Attribute** — Layout-Abstände laufen über Utility-Klassen in `styles.css`. `frame-ancestors` fehlt bewusst: die Direktive wirkt nur als echter HTTP-Header, und GitHub Pages kann keine Header setzen. Wer Clickjacking-Schutz braucht, muss hinter einen Proxy/CDN mit Header-Kontrolle (z. B. Cloudflare) wechseln.
+- **Daten aus `site.json`/`pricing.json` werden HTML-escaped** (`src/lib/escape.js`). Ihr könnt dort beliebigen Text eintragen — `Müller & Sohn`, Anführungszeichen, spitze Klammern — ohne die Seite zu zerlegen oder Markup einzuschleusen. URLs laufen zusätzlich durch `safeUrl()`, das nur `http(s):`, `mailto:`, `tel:` und relative Pfade durchlässt (ein versehentliches `javascript:` wird zu `#`). Inhalte in `src/pages/` sind bewusst ausgenommen — das ist Code und darf Markup enthalten.
+- **Formulare** senden nichts an einen Server; Eingaben werden ausschließlich URL-encodiert in `mailto:`/`wa.me`-Links eingesetzt (getestet gegen CRLF- und Parameter-Injection). Längenbegrenzungen verhindern überlange URLs, die Browser stillschweigend abschneiden würden.
+- **Externe Links** tragen durchgängig `rel="noopener noreferrer"`.
 - **GitHub-Actions-Rechte** sind minimal (`contents:read`, `pages:write`, `id-token:write`). Die Actions sind auf Major-Tags (`@v4`) statt auf Commit-SHAs gepinnt — bei den offiziellen `actions/*` ein bewusst akzeptiertes Restrisiko; für maximale Härtung könnte man auf SHAs pinnen.
 
 ## Deployment
