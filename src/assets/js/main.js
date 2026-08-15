@@ -92,16 +92,21 @@ document.documentElement.classList.add('js');
 
   // Anteil der Gesamtstrecke, den jedes Panel sichtbar ist.
   const STOPS = [0, 0.3, 0.58, 0.82];
-  const FADE = 0.1; // Überblendbreite zwischen zwei Panels
+  const FADE = 0.12; // Überblendbreite zwischen zwei Panels
+
+  // Weiche Kurve statt linear: der Wechsel beginnt und endet sanft, wodurch
+  // die Sequenz ruhiger wirkt — besonders am Handy, wo pro Wischgeste ein
+  // größerer Teil der Strecke zurückgelegt wird.
+  const easeInOut = (t) => t * t * (3 - 2 * t);
 
   function opacityFor(index, progress) {
     const start = STOPS[index];
     const end = index < STOPS.length - 1 ? STOPS[index + 1] : Infinity;
     if (progress < start - FADE) return 0;
-    if (progress < start) return (progress - (start - FADE)) / FADE; // einblenden
+    if (progress < start) return easeInOut((progress - (start - FADE)) / FADE); // einblenden
     if (progress < end - FADE) return 1;
     if (end === Infinity) return 1;
-    return Math.max(0, 1 - (progress - (end - FADE)) / FADE); // ausblenden
+    return easeInOut(Math.max(0, 1 - (progress - (end - FADE)) / FADE)); // ausblenden
   }
 
   let ticking = false;

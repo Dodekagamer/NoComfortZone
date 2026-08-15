@@ -123,7 +123,7 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
    Headline + Buttons) sofort sichtbar und die Sektion nur eine Bildschirmhöhe
    hoch. Erst wenn JS läuft, setzt main.js `.js` auf <html> und schaltet auf
    die gescrollte Sequenz um. */
-.scroll-intro{position:relative; height:100vh;}
+.scroll-intro{position:relative; height:100vh; padding:0;}
 .js .scroll-intro{height:440vh;}
 .intro-pin{
   position:sticky; top:0; height:100vh; overflow:hidden;
@@ -181,7 +181,11 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 }
 .hero-tag::before{content:""; width:8px; height:8px; background:var(--safety); display:inline-block;}
 .scroll-cue{
-  position:absolute; bottom:36px; left:50%; transform:translateX(-50%); z-index:3;
+  /* Der gepinnte Bereich ist eine volle Bildschirmhöhe hoch, beginnt aber
+     unterhalb von Kopfzeile und Warnstreifen — dadurch ragt sein unteres Ende
+     zunächst aus dem Sichtfeld. Der Abstand hier gleicht das aus, damit der
+     Scroll-Hinweis schon vor dem ersten Scrollen zu sehen ist. */
+  position:absolute; bottom:120px; left:50%; transform:translateX(-50%); z-index:3;
   font-family:'Space Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
   color:var(--concrete); display:flex; flex-direction:column; align-items:center; gap:8px;
 }
@@ -192,9 +196,10 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
   .intro-panel.final .cta-row{justify-content:center; width:100%;}
   .intro-panel.final .cta-row .btn{flex:1 1 240px; text-align:center;}
   .intro-panel.final p.lead{font-size:16px; margin-bottom:28px;}
-  /* Handy: Story bleibt identisch, aber die Scroll-Distanz wird von 4,4 auf
-     ~2 Bildschirme gekürzt — sonst scrollt man ~3.700px bis zum ersten Button. */
-  .js .scroll-intro{height:200vh;}
+  /* Handy: Story bleibt identisch, die Scroll-Distanz wird nur leicht gekürzt.
+     440vh / 1,25 = 352vh — die Sequenz läuft damit 1,25x schneller als am
+     Desktop statt wie zuvor 2,2x, was sich am Handy zu hastig anfühlte. */
+  .js .scroll-intro{height:352vh;}
 }
 /* Ohne JS gibt es keine Sequenz -> Scroll-Hinweis wäre irreführend */
 .scroll-cue{display:none;}
