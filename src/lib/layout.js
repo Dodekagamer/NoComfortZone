@@ -39,6 +39,15 @@ function renderFooter() {
         <p>${esc(site.contact.address)}</p>
       </div>
       <div>
+        <h3>Folgen &amp; mitreden</h3>
+        ${site.social
+          .map((s) => `<a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.label)}</a>`)
+          .join('\n        ')}
+        ${site.groups
+          .map((g) => `<a href="${safeUrl(g.url)}" target="_blank" rel="noopener noreferrer">WhatsApp: ${esc(g.label)}</a>`)
+          .join('\n        ')}
+      </div>
+      <div>
         <h3>Navigation</h3>
         ${navLinks}
       </div>

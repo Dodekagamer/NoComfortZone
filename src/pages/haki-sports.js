@@ -1,4 +1,6 @@
 const { pageHero, step, priceCard, ctaBand } = require('../lib/components');
+const { site } = require('../lib/layout');
+const { safeUrl } = require('../lib/escape');
 const pricing = require('../lib/pricing.json');
 
 module.exports = {
@@ -52,6 +54,19 @@ ${pageHero(
     </div>
   </div>
 </section>
+
+${(() => {
+  const ig = site.social.find((s) => s.brand === 'haki');
+  return ig
+    ? `<section>
+  <div class="wrap">
+    <div class="callout">
+      <p><strong>Einblicke ins Coaching:</strong> Auf Instagram zeigt Haki Sports Trainingsausschnitte und Fortschritte aus dem 1:1-Coaching — <a href="${safeUrl(ig.url)}" target="_blank" rel="noopener noreferrer" class="inline-link">@haki.sports</a>.</p>
+    </div>
+  </div>
+</section>`
+    : '';
+})()}
 
 ${ctaBand('Bereit für individuelles Coaching?', 'Haki Sports anfragen', '/buchung/#haki-sports', '', 'Zurück zu No Comfort Zone', '/vision-werte/')}
 `

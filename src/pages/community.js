@@ -1,4 +1,6 @@
 const { pageHero, ctaBand } = require('../lib/components');
+const { site } = require('../lib/layout');
+const { esc, safeUrl } = require('../lib/escape');
 
 module.exports = {
   url: '/community/',
@@ -47,10 +49,47 @@ ${pageHero(
     </div>
     <div class="coming-soon">
       <span class="eyebrow">Kommende Events</span>
-      <p>Hier erscheinen bald gemeinsame Veranstaltungen, Challenges und Community-Treffen. Willst du informiert werden, sobald etwas ansteht?</p>
-      <div class="stack-top-sm">
-        <a href="/kontakt/" class="btn small">Auf dem Laufenden bleiben</a>
-      </div>
+      <p>Hier erscheinen bald gemeinsame Veranstaltungen, Challenges und Community-Treffen. Termine und kurzfristige Absprachen laufen bis dahin über unsere WhatsApp-Gruppen.</p>
+    </div>
+  </div>
+</section>
+
+<div class="hazard-strip thin"></div>
+
+<section id="kanaele">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Mitreden</span>
+      <h2>Unsere Kanäle</h2>
+      <p>Hier passiert der Alltag der Bewegung: Trainingstermine, Absprachen, Eindrücke. Der schnellste Weg, dabei zu sein.</p>
+    </div>
+    <div class="offer-grid">
+      ${site.groups
+        .map(
+          (g) => `<div class="offer-card">
+        <span class="tag">WhatsApp-Gruppe</span>
+        <h3>${esc(g.label)}</h3>
+        <p>${esc(g.note)}</p>
+        <p class="stack-top-sm"><a href="${safeUrl(g.url)}" class="btn small" target="_blank" rel="noopener noreferrer">Gruppe beitreten</a></p>
+      </div>`
+        )
+        .join('\n      ')}
+      ${site.social
+        .map(
+          (s) => `<div class="offer-card">
+        <span class="tag">${s.url.includes('youtube') ? 'YouTube' : 'Instagram'}</span>
+        <h3>${esc(s.label.replace(/^(Instagram|YouTube):\s*/, ''))}</h3>
+        <p>${
+          s.url.includes('youtube')
+            ? 'Videos von Sessions und Einblicke in die Bewegung.'
+            : s.brand === 'haki'
+              ? 'Einblicke ins 1:1-Coaching von Haki Sports.'
+              : 'Bilder und Momente aus dem Community-Training.'
+        }</p>
+        <p class="stack-top-sm"><a href="${safeUrl(s.url)}" class="btn small" target="_blank" rel="noopener noreferrer">Ansehen</a></p>
+      </div>`
+        )
+        .join('\n      ')}
     </div>
   </div>
 </section>

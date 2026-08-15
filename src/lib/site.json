@@ -21,9 +21,21 @@
     "vatStatus": "[Umsatzsteuer-Status folgt — z. B. Kleinunternehmer nach § 19 UStG oder USt-IdNr.]"
   },
   "social": [
-    { "label": "Instagram", "url": "#", "placeholder": true },
-    { "label": "TikTok", "url": "#", "placeholder": true },
-    { "label": "WhatsApp Community", "url": "#", "placeholder": true }
+    { "label": "Instagram: No Comfort Zone", "url": "https://www.instagram.com/nocomfort.zone/", "brand": "ncz" },
+    { "label": "Instagram: Haki Sports", "url": "https://www.instagram.com/haki.sports/", "brand": "haki" },
+    { "label": "YouTube", "url": "https://www.youtube.com/@accermann.session", "brand": "ncz" }
+  ],
+  "groups": [
+    {
+      "label": "No Comfort Zone",
+      "url": "https://chat.whatsapp.com/Fw5NQNIsNnm17VHEEMaYJb",
+      "note": "Die Hauptgruppe der Bewegung: Trainingstermine, Absprachen und Austausch."
+    },
+    {
+      "label": "Combat Zone",
+      "url": "https://chat.whatsapp.com/DPA4ygFCl15ILRdJcmw1ZC",
+      "note": "Eigene Gruppe für alle, die beim Combat-Zone-Training dabei sind."
+    }
   ],
   "nav": [
     { "label": "Home", "url": "/" },

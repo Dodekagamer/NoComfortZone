@@ -28,8 +28,16 @@ ${pageHero(
         <p>${esc(site.contact.address)}</p>
       </div>
       <div>
-        <h3>Social</h3>
-        ${site.social.map((s) => `<a href="${safeUrl(s.url)}">${esc(s.label)}${s.placeholder ? ' (bald)' : ''}</a>`).join('\n        ')}
+        <h3>Social Media</h3>
+        ${site.social
+          .map((s) => `<a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.label)}</a>`)
+          .join('\n        ')}
+      </div>
+      <div>
+        <h3>WhatsApp-Gruppen</h3>
+        ${site.groups
+          .map((g) => `<a href="${safeUrl(g.url)}" target="_blank" rel="noopener noreferrer">${esc(g.label)}</a>`)
+          .join('\n        ')}
       </div>
     </div>
     ${inquiryForm('form-kontakt', 'Allgemeine Anfrage', 'Allgemeine Anfrage', 'Schreib uns, wobei wir helfen können.', 'Deine Nachricht an uns')}
