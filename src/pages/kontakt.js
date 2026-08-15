@@ -15,7 +15,7 @@ ${pageHero(
 
 <section>
   <div class="wrap">
-    <div class="footer-grid" style="margin-bottom:50px;">
+    <div class="footer-grid">
       <div>
         <h3>Direkt erreichen</h3>
         <a href="mailto:${site.contact.email}">${site.contact.email}</a>

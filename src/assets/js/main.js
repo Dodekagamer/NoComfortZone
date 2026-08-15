@@ -1,8 +1,13 @@
 /* No Comfort Zone — main.js
-   1) Mobile-Navigation (Toggle-Button, wird für alle Seiten gebraucht)
-   2) GSAP-Scrollytelling-Hero (nur aktiv, wenn .scroll-intro im DOM ist = Startseite)
-   3) Anfrage-/Buchungsformulare -> mailto: und WhatsApp (wa.me), kein Backend
+   1) Progressive Enhancement: markiert <html> als "js", damit CSS die
+      Scroll-Sequenz aktivieren kann. Ohne JS bleibt der fertige Hero sichtbar.
+   2) Mobile-Navigation (Toggle, Scroll-Lock, Schließen bei Klick daneben)
+   3) Scroll-Sequenz des Heros — eigener Code, keine externe Bibliothek
+   4) Anfrage-/Buchungsformulare -> mailto: und WhatsApp (wa.me), kein Backend
 */
+
+// (1) so früh wie möglich, damit es kein Aufblitzen gibt
+document.documentElement.classList.add('js');
 
 (function initMobileNav() {
   const header = document.getElementById('siteHeader');
@@ -12,81 +17,114 @@
 
   function closeMenu() {
     header.removeAttribute('data-open');
+    document.body.classList.remove('nav-open');
     toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Menü öffnen');
   }
   function openMenu() {
     header.setAttribute('data-open', 'true');
+    document.body.classList.add('nav-open');
     toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Menü schließen');
+  }
+  function isOpen() {
+    return header.getAttribute('data-open') === 'true';
   }
 
-  toggle.addEventListener('click', () => {
-    if (header.getAttribute('data-open') === 'true') closeMenu();
-    else openMenu();
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    isOpen() ? closeMenu() : openMenu();
   });
+
+  // Klick auf einen Menüpunkt schließt das Menü
   nav.addEventListener('click', (e) => {
-    if (e.target.tagName === 'A') closeMenu();
+    if (e.target.closest('a')) closeMenu();
   });
+
+  // Klick/Tap außerhalb des Headers schließt das Menü
+  document.addEventListener('click', (e) => {
+    if (isOpen() && !header.contains(e.target)) closeMenu();
+  });
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenu();
+    if (e.key === 'Escape' && isOpen()) {
+      closeMenu();
+      toggle.focus();
+    }
+  });
+
+  // Beim Wechsel auf Desktop-Breite aufräumen (sonst bliebe der Scroll-Lock)
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 980 && isOpen()) closeMenu();
   });
 })();
 
-(function initScrollytellingHero() {
-  const introSection = document.querySelector('.scroll-intro');
-  if (!introSection) return; // nur auf der Startseite vorhanden
+/**
+ * Hero-Scroll-Sequenz (nur auf der Startseite).
+ * Ersetzt die frühere GSAP/ScrollTrigger-Einbindung durch eigenen Code:
+ * kein externes Skript, kein Supply-Chain-Risiko, keine Verbindung zu Dritten.
+ * Ablauf unverändert: Panel 1 -> 2 -> 3 -> finaler Hero, dazu der Warnstreifen-
+ * Sweep und der ausblendende Scroll-Hinweis.
+ */
+(function initHeroSequence() {
+  const section = document.querySelector('.scroll-intro');
+  if (!section) return;
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const p1 = document.getElementById('p1');
-  const p2 = document.getElementById('p2');
-  const p3 = document.getElementById('p3');
-  const p4 = document.getElementById('p4');
+  const panels = ['p1', 'p2', 'p3', 'p4'].map((id) => document.getElementById(id));
+  if (panels.some((p) => !p)) return;
+
   const sweep = document.getElementById('introSweep');
   const cue = document.getElementById('scrollCue');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (prefersReduced || typeof gsap === 'undefined') {
-    [p1, p2, p3].forEach(p => { if (p) p.style.display = 'none'; });
-    if (p4) p4.style.opacity = 1;
-    if (cue) cue.style.display = 'none';
-    introSection.style.height = '100vh';
+  // Reduzierte Bewegung: Sequenz überspringen, Endzustand direkt zeigen.
+  if (prefersReduced) {
+    document.documentElement.classList.remove('js');
     return;
   }
 
-  gsap.registerPlugin(ScrollTrigger);
+  // Anteil der Gesamtstrecke, den jedes Panel sichtbar ist.
+  const STOPS = [0, 0.3, 0.58, 0.82];
+  const FADE = 0.1; // Überblendbreite zwischen zwei Panels
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '.scroll-intro',
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 0.6
+  function opacityFor(index, progress) {
+    const start = STOPS[index];
+    const end = index < STOPS.length - 1 ? STOPS[index + 1] : Infinity;
+    if (progress < start - FADE) return 0;
+    if (progress < start) return (progress - (start - FADE)) / FADE; // einblenden
+    if (progress < end - FADE) return 1;
+    if (end === Infinity) return 1;
+    return Math.max(0, 1 - (progress - (end - FADE)) / FADE); // ausblenden
+  }
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const rect = section.getBoundingClientRect();
+    const scrollable = rect.height - window.innerHeight;
+    const progress = scrollable <= 0 ? 1 : Math.min(1, Math.max(0, -rect.top / scrollable));
+
+    panels.forEach((panel, i) => {
+      const o = opacityFor(i, progress);
+      panel.style.opacity = o;
+      // leichte Vertikalbewegung wie zuvor
+      panel.style.transform = `translateY(${(1 - o) * (progress > STOPS[i] ? -24 : 24)}px)`;
+    });
+
+    if (sweep) sweep.style.transform = `translateX(${-120 + progress * 380}%)`;
+    if (cue) cue.style.opacity = Math.max(0, 1 - progress * 12);
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
     }
-  });
+  }
 
-  tl.to(p1, { opacity: 0, y: -30, duration: 1 }, 1)
-    .fromTo(p2, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1 }, 1)
-    .to(p2, { opacity: 0, y: -30, duration: 1 }, 2.4)
-    .fromTo(p3, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1 }, 2.4)
-    .to(p3, { opacity: 0, y: -30, duration: 1 }, 3.8)
-    .fromTo(p4, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.2 }, 3.8);
-
-  gsap.to(sweep, {
-    xPercent: 260,
-    ease: 'none',
-    scrollTrigger: {
-      trigger: '.scroll-intro',
-      start: 'top top',
-      end: 'bottom bottom',
-      scrub: 0.6
-    }
-  });
-
-  ScrollTrigger.create({
-    trigger: '.scroll-intro',
-    start: 'top top',
-    end: '+=80',
-    scrub: true,
-    onUpdate: self => { if (cue) cue.style.opacity = 1 - self.progress; }
-  });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  update();
 })();
 
 (function initInquiryForms() {
@@ -96,25 +134,16 @@
   function buildMessage(form) {
     const type = form.getAttribute('data-form-type');
     const data = new FormData(form);
-    const name = (data.get('name') || '').toString().trim();
-    const email = (data.get('email') || '').toString().trim();
-    const phone = (data.get('phone') || '').toString().trim();
-    const preferred = (data.get('preferred') || '').toString().trim();
-    const message = (data.get('message') || '').toString().trim();
-
-    const lines = [
-      `Anfrage: ${type}`,
-      `Name: ${name}`,
-      `E-Mail: ${email}`
-    ];
-    if (phone) lines.push(`Telefon: ${phone}`);
-    if (preferred) lines.push(`Wunschtermin: ${preferred}`);
-    if (message) lines.push('', 'Nachricht:', message);
+    const value = (key) => (data.get(key) || '').toString().trim();
+    const name = value('name');
+    const lines = [`Anfrage: ${type}`, `Name: ${name}`, `E-Mail: ${value('email')}`];
+    if (value('phone')) lines.push(`Telefon: ${value('phone')}`);
+    if (value('preferred')) lines.push(`Wunschtermin: ${value('preferred')}`);
+    if (value('message')) lines.push('', 'Nachricht:', value('message'));
 
     return {
       subject: `[Anfrage: ${type}]${name ? ' ' + name : ''}`,
-      body: lines.join('\n'),
-      name, email
+      body: lines.join('\n')
     };
   }
 
@@ -122,21 +151,30 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!form.reportValidity()) return;
-
-      const to = form.getAttribute('data-mailto');
-      const { subject, body } = buildMessage(form);
-      const mailtoUrl = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoUrl;
+      try {
+        const { subject, body } = buildMessage(form);
+        window.location.href =
+          `mailto:${form.getAttribute('data-mailto')}` +
+          `?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      } catch (err) {
+        console.error('Anfrage konnte nicht vorbereitet werden:', err);
+      }
     });
 
     const waBtn = form.querySelector('[data-whatsapp-trigger]');
     if (waBtn) {
       waBtn.addEventListener('click', () => {
-        const number = form.getAttribute('data-whatsapp-number');
-        const { subject, body } = buildMessage(form);
-        const text = `${subject}\n\n${body}`;
-        const waUrl = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
-        window.open(waUrl, '_blank', 'noopener');
+        try {
+          const { subject, body } = buildMessage(form);
+          const text = `${subject}\n\n${body}`;
+          window.open(
+            `https://wa.me/${form.getAttribute('data-whatsapp-number')}?text=${encodeURIComponent(text)}`,
+            '_blank',
+            'noopener'
+          );
+        } catch (err) {
+          console.error('WhatsApp-Anfrage konnte nicht vorbereitet werden:', err);
+        }
       });
     }
   });

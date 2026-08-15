@@ -48,7 +48,7 @@ ${pageHero(
     <div class="coming-soon">
       <span class="eyebrow">Kommende Events</span>
       <p>Hier erscheinen bald gemeinsame Veranstaltungen, Challenges und Community-Treffen. Willst du informiert werden, sobald etwas ansteht?</p>
-      <div style="margin-top:20px;">
+      <div class="stack-top-sm">
         <a href="/kontakt/" class="btn small">Auf dem Laufenden bleiben</a>
       </div>
     </div>

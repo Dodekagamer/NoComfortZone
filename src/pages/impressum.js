@@ -35,7 +35,7 @@ module.exports = {
     <h2>Streitschlichtung</h2>
     <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr/</a>. Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
 
-    <p style="margin-top:36px; font-size:13px;">Hinweis: Dieses Impressum ist rechtlich vollständig strukturiert (§ 5 TMG / § 18 Abs. 2 MStV), es fehlen aber noch Name, Anschrift und der Umsatzsteuer-Status der verantwortlichen Person (siehe Platzhalter oben, direkt in <code>src/lib/site.json</code> unter <code>legal</code> eintragbar). Vor dem Live-Betrieb empfehlen wir zusätzlich eine kurze anwaltliche Prüfung, insbesondere solange noch kein Gewerbe angemeldet ist.</p>
+    <p class="note-small">Hinweis: Dieses Impressum ist rechtlich vollständig strukturiert (§ 5 TMG / § 18 Abs. 2 MStV), es fehlen aber noch Name, Anschrift und der Umsatzsteuer-Status der verantwortlichen Person (siehe Platzhalter oben, direkt in <code>src/lib/site.json</code> unter <code>legal</code> eintragbar). Vor dem Live-Betrieb empfehlen wir zusätzlich eine kurze anwaltliche Prüfung, insbesondere solange noch kein Gewerbe angemeldet ist.</p>
   </div>
 </section>
 `

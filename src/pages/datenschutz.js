@@ -27,11 +27,8 @@ module.exports = {
     <h2>Externe Schriftarten (Google Fonts)</h2>
     <p>Diese Website bindet aktuell Schriftarten (Anton, Space Mono, Inter) über Google Fonts ein, die beim Aufruf der Seite direkt von Servern von Google (fonts.googleapis.com, fonts.gstatic.com) geladen werden. Dabei wird deine IP-Adresse an Google übertragen; Google kann technische Daten wie IP-Adresse, Browsereinstellungen und Aufrufzeitpunkt erheben. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer einheitlichen, performanten Darstellung der Website). Mehr Informationen: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Datenschutzerklärung von Google</a>. <strong>Wir planen kurzfristig die Umstellung auf lokal auf unserem eigenen Server gehostete Schriftarten</strong>, wodurch diese Datenübertragung an Google vollständig entfällt — dieser Abschnitt wird dann entsprechend aktualisiert bzw. entfernt.</p>
 
-    <h2>Externes Animations-Skript (GSAP)</h2>
-    <p>Für die animierte Startseiten-Ansicht wird das JavaScript-Framework GSAP von einem externen Server (cdnjs.cloudflare.com, Betreiber: Cloudflare, Inc.) geladen. Auch hierbei wird deine IP-Adresse an den externen Anbieter übertragen. Rechtsgrundlage ist ebenfalls Art. 6 Abs. 1 lit. f DSGVO. Auch dieses Skript soll perspektivisch lokal eingebunden werden, um die externe Verbindung zu vermeiden.</p>
-
     <h2>Cookies &amp; Tracking</h2>
-    <p>Diese Website setzt keine eigenen Cookies und kein eigenes Tracking (z. B. Analytics) ein.</p>
+    <p>Diese Website setzt keine Cookies und kein Tracking (z. B. Analytics, Reichweitenmessung) ein. Alle Skripte werden von unserem eigenen Server ausgeliefert; außer den oben genannten Schriftarten werden keine Inhalte von Drittanbietern nachgeladen.</p>
 
     <h2>Speicherdauer</h2>
     <p>Daten aus Kontakt-/Buchungsformularen werden nicht auf dieser Website gespeichert (siehe oben). Technische Zugriffsdaten (Server-Logfiles) werden nach den Vorgaben des Hosting-Anbieters GitHub verarbeitet und automatisiert gelöscht bzw. anonymisiert.</p>
@@ -48,7 +45,7 @@ module.exports = {
     <h2>Änderungen dieser Datenschutzerklärung</h2>
     <p>Wir passen diese Datenschutzerklärung an, sobald sich die Datenverarbeitung auf dieser Website ändert (z. B. bei Umstellung auf lokal gehostete Schriftarten/Skripte oder Einführung neuer Funktionen wie Online-Zahlung oder eines Mitgliederbereichs).</p>
 
-    <p style="margin-top:36px; font-size:13px;">Hinweis: Diese Erklärung ist inhaltlich vollständig strukturiert, es fehlen aber noch Name und Anschrift der verantwortlichen Person (Platzhalter oben, direkt in <code>src/lib/site.json</code> unter <code>legal</code> eintragbar). Vor dem Live-Betrieb empfehlen wir zusätzlich eine kurze rechtliche Prüfung.</p>
+    <p class="note-small">Hinweis: Diese Erklärung ist inhaltlich vollständig strukturiert, es fehlen aber noch Name und Anschrift der verantwortlichen Person (Platzhalter oben, direkt in <code>src/lib/site.json</code> unter <code>legal</code> eintragbar). Vor dem Live-Betrieb empfehlen wir zusätzlich eine kurze rechtliche Prüfung.</p>
   </div>
 </section>
 `

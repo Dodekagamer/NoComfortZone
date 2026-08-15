@@ -33,10 +33,18 @@ Jede Datei in `src/pages/` exportiert `{ url, title, description, content }` —
 
 ```bash
 node build.js     # baut die Website nach _site/
-node serve.js      # startet einen lokalen Vorschau-Server auf http://localhost:8080
+node serve.js      # startet einen lokalen Vorschau-Server auf http://localhost:8080/NoComfortZone/
 ```
 
-Keine `npm install` nötig — es gibt keine externen Abhängigkeiten.
+Keine `npm install` nötig — es gibt keine externen Abhängigkeiten. Der Vorschau-Server akzeptiert sowohl `/` als auch den echten Live-Pfad `/NoComfortZone/`.
+
+## Sicherheit
+
+- **Keine externen Skripte.** Alles JavaScript kommt vom eigenen Server; die Scroll-Animation der Startseite ist eigener Code (kein GSAP/CDN mehr) — damit kein Supply-Chain-Risiko über Dritt-CDNs.
+- **Content-Security-Policy** als `<meta>` in `src/lib/layout.js`: `script-src 'self'`, `object-src 'none'`, `base-uri 'none'`, `form-action 'none'`. `frame-ancestors` fehlt bewusst — die Direktive wirkt nur als echter HTTP-Header, und GitHub Pages kann keine Header setzen. Wer Clickjacking-Schutz braucht, muss hinter einen Proxy/CDN mit Header-Kontrolle (z. B. Cloudflare) wechseln.
+- **Formulare** senden nichts an einen Server; Eingaben werden ausschließlich URL-encodiert in `mailto:`/`wa.me`-Links eingesetzt (getestet gegen CRLF- und Parameter-Injection).
+- **Externe Links** tragen durchgängig `rel="noopener"`.
+- **GitHub-Actions-Rechte** sind minimal (`contents:read`, `pages:write`, `id-token:write`). Die Actions sind auf Major-Tags (`@v4`) statt auf Commit-SHAs gepinnt — bei den offiziellen `actions/*` ein bewusst akzeptiertes Restrisiko; für maximale Härtung könnte man auf SHAs pinnen.
 
 ## Deployment
 
@@ -52,9 +60,33 @@ GitHub Pages liefert dieses Repo (kein `<owner>.github.io`-Repo, keine eigene Do
 - **Impressum / Datenschutz** (`src/pages/impressum.js`, `datenschutz.js`): rechtlich vollständig strukturiert (§ 5 TMG / DSGVO), es fehlen aber noch **Name, Anschrift und USt-Status** der verantwortlichen Person — direkt in `src/lib/site.json` unter `legal` eintragen (`responsibleName`, `street`, `postalCode`, `vatStatus`). Vor dem echten Live-Betrieb zusätzlich kurz rechtlich prüfen lassen, insbesondere solange noch kein Gewerbe angemeldet ist.
 - **Formulare**: Buchungs-/Kontaktformulare senden nicht an ein Backend, sondern öffnen eine vorausgefüllte E-Mail (`mailto:`) oder WhatsApp-Nachricht (`wa.me`). Kontaktdaten in `src/lib/site.json` pflegen.
 
-## Fonts & Skripte lokal einbinden (vorbereitet, noch nicht ausgeführt)
+## Analytics / Besucherzahlen (vorbereitet, bewusst nicht aktiviert)
 
-Die Website lädt aktuell die Schriftarten (Anton, Space Mono, Inter) von Google Fonts und das Animations-Framework GSAP von cdnjs.cloudflare.com — beides wird in `datenschutz.js` korrekt offengelegt, ist aber ein bekanntes Abmahnrisiko (Google Fonts) und macht die Seite von externen Servern abhängig. Empfehlung: lokal einbinden. Das konnte in der Entwicklungsumgebung, in der diese Seite gebaut wurde, nicht automatisch erledigt werden (kein Netzwerkzugriff auf `fonts.gstatic.com`/`cdnjs.cloudflare.com`) — daher hier die fertige Anleitung zum Nachziehen:
+Die Seite erhebt **keine** Daten, und GitHub Pages stellt euch keine Server-Logs bereit — ihr habt aktuell also keine Zahlen zu Besuchern. Wenn ihr das ändern wollt, ist eine cookielose, EU-gehostete Lösung der unkomplizierteste Weg (kein Cookie-Banner nötig, sofern keine Endgeräte-Daten gespeichert werden):
+
+- **GoatCounter** (`goatcounter.com`, kostenlos für nicht-kommerzielle Nutzung) oder
+- **Umami** / **Plausible** (selbst hostbar oder als EU-Cloud)
+
+Einbindung in `src/lib/layout.js` direkt vor `</body>`, Beispiel GoatCounter:
+
+```html
+<script data-goatcounter="https://EUERNAME.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+```
+
+Dann zusätzlich nötig:
+1. **CSP erweitern** (ebenfalls `layout.js`): `script-src 'self' https://gc.zgo.at;` und `connect-src https://EUERNAME.goatcounter.com;` — sonst blockiert die Content-Security-Policy das Skript.
+2. **Datenschutzerklärung ergänzen** (`src/pages/datenschutz.js`) — den Abschnitt „Cookies & Tracking" ersetzen durch:
+
+   > **Reichweitenmessung:** Wir nutzen [Anbieter] zur anonymen Reichweitenmessung. Dabei werden keine Cookies gesetzt und keine personenbezogenen Profile gebildet; die IP-Adresse wird ausschließlich anonymisiert verarbeitet, um Besuche zu zählen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an statistischer Auswertung der Reichweite). Serverstandort: [Land].
+
+3. **Rechtlich prüfen lassen:** § 25 TTDSG verlangt eine Einwilligung, sobald Informationen auf dem Endgerät gespeichert oder ausgelesen werden. Rein serverseitiges, cookieloses Zählen fällt nach verbreiteter Auslegung nicht darunter — verlasst euch darauf aber nicht ungeprüft, wenn ihr ein Tool mit LocalStorage/Cookies wählt.
+
+## Fonts lokal einbinden (vorbereitet, noch nicht ausgeführt)
+
+Die Website lädt die Schriftarten (Anton, Space Mono, Inter) von Google Fonts — offengelegt in `datenschutz.js`, aber in Deutschland ein bekanntes Abmahnrisiko. Empfehlung: lokal einbinden. Das konnte in der Entwicklungsumgebung, in der diese Seite gebaut wurde, nicht automatisch erledigt werden (kein Netzwerkzugriff auf `fonts.gstatic.com`) — daher hier die fertige Anleitung zum Nachziehen.
+
+> GSAP wird **nicht mehr** benötigt: die Scroll-Animation der Startseite läuft seit dem Mobile-Update mit eigenem Code in `src/assets/js/main.js`, ohne externe Bibliothek.
 
 1. **Schriftdateien herunterladen** (als `.woff2`) und in `src/assets/fonts/` ablegen:
    - Anton (400)
@@ -63,27 +95,23 @@ Die Website lädt aktuell die Schriftarten (Anton, Space Mono, Inter) von Google
 
    Am einfachsten über [google-webfonts-helper](https://gwfh.mranftl.com/fonts) — dort die jeweilige Schriftart, die genannten Schnitte und "modern" (woff2) auswählen und herunterladen.
 
-2. **GSAP-Dateien herunterladen** (Version 3.12.5, passend zum aktuell verlinkten CDN) und ablegen unter:
-   - `src/assets/js/vendor/gsap.min.js`
-   - `src/assets/js/vendor/ScrollTrigger.min.js`
-
-   Quelle: [gsap.com/install](https://gsap.com/install) oder `https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js` bzw. `.../ScrollTrigger.min.js` direkt herunterladen.
-
-3. **In `src/assets/css/styles.css`** ein `@font-face`-Set für jede Datei ergänzen (oben in der Datei, vor `:root`), z. B.:
+2. **In `src/assets/css/styles.css`** ein `@font-face`-Set für jede Datei ergänzen (oben in der Datei, vor `:root`), z. B.:
    ```css
-   @font-face { font-family:'Anton'; src:url('/assets/fonts/anton-v25-latin-regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
+   @font-face { font-family:'Anton'; src:url('../fonts/anton-v25-latin-regular.woff2') format('woff2'); font-weight:400; font-display:swap; }
    /* ... eine @font-face-Regel pro Schriftschnitt */
    ```
+   Relative Pfade (`../fonts/…`) verwenden — die funktionieren unabhängig vom Base-Path.
 
-4. **In `src/lib/layout.js`** die drei Google-Fonts-`<link>`-Tags (`preconnect` ×2 + `stylesheet`) entfernen — die `@font-face`-Regeln aus Schritt 3 übernehmen das jetzt.
+3. **In `src/lib/layout.js`** die drei Google-Fonts-`<link>`-Tags (`preconnect` ×2 + `stylesheet`) entfernen — die `@font-face`-Regeln aus Schritt 2 übernehmen das jetzt.
 
-5. **In `src/lib/layout.js`** die beiden `<script src="https://cdnjs...">`-Tags ersetzen durch:
-   ```html
-   <script src="/assets/js/vendor/gsap.min.js"></script>
-   <script src="/assets/js/vendor/ScrollTrigger.min.js"></script>
+4. **CSP in `src/lib/layout.js` verschärfen**: `style-src` und `font-src` brauchen die Google-Domains dann nicht mehr:
+   ```
+   default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'
    ```
 
-6. **In `src/pages/datenschutz.js`** die Abschnitte "Externe Schriftarten (Google Fonts)" und "Externes Animations-Skript (GSAP)" entfernen bzw. durch einen kurzen Satz ersetzen, dass Schriftarten und Skripte lokal ausgeliefert werden und keine Verbindung zu Drittservern mehr besteht.
+5. **In `src/pages/datenschutz.js`** den Abschnitt „Externe Schriftarten (Google Fonts)" entfernen — danach lädt die Seite nichts mehr von Dritten.
+
+6. `node build.js && node serve.js` und optisch prüfen, dass alle Schriften weiterhin korrekt aussehen.
 
 7. `node build.js` neu bauen und visuell prüfen, dass alle Fonts/Animationen weiterhin korrekt aussehen.
 

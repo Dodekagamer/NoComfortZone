@@ -33,7 +33,7 @@ ${pageHero(
       <p>Du kennst uns schon oder willst direkt einsteigen? Hier kannst du deine Mitgliedschaft anfragen.</p>
     </div>
     ${inquiryForm('form-mitgliedschaft', 'Mitgliedschaft', 'Mitgliedschaft anfragen', 'Sag uns, welche Mitgliedschaft dich interessiert (z. B. Community oder Familie).', 'z. B. Interesse an Community-Mitgliedschaft')}
-    <p class="form-note" style="margin-top:16px;">Details zu Leistungen & Preisen: <a href="/mitgliedschaft/" style="text-decoration:underline; text-decoration-color:var(--accent);">Mitgliedschaft & Preise</a></p>
+    <p class="form-note stack-top-sm">Details zu Leistungen & Preisen: <a href="/mitgliedschaft/" class="inline-link">Mitgliedschaft & Preise</a></p>
   </div>
 </section>
 
@@ -42,9 +42,9 @@ ${pageHero(
 <section class="theme-haki-section" id="haki-sports">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow" style="color:var(--safety);">Haki Sports · 1:1 Coaching</span>
+      <span class="eyebrow">Haki Sports · 1:1 Coaching</span>
       <h2>Haki Sports buchen</h2>
-      <p>Professionelles Personal Training, individuell auf dich zugeschnitten. Details zum Angebot: <a href="/haki-sports/" style="text-decoration:underline;">Haki Sports ansehen</a>.</p>
+      <p>Professionelles Personal Training, individuell auf dich zugeschnitten. Details zum Angebot: <a href="/haki-sports/" class="inline-link">Haki Sports ansehen</a>.</p>
     </div>
     ${inquiryForm('form-haki', 'Haki Sports Buchung', 'Haki Sports anfragen', 'Beschreibe kurz dein Ziel (z. B. Kraftaufbau, Gewichtsreduktion, Wettkampfvorbereitung) und deine bevorzugten Zeiten.', 'z. B. Ziel: Kraftaufbau, 2x pro Woche')}
   </div>
