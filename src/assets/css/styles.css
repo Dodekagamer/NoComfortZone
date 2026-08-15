@@ -93,8 +93,11 @@ header{
   position:sticky; top:0; z-index:50;
   background:rgba(21,22,26,0.92);
   backdrop-filter:blur(6px);
-  border-bottom:1px solid var(--line);
 }
+/* Startseite: die Kopfzeile schwebt über dem Hero, statt ihn nach unten zu
+   schieben. Sonst würde das Bild erst rund 80px mitscrollen, bevor es
+   einrastet — man sieht das als kurzes Rutschen vor dem Animationsstart. */
+body.home header{position:fixed; top:0; left:0; right:0;}
 .navbar{
   display:flex; align-items:center; justify-content:space-between;
   padding:12px 0;
@@ -137,11 +140,11 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
     image-set(url('../img/hero-bg.webp') type('image/webp'),
               url('../img/hero-bg.jpg') type('image/jpeg')) center center / cover no-repeat;
 }
-/* dvh = sichtbare Höhe ohne Browser-Adressleiste (verhindert Springen am Handy) */
-@supports (height:100dvh){
-  .scroll-intro{height:100dvh;}
-  .intro-pin{height:100dvh;}
-}
+/* Bewusst 100vh und NICHT 100dvh:
+   dvh ist die *dynamische* Viewport-Höhe und ändert sich am Handy laufend,
+   während die Adressleiste ein- und ausblendet. Weil das Hintergrundbild mit
+   `cover` skaliert, rechnet der Browser es bei jeder dieser Änderungen neu —
+   sichtbar als Rein- und Rauszoomen beim Scrollen. vh bleibt konstant. */
 .intro-sweep{
   position:absolute; top:0; left:-20%; width:60%; height:100%;
   background: repeating-linear-gradient(-45deg, var(--accent) 0 22px, transparent 22px 44px);
@@ -370,8 +373,10 @@ footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr 1fr;}
 .intro-panel h1, .intro-panel p.lead, .intro-panel .cta-row{max-width:100%;}
 .pricing-grid > *, .offer-grid > *, .quickfacts-grid > *, .pillar-grid > *{min-width:0;}
 
-/* Sprungziele nicht unter der klebenden Kopfzeile verstecken (2.4.11) */
-:target, [id]{scroll-margin-top:96px;}
+/* Sprungziele nicht unter der klebenden Kopfzeile verstecken (2.4.11).
+   Muss über der höchsten Kopfzeile liegen (Navigationsleiste + Warnstreifen,
+   am Desktop zusammen 110px). */
+:target, [id]{scroll-margin-top:124px;}
 
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto;}

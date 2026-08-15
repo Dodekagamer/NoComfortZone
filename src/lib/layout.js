@@ -125,8 +125,8 @@ ${structuredData({ url, title: pageTitle })}
       <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Menü öffnen">☰</button>
     </div>
   </div>
+  <div class="hazard-strip"></div>
 </header>
-<div class="hazard-strip"></div>
 
 <main id="top">
 ${content}

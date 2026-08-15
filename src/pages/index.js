@@ -5,6 +5,7 @@ module.exports = {
   title: 'No Comfort Zone — Wir bauen keine Sportgruppe. Wir bauen eine Bewegung.',
   description:
     'No Comfort Zone Karlsruhe: Sport, Gemeinschaft und persönliche Entwicklung. Community-Training und professionelles 1:1 Coaching mit Haki Sports — draußen, mitten in der Gesellschaft.',
+  bodyClass: 'home',
   content: () => `
 <!-- SCROLL INTRO: gepinnte Hero-Sequenz, wechselt beim Scrollen -->
 <section class="scroll-intro" id="vision">
