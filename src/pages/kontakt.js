@@ -16,6 +16,10 @@ ${pageHero(
 
 <section>
   <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Direkter Draht</span>
+      <h2>So erreichst du uns</h2>
+    </div>
     <div class="footer-grid">
       <div>
         <h3>Direkt erreichen</h3>

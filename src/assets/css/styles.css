@@ -15,6 +15,7 @@
   --safety:#ffc738;
   --white:#f5f3ed;
   --line: rgba(245,243,237,0.14);
+  --field-line:#6e6a61;              /* 3,4:1 auf --asphalt (WCAG 1.4.11) */
   --maxw: 1180px;
   --accent: var(--hazard);
   --accent-dim: var(--hazard-dim);
@@ -244,10 +245,17 @@ section{padding:100px 0;}
 }
 .audience-row .row-cta:hover{color:var(--white);}
 
-/* COMMUNITY / TESTIMONIAL STRIP */
+/* COMMUNITY / TESTIMONIAL STRIP
+   Heller Abschnitt: die dunklen Palettenfarben (--concrete, --hazard-dim)
+   erreichen auf hellem Grund die 4,5:1 nach WCAG 1.4.3 nicht. Deshalb hier
+   eigene, geprüfte Werte statt der Standardfarben. */
+/* Hinweis: --accent wird hier bewusst NICHT umdefiniert — sonst bekäme der
+   ausgefüllte Button dunklen Text auf dunklem Orange (nur 2,7:1). */
 .community{background:var(--paper); color:var(--asphalt);}
-.community .eyebrow{color:var(--hazard-dim);}
+.community .eyebrow{color:#a8330a;}            /* 5,1:1 auf --paper */
 .community h2{color:var(--asphalt);}
+.community .section-head p,
+.community p{color:#4a4438;}                    /* 7,5:1 auf --paper */
 .testimonials{display:grid; grid-template-columns:repeat(3, 1fr); gap:28px; margin-top:20px;}
 .t-card{background:var(--white); border:1px solid rgba(21,22,26,0.12); padding:28px 26px;}
 .t-card p.quote{font-size:16px; margin-bottom:18px;}
@@ -341,7 +349,21 @@ footer{padding:80px 0 40px;}
 @media (max-width:380px){
   .logo{font-size:16px;}
   .wrap{padding:0 16px;}
+  /* WCAG 1.4.10 (Reflow): bis 320px darf nichts seitlich überstehen.
+     Die Anton-Headline und der Preis sind die einzigen Elemente, deren
+     Mindestbreite sonst über die Bildschirmbreite hinausgeht. */
+  .intro-panel.final h1{font-size:30px;}
+  .price{font-size:30px;}
+  .price .unit{display:block; margin-left:0;}
+  .form{padding:20px 14px;}
 }
+/* Kein Kind eines Panels/Karte darf breiter werden als sein Container */
+.intro-panel > *, .intro-panel .wrap-flush,
+.intro-panel h1, .intro-panel p.lead, .intro-panel .cta-row{max-width:100%;}
+.pricing-grid > *, .offer-grid > *, .quickfacts-grid > *, .pillar-grid > *{min-width:0;}
+
+/* Sprungziele nicht unter der klebenden Kopfzeile verstecken (2.4.11) */
+:target, [id]{scroll-margin-top:96px;}
 
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto;}
@@ -423,13 +445,19 @@ footer{padding:80px 0 40px;}
 .form-field{display:flex; flex-direction:column; gap:6px; margin-bottom:16px;}
 .form-field label{font-family:'Space Mono', monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--concrete);}
 .form-field input, .form-field textarea, .form-field select{
-  background:var(--asphalt); border:1px solid var(--line); color:var(--white);
+  /* --line (sehr transparent) reicht für Zierlinien, aber Bedienelemente
+     brauchen nach WCAG 1.4.11 mindestens 3:1 — daher ein eigener Randwert. */
+  background:var(--asphalt); border:1px solid var(--field-line); color:var(--white);
   padding:13px 14px; font-family:'Inter', sans-serif; width:100%;
   /* 16px ist Pflicht: darunter zoomt iOS Safari beim Antippen automatisch rein */
   font-size:16px; min-height:48px;
 }
 .form-field textarea{resize:vertical; min-height:110px;}
 .form-field input:focus, .form-field textarea:focus, .form-field select:focus{outline:2px solid var(--accent); border-color:var(--accent);}
+/* Fehlerhafte Felder: nicht allein über Farbe erkennbar (WCAG 1.4.1) —
+   der dickere Rand und die Meldung im Statusbereich tragen die Information. */
+.form-field input[aria-invalid="true"],
+.form-field textarea[aria-invalid="true"]{border:2px solid var(--safety);}
 .form-actions{display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; align-items:center;}
 .btn.whatsapp{border-color:#25D366; color:#25D366;}
 .btn.whatsapp:hover{background:#25D366; color:var(--asphalt);}

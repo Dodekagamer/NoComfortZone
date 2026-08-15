@@ -27,6 +27,11 @@ ${pageHero(
 
 <section>
   <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Im Überblick</span>
+      <h2>Sechs Wege zu uns</h2>
+      <p>Such dir die Gruppe, die am ehesten zu deiner Situation passt — der Einstieg ist überall das kostenlose Probetraining.</p>
+    </div>
     <div class="audience-list">
       ${audienceRow('18–35', 'Junge Erwachsene', 'Sport verbunden mit Gemeinschaft — Motivation, soziale Kontakte und gemeinsame Ziele statt Anonymität im Fitnessstudio. Du bekommst: feste Trainingsgruppe, echte Vorbilder, sichtbare Fortschritte.', 'Probetraining buchen', '/buchung/')}
       ${audienceRow('Jugend', 'Jugendliche', 'Boxen, Calisthenics und gemeinsames Training für Selbstvertrauen, Disziplin und Teamgeist — mit echten Vorbildern. Du bekommst: sicheren Rahmen, klare Regeln, echten Zusammenhalt.', 'Probetraining buchen', '/buchung/')}

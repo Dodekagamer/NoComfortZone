@@ -157,6 +157,7 @@ document.documentElement.classList.add('js');
   forms.forEach((form) => {
     const status = form.querySelector('[data-form-status]');
     const mail = form.getAttribute('data-mailto');
+    const fields = form.querySelectorAll('input, textarea');
 
     function say(message, kind) {
       if (!status) return;
@@ -164,12 +165,45 @@ document.documentElement.classList.add('js');
       status.className = 'form-status' + (kind ? ' is-' + kind : '');
     }
 
+    /**
+     * WCAG 3.3.1: fehlerhafte Felder müssen auch für Screenreader als
+     * fehlerhaft erkennbar sein und auf die Meldung verweisen — nicht nur
+     * über den (rein visuellen) Browser-Hinweis.
+     */
+    function markValidity() {
+      let firstInvalid = null;
+      fields.forEach((f) => {
+        const bad = !f.checkValidity();
+        if (bad) {
+          f.setAttribute('aria-invalid', 'true');
+          if (status && status.id) f.setAttribute('aria-describedby', status.id);
+          if (!firstInvalid) firstInvalid = f;
+        } else {
+          f.removeAttribute('aria-invalid');
+          f.removeAttribute('aria-describedby');
+        }
+      });
+      return firstInvalid;
+    }
+
+    // Beim Korrigieren die Fehlermarkierung wieder entfernen
+    fields.forEach((f) => {
+      f.addEventListener('input', () => {
+        if (f.getAttribute('aria-invalid') && f.checkValidity()) {
+          f.removeAttribute('aria-invalid');
+          f.removeAttribute('aria-describedby');
+        }
+      });
+    });
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       // novalidate im Markup -> wir lösen die Prüfung selbst aus, damit die
       // Meldung erst nach dem Absenden erscheint und nicht beim Tippen.
-      if (!form.reportValidity()) {
+      const invalid = markValidity();
+      if (invalid) {
         say('Bitte fülle Name und E-Mail aus, dann kann es losgehen.', 'warn');
+        invalid.focus();
         return;
       }
       try {
@@ -198,8 +232,10 @@ document.documentElement.classList.add('js');
     const waBtn = form.querySelector('[data-whatsapp-trigger]');
     if (waBtn) {
       waBtn.addEventListener('click', () => {
-        if (!form.reportValidity()) {
+        const invalid = markValidity();
+        if (invalid) {
           say('Bitte fülle Name und E-Mail aus, dann kann es losgehen.', 'warn');
+          invalid.focus();
           return;
         }
         try {

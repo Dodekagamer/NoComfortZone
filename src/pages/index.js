@@ -36,7 +36,7 @@ module.exports = {
       </div>
     </div>
 
-    <div class="scroll-cue" id="scrollCue">Scroll</div>
+    <div class="scroll-cue" id="scrollCue" aria-hidden="true">Scrollen</div>
   </div>
 </section>
 

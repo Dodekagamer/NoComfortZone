@@ -131,7 +131,7 @@ function inquiryForm(formId, type, title, intro, messagePlaceholder) {
     <button type="submit" class="btn solid">Per E-Mail senden</button>
     <button type="button" class="btn whatsapp" data-whatsapp-trigger>Per WhatsApp anfragen</button>
   </div>
-  <p class="form-status" data-form-status role="status" aria-live="polite"></p>
+  <p class="form-status" id="${id}-status" data-form-status role="status" aria-live="polite"></p>
   <p class="form-note">Öffnet dein E-Mail-Programm bzw. WhatsApp mit vorausgefüllter Nachricht an ${mail} — kein automatischer Versand, keine Datenspeicherung durch uns.</p>
   <noscript>
     <p class="form-note form-note-warn">Die Formulare brauchen JavaScript, um deine Eingaben vorzubereiten. Schreib uns stattdessen direkt an <a href="mailto:${mail}" class="inline-link">${mail}</a> oder ruf an: <a href="tel:${esc(site.contact.phoneHref)}" class="inline-link">${esc(site.contact.phoneDisplay)}</a> — Stichwort „${esc(type)}".</p>
