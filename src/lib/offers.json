@@ -1,0 +1,167 @@
+{
+  "imageNote": "Die Bilder liegen in src/assets/img/angebote/ und heißen exakt wie unter `image` angegeben. Solange eine Datei fehlt, zeigt die Seite automatisch ein Platzhalterbild und der Build meldet, welche Dateien noch fehlen. Zum Einsetzen genügt es, die eigene Aufnahme unter dem passenden Dateinamen abzulegen — am Code muss nichts geändert werden. Empfohlen: Querformat, mindestens 1200 Pixel breit.",
+  "offers": [
+    {
+      "slug": "boxen",
+      "tag": "Kampfsport",
+      "title": "Boxen",
+      "teaser": "Technik, Kondition und Kopf frei bekommen — im Gruppentraining unter Anleitung, für Einsteiger und Fortgeschrittene.",
+      "lead": "Boxen ist bei uns kein Wettkampfsport für wenige, sondern ein Werkzeug für alle: Es fordert Körper und Konzentration gleichzeitig, und genau deshalb bleibt draußen, was du an Problemen mitgebracht hast.",
+      "sections": [
+        {
+          "heading": "Was dich im Training erwartet",
+          "text": "Wir starten gemeinsam mit Aufwärmen und Seilspringen, dann geht es an Technik: Stand, Deckung, gerade Schläge. Danach Partnerübungen an den Pratzen und zum Abschluss Kondition. Es wird nicht hart gesparrt — niemand muss einstecken, um mitzumachen.",
+          "image": "boxen-1.jpg",
+          "alt": "Trainingsgruppe beim Boxtraining an den Pratzen"
+        },
+        {
+          "heading": "Für wen es passt",
+          "text": "Für alle ab etwa 14 Jahren, ohne jede Vorerfahrung. Wer noch nie eine Faust geballt hat, lernt in der ersten Stunde die Grundhaltung; wer schon Erfahrung hat, arbeitet an Details und Tempo. Die Gruppe ist gemischt, und das ist Absicht — die Erfahreneren helfen den Neuen.",
+          "image": "boxen-2.jpg",
+          "alt": "Zwei Teilnehmende üben gemeinsam eine Boxtechnik"
+        },
+        {
+          "heading": "Wie du einsteigst",
+          "text": "Komm einfach zum kostenlosen Probetraining. Handschuhe und Bandagen stellen wir für den Anfang. Mitbringen musst du nur Sportsachen, Wasser und die Bereitschaft, dich auf etwas Neues einzulassen.",
+          "image": "boxen-3.jpg",
+          "alt": "Boxhandschuhe und Bandagen vor dem Training"
+        }
+      ]
+    },
+    {
+      "slug": "calisthenics",
+      "tag": "Bodyweight",
+      "title": "Calisthenics",
+      "teaser": "Krafttraining mit dem eigenen Körpergewicht, draußen an der frischen Luft — Aufbau von Kraft, Beweglichkeit und Körperkontrolle.",
+      "lead": "Kein Gerätepark, keine Gewichte: nur dein Körper, eine Stange und Wiederholungen. Calisthenics baut Kraft auf, die du im Alltag wirklich merkst — und du brauchst dafür nichts außer einem Platz im Freien.",
+      "sections": [
+        {
+          "heading": "Was dich im Training erwartet",
+          "text": "Klimmzüge, Dips, Liegestütze und Kniebeugen bilden die Basis — jeweils in einer Variante, die zu deinem aktuellen Stand passt. Wer noch keinen Klimmzug schafft, arbeitet mit Unterstützung daran; wer zwanzig schafft, arbeitet an sauberen Formen und schwereren Varianten.",
+          "image": "calisthenics-1.jpg",
+          "alt": "Teilnehmende beim Klimmzugtraining an der Outdoor-Stange"
+        },
+        {
+          "heading": "Für wen es passt",
+          "text": "Für alle, die Kraft aufbauen wollen, ohne ins Fitnessstudio zu gehen. Der Einstieg ist bewusst niedrigschwellig: Jede Übung hat eine leichtere Stufe, niemand steht daneben und schaut zu. Auch gut geeignet, wenn du nach längerer Pause wieder anfängst.",
+          "image": "calisthenics-2.jpg",
+          "alt": "Gruppe beim gemeinsamen Calisthenics-Training im Park"
+        },
+        {
+          "heading": "Wie du einsteigst",
+          "text": "Wir trainieren draußen, bei fast jedem Wetter. Zieh dich entsprechend an, bring Wasser mit — mehr braucht es nicht. Beim ersten Mal schauen wir gemeinsam, wo du stehst, und suchen die passenden Varianten für dich aus.",
+          "image": "calisthenics-3.jpg",
+          "alt": "Outdoor-Trainingsanlage mit Stangen und Barren"
+        }
+      ]
+    },
+    {
+      "slug": "outdoor-training",
+      "tag": "Outdoor",
+      "title": "Outdoor-Training",
+      "teaser": "Funktionelles Ganzkörpertraining im Freien, mitten in der Gesellschaft statt im geschlossenen Studio.",
+      "lead": "Draußen zu trainieren ist kein Notbehelf, sondern Teil der Idee: sichtbar sein, bei Wind und Wetter anwesend sein, und die Stadt als Trainingsraum benutzen statt einer Halle.",
+      "sections": [
+        {
+          "heading": "Was dich im Training erwartet",
+          "text": "Ganzkörperübungen im Wechsel: Sprints, Sprünge, Tragen, Ziehen, Halten. Mal im Kreis, mal in Partnerübungen, mal als Team-Challenge. Die Intensität steuerst du über Tempo und Pausen — die Übungen bleiben für alle dieselben.",
+          "image": "outdoor-training-1.jpg",
+          "alt": "Gruppe beim funktionellen Training auf einer Wiese"
+        },
+        {
+          "heading": "Für wen es passt",
+          "text": "Für alle, die Abwechslung suchen und keine Lust auf Geräte haben. Weil jede Übung skalierbar ist, trainieren Einsteiger und Geübte nebeneinander, ohne dass jemand über- oder unterfordert ist.",
+          "image": "outdoor-training-2.jpg",
+          "alt": "Teilnehmende bei einer Partnerübung im Freien"
+        },
+        {
+          "heading": "Wie du einsteigst",
+          "text": "Treffpunkt und Termine stehen in unserer WhatsApp-Gruppe, dort kannst du auch kurzfristig fragen, ob heute trainiert wird. Das erste Training ist kostenlos, danach entscheidest du in Ruhe.",
+          "image": "outdoor-training-3.jpg",
+          "alt": "Trainingsgruppe beim Aufwärmen im Freien"
+        }
+      ]
+    },
+    {
+      "slug": "kindertraining",
+      "tag": "Kids",
+      "title": "Kindertraining",
+      "teaser": "Bewegung, Teamgeist und Selbstvertrauen für Kinder und Jugendliche — spielerisch und altersgerecht.",
+      "lead": "Kinder brauchen keine Leistungstabellen, sondern Bewegung, die Spaß macht, und Erwachsene, die sie ernst nehmen. Genau darum geht es hier: Spiel, Bewegung und das Erlebnis, Teil einer Gruppe zu sein.",
+      "sections": [
+        {
+          "heading": "Was im Training passiert",
+          "text": "Spielerische Übungen zu Koordination, Schnelligkeit und Körpergefühl, dazu einfache Elemente aus Boxen und Calisthenics. Immer in Bewegung, immer gemeinsam — und mit genug Raum, damit auch die Zurückhaltenden mitmachen.",
+          "image": "kindertraining-1.jpg",
+          "alt": "Kinder bei einer spielerischen Bewegungsübung"
+        },
+        {
+          "heading": "Für wen es passt",
+          "text": "Für Kinder und Jugendliche, unabhängig davon, ob sie sportlich sind oder sich bisher eher schwertun. Wir vergleichen nicht und wir sortieren nicht aus — wer da ist, gehört dazu.",
+          "image": "kindertraining-2.jpg",
+          "alt": "Kindergruppe beim gemeinsamen Training"
+        },
+        {
+          "heading": "Für Eltern",
+          "text": "Ihr könnt beim ersten Mal gern dabeibleiben und zuschauen. Sprecht uns vorher an, wenn es Besonderheiten gibt — gesundheitlich oder persönlich. Wir richten uns danach, ohne dass euer Kind das vor der Gruppe erklären muss.",
+          "image": "kindertraining-3.jpg",
+          "alt": "Trainer erklärt einem Kind eine Übung"
+        }
+      ]
+    },
+    {
+      "slug": "praevention",
+      "tag": "Prävention",
+      "title": "Präventionskurse ab 40",
+      "teaser": "Mobility, funktionelles Training und Krankenkassenkurse für ein langfristig aktives Leben.",
+      "lead": "Ab einem gewissen Punkt geht es nicht mehr um Bestleistung, sondern darum, beweglich und schmerzfrei zu bleiben. Dieses Angebot ist genau dafür da — mit angepasster Intensität und Fokus auf das, was im Alltag zählt.",
+      "sections": [
+        {
+          "heading": "Was dich im Training erwartet",
+          "text": "Beweglichkeit, Rumpfstabilität und Kräftigung der Muskulatur, die im Sitzalltag abbaut. Ruhiges Tempo, saubere Ausführung, viel Erklärung — damit du verstehst, warum du etwas tust, und es auch zu Hause weitermachen kannst.",
+          "image": "praevention-1.jpg",
+          "alt": "Teilnehmende bei einer Mobility-Übung"
+        },
+        {
+          "heading": "Für wen es passt",
+          "text": "Für alle ab etwa 40, auch und gerade nach längerer Sportpause. Vorerkrankungen oder Beschwerden sind kein Ausschlussgrund — sag uns vorher Bescheid, dann passen wir die Übungen an.",
+          "image": "praevention-2.jpg",
+          "alt": "Gruppe beim gemeinsamen Beweglichkeitstraining"
+        },
+        {
+          "heading": "Zuschuss der Krankenkasse",
+          "text": "Zertifizierte Präventionskurse werden von vielen Krankenkassen bezuschusst. Ob und in welcher Höhe das für dich gilt, klären wir gemeinsam im Vorgespräch — sprich uns einfach darauf an.",
+          "image": "praevention-3.jpg",
+          "alt": "Beratungsgespräch vor dem Training"
+        }
+      ]
+    },
+    {
+      "slug": "events",
+      "tag": "Events",
+      "title": "Community-Events",
+      "teaser": "Gemeinsame Veranstaltungen, Challenges und Treffen abseits des regulären Trainings.",
+      "lead": "Eine Bewegung entsteht nicht im Training allein, sondern in dem, was drumherum passiert. Deshalb gibt es bei uns Termine, bei denen nicht die Leistung im Mittelpunkt steht, sondern die Gruppe.",
+      "sections": [
+        {
+          "heading": "Was wir machen",
+          "text": "Gemeinsame Challenges, offene Trainings für Gäste, Ausflüge und Treffen ohne Sportprogramm. Manches ist geplant, vieles entsteht spontan aus der Gruppe heraus.",
+          "image": "events-1.jpg",
+          "alt": "Community-Gruppe bei einem gemeinsamen Event"
+        },
+        {
+          "heading": "Für wen es passt",
+          "text": "Für alle, die dazugehören wollen — auch für Menschen aus dem Umfeld, die selbst (noch) nicht trainieren. Events sind oft der einfachste erste Kontakt mit der Bewegung.",
+          "image": "events-2.jpg",
+          "alt": "Teilnehmende im Gespräch nach einem Event"
+        },
+        {
+          "heading": "Wie du davon erfährst",
+          "text": "Termine kündigen wir in den WhatsApp-Gruppen und auf Instagram an. Wer dort dabei ist, verpasst nichts — eine Anmeldung braucht es meistens nicht.",
+          "image": "events-3.jpg",
+          "alt": "Gruppenfoto nach einem Community-Event"
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,6 @@
-const { pageHero, offerCard, ctaBand } = require('../lib/components');
+const { pageHero, ctaBand } = require('../lib/components');
+const { esc } = require('../lib/escape');
+const { offers } = require('../lib/offers.json');
 
 module.exports = {
   url: '/angebote/',
@@ -19,15 +21,19 @@ ${pageHero(
     <div class="section-head">
       <span class="eyebrow">Community-Training</span>
       <h2>Programme im Überblick</h2>
-      <p>Alle Angebote sind Teil der No-Comfort-Zone-Community — buchbar über eine Mitgliedschaft oder als Probetraining.</p>
+      <p>Alle Angebote sind Teil der No-Comfort-Zone-Community — buchbar über eine Mitgliedschaft oder als Probetraining. Tipp auf ein Angebot für alle Details.</p>
     </div>
     <div class="offer-grid">
-      ${offerCard('Kampfsport', 'Boxen', 'Technik, Kondition und Kopf frei bekommen — im Gruppentraining unter Anleitung, für Einsteiger und Fortgeschrittene.')}
-      ${offerCard('Bodyweight', 'Calisthenics', 'Krafttraining mit dem eigenen Körpergewicht, draußen an der frischen Luft — Aufbau von Kraft, Beweglichkeit und Körperkontrolle.')}
-      ${offerCard('Outdoor', 'Outdoor-Training', 'Funktionelles Ganzkörpertraining im Freien, mitten in der Gesellschaft statt im geschlossenen Studio.')}
-      ${offerCard('Kids', 'Kindertraining', 'Bewegung, Teamgeist und Selbstvertrauen für Kinder und Jugendliche — spielerisch und altersgerecht.')}
-      ${offerCard('Prävention', 'Präventionskurse (40+)', 'Mobility, funktionelles Training und Krankenkassenkurse für ein langfristig aktives Leben.')}
-      ${offerCard('Events', 'Community-Events', 'Gemeinsame Veranstaltungen, Challenges und Treffen abseits des regulären Trainings — Details folgen laufend.')}
+      ${offers
+        .map(
+          (o) => `<a class="offer-card is-link" href="/angebote/${esc(o.slug)}/">
+        <span class="tag">${esc(o.tag)}</span>
+        <h3>${esc(o.title)}</h3>
+        <p>${esc(o.teaser)}</p>
+        <span class="offer-more">Mehr erfahren →</span>
+      </a>`
+        )
+        .join('\n      ')}
     </div>
   </div>
 </section>
@@ -35,7 +41,7 @@ ${pageHero(
 <section>
   <div class="wrap">
     <div class="callout">
-      <p><strong>Sucht ihr 1:1-Personal-Training?</strong> Die Angebote oben sind Community-/Gruppenprogramme von No Comfort Zone. Für individuelles, professionelles 1:1-Coaching gibt es <a href="/haki-sports/">Haki Sports</a> — unser eigenständiges Personal-Training-Angebot innerhalb der Bewegung.</p>
+      <p><strong>Sucht ihr 1:1-Personal-Training?</strong> Die Angebote oben sind Community-/Gruppenprogramme von No Comfort Zone. Für individuelles, professionelles 1:1-Coaching gibt es <a href="/haki-sports/" class="inline-link">Haki Sports</a> — unser eigenständiges Personal-Training-Angebot innerhalb der Bewegung.</p>
     </div>
   </div>
 </section>

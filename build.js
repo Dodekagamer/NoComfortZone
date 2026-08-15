@@ -47,23 +47,28 @@ function buildPages() {
   const files = fs.readdirSync(PAGES_DIR).filter((f) => f.endsWith('.js'));
   const pages = [];
   for (const file of files) {
-    const page = require(path.join(PAGES_DIR, file));
-    if (!page.url || !page.content) {
-      throw new Error(`Seite ${file} braucht mindestens { url, content }`);
+    const mod = require(path.join(PAGES_DIR, file));
+    // Ein Modul liefert entweder eine Seite oder — über `pages` — mehrere
+    // gleichartige Seiten aus einer Datenquelle (z. B. die Angebotsdetails).
+    const entries = Array.isArray(mod.pages) ? mod.pages : [mod];
+    for (const page of entries) {
+      if (!page.url || !page.content) {
+        throw new Error(`Seite in ${file} braucht mindestens { url, content }`);
+      }
+      const html = applyBasePath(
+        renderPage({
+          title: page.title,
+          description: page.description,
+          bodyClass: page.bodyClass,
+          url: page.url,
+          content: typeof page.content === 'function' ? page.content() : page.content
+        })
+      );
+      const outPath = outputPathFor(page.url);
+      fs.mkdirSync(path.dirname(outPath), { recursive: true });
+      fs.writeFileSync(outPath, html);
+      pages.push({ url: page.url });
     }
-    const html = applyBasePath(
-      renderPage({
-        title: page.title,
-        description: page.description,
-        bodyClass: page.bodyClass,
-        url: page.url,
-        content: typeof page.content === 'function' ? page.content() : page.content
-      })
-    );
-    const outPath = outputPathFor(page.url);
-    fs.mkdirSync(path.dirname(outPath), { recursive: true });
-    fs.writeFileSync(outPath, html);
-    pages.push({ url: page.url });
   }
   return pages;
 }
@@ -114,6 +119,18 @@ ${pageHero('404', 'Diese Seite gibt es nicht.', 'Der Link ist entweder veraltet 
   writeStaticFile('404.html', html);
 }
 
+function reportMissingImages() {
+  const { missingImages } = require('./src/pages/angebot-detail');
+  const missing = missingImages();
+  if (!missing.length) return;
+  console.log(
+    `\nHinweis: ${missing.length} Angebotsfotos fehlen noch — es wird jeweils das ` +
+      `Platzhalterbild angezeigt.\nSobald eine Datei unter diesem Namen in ` +
+      `src/assets/img/angebote/ liegt, wird sie automatisch verwendet:`
+  );
+  missing.forEach((m) => console.log('  ' + m));
+}
+
 function main() {
   clean(OUT);
   const pages = buildPages();
@@ -122,6 +139,7 @@ function main() {
   buildRobots();
   build404();
   console.log(`Build fertig: ${pages.length} Seiten -> _site/ (Base-Path: ${BASE_PATH || '(keiner)'})`);
+  reportMissingImages();
 }
 
 main();
