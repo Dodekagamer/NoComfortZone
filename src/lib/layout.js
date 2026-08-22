@@ -163,7 +163,7 @@ ${structuredData({ url, title: pageTitle })}
   <div class="hazard-strip"></div>
 </header>
 
-<main id="top">
+<main id="top" tabindex="-1">
 ${content}
 </main>
 

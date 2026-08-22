@@ -145,6 +145,11 @@ Wer diese Lücke schließen will, hat zwei Wege:
 Für den Anfang reicht die eingebaute Bremse: sie verhindert das realistische
 Szenario, dass ein Skript in Ruhe das Tageskontingent leerschickt.
 
+Bewusst so gebaut: Ist der Cache selbst nicht erreichbar, lässt der Worker die
+Anfrage **durch** statt sie abzulehnen. Eine kaputte Zählung soll nicht dazu
+führen, dass niemand mehr ein Formular abschicken kann. Der Fehler landet im
+Log (`npx wrangler tail`).
+
 Die Werte stehen oben in `src/index.js` (`BREMSE_ANZAHL`, `BREMSE_FENSTER_S`)
 und lassen sich dort anpassen.
 
