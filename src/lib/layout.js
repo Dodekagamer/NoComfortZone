@@ -77,11 +77,24 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
   // ueber den mailto-Weg und braucht keine Verbindung nach aussen.
   const connectSrc = (() => {
     if (!site.formEndpoint) return "'none'";
+    let url;
     try {
-      return new URL(site.formEndpoint).origin;
+      url = new URL(site.formEndpoint);
     } catch (err) {
-      throw new Error(`site.json: formEndpoint ist keine gueltige URL: ${site.formEndpoint}`);
+      throw new Error(
+        `site.json: formEndpoint ist keine gueltige URL: "${site.formEndpoint}"`
+      );
     }
+    // Nur https zulassen. Ein Tippfehler oder ein versehentlich eingefuegter
+    // anderer Wert (z. B. "javascript:...") wuerde sonst still eine kaputte
+    // Seite erzeugen: connect-src waere unbrauchbar und das Absenden schluege
+    // ohne erkennbaren Grund fehl. Lieber der Build bricht ab.
+    if (url.protocol !== 'https:') {
+      throw new Error(
+        `site.json: formEndpoint muss mit https:// beginnen, ist aber "${site.formEndpoint}"`
+      );
+    }
+    return url.origin;
   })();
   // Die Fehlerseite soll nicht im Index landen (GitHub Pages liefert sie zwar
   // mit Status 404 aus, das Meta ist die zweite, unabhaengige Absicherung).

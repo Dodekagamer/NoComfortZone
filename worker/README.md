@@ -112,16 +112,29 @@ Damit sich die Anfragen im gemeinsamen Postfach automatisch sortieren:
 
 Der Worker nimmt nicht alles an:
 
+- **höchstens 5 Anfragen pro IP-Adresse in 10 Minuten** — danach `429`
+- Anfragen über 16 KB werden abgewiesen, bevor sie gelesen werden
 - Anfragen nur von der eigenen Website (`ALLOWED_ORIGINS`)
 - nur die fünf bekannten Formulararten — beliebiger Text kommt nicht durch
 - ein für Menschen unsichtbares Feld; ausgefüllt = Bot, wird verworfen
 - Formulare, die in unter drei Sekunden ausgefüllt wurden, werden verworfen
 - alle Felder werden auf ihre Maximallänge gekürzt
-- Zeilenumbrüche im Betreff werden entfernt
+- Steuerzeichen werden entfernt, damit nichts in E-Mail-Kopfzeilen eingeschleust
+  werden kann
 
-Für zusätzlichen Schutz lässt sich im Cloudflare-Dashboard unter *Security →
-WAF → Rate limiting rules* eine Grenze setzen, z. B. 5 Anfragen pro IP und
-Stunde.
+### Warum die Bremse wichtig ist
+
+`ALLOWED_ORIGINS` schützt nur im Browser. Ein Skript kann diesen Wert frei
+setzen — wer die Adresse des Workers kennt, könnte sonst beliebig viele
+E-Mails auslösen, das Brevo-Tageskontingent aufbrauchen und damit echte
+Anfragen blockieren. Die Bremse pro IP verhindert genau das.
+
+Sie zählt im Cache und gilt je Cloudflare-Rechenzentrum. Das ist eine wirksame
+Bremse, aber keine exakte Obergrenze. Wer es härter braucht, legt zusätzlich im
+Dashboard unter *Security → WAF → Rate limiting rules* eine Regel an.
+
+Die Werte stehen oben in `src/index.js` (`BREMSE_ANZAHL`, `BREMSE_FENSTER_S`)
+und lassen sich dort anpassen.
 
 ## Prüfen, ob es läuft
 

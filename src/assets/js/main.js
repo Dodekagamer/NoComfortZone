@@ -279,10 +279,19 @@ document.documentElement.classList.add('js');
       return true;
     }
 
+    // Wird ein fokussierter Button deaktiviert, faellt der Fokus auf den
+    // Seitenanfang zurueck — wer per Tastatur bedient, muesste sich danach neu
+    // durch die Seite arbeiten. Deshalb merken und hinterher zuruecksetzen.
+    let fokusVorSperre = null;
     function buttonsSperren(gesperrt) {
+      if (gesperrt) fokusVorSperre = document.activeElement;
       form.querySelectorAll('button').forEach((b) => {
         b.disabled = gesperrt;
       });
+      if (!gesperrt && fokusVorSperre && form.contains(fokusVorSperre)) {
+        fokusVorSperre.focus();
+        fokusVorSperre = null;
+      }
     }
 
     /**
@@ -294,23 +303,37 @@ document.documentElement.classList.add('js');
      */
     async function perDienstSenden(ref) {
       const d = formData(form);
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          typ: d.typ,
-          name: d.name,
-          email: d.email,
-          phone: d.phone,
-          preferred: d.preferred,
-          message: d.message,
-          ref: ref,
-          website: (form.querySelector('[name="website"]') || {}).value || '',
-          dauer: Date.now() - geladenSeit
-        })
-      });
+      // Ohne Zeitlimit blieben die Buttons bei einem haengenden Dienst dauerhaft
+      // gesperrt und die Person waere handlungsunfaehig.
+      const abbruch = new AbortController();
+      const uhr = window.setTimeout(() => abbruch.abort(), 15000);
+      let res;
+      try {
+        res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: abbruch.signal,
+          body: JSON.stringify({
+            typ: d.typ,
+            name: d.name,
+            email: d.email,
+            phone: d.phone,
+            preferred: d.preferred,
+            message: d.message,
+            ref: ref,
+            website: (form.querySelector('[name="website"]') || {}).value || '',
+            dauer: Date.now() - geladenSeit
+          })
+        });
+      } finally {
+        window.clearTimeout(uhr);
+      }
       const daten = await res.json().catch(() => ({}));
-      if (!res.ok || !daten.ok) throw new Error('Dienst meldet Fehler: ' + (daten.fehler || res.status));
+      if (!res.ok || !daten.ok) {
+        const fehler = new Error('Dienst meldet Fehler: ' + (daten.fehler || res.status));
+        fehler.status = res.status;
+        throw fehler;
+      }
     }
 
     function whatsappOeffnen(text, ref) {
@@ -368,8 +391,11 @@ document.documentElement.classList.add('js');
         // Auffangnetz: Anfrage nicht verlieren, sondern über mailto anbieten.
         window.location.href = mailUrl(vollNachricht(form, ref, 'WhatsApp'));
         say(
-          `Der direkte Versand hat nicht geklappt. Wir haben stattdessen dein ` +
-            `E-Mail-Programm geöffnet — bitte einmal abschicken. Vorgang #${ref}.`,
+          (err && err.status === 429
+            ? 'Von hier kamen gerade sehr viele Anfragen, deshalb haben wir kurz gebremst. '
+            : 'Der direkte Versand hat nicht geklappt. ') +
+            `Wir haben stattdessen dein E-Mail-Programm geöffnet — bitte einmal ` +
+            `abschicken. Vorgang #${ref}.`,
           'warn'
         );
       } finally {

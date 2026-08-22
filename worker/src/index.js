@@ -22,6 +22,14 @@ const FORMULARE = {
 
 const GRENZEN = { name: 80, email: 120, phone: 40, preferred: 80, message: 1200, ref: 16 };
 
+/** Groesse des erlaubten Request-Bodys. Alles darueber wird abgewiesen, bevor
+ *  ueberhaupt geparst wird — die Felder zusammen bleiben deutlich darunter. */
+const MAX_BODY_BYTES = 16 * 1024;
+
+/** Anfragen pro IP-Adresse und Zeitfenster. */
+const BREMSE_ANZAHL = 5;
+const BREMSE_FENSTER_S = 600;
+
 /** Mindestzeit zwischen Seitenaufbau und Absenden. Menschen brauchen zum
  *  Ausfüllen länger als drei Sekunden, automatische Skripte nicht. */
 const MIN_AUSFUELLZEIT_MS = 3000;
@@ -49,8 +57,59 @@ function einzeilig(text) {
   return String(text || '').replace(/[\r\n\t]+/g, ' ').trim();
 }
 
-function kuerzen(wert, max) {
-  return String(wert == null ? '' : wert).trim().slice(0, max);
+/**
+ * Steuerzeichen entfernen und auf Maximallaenge kuerzen.
+ * Wichtig fuer alles, was spaeter in E-Mail-Kopfzeilen landet (Betreff,
+ * Absender-, Antwort-Adresse): dort trennen Zeilenumbrueche die Felder, ein
+ * Umbruch im Namen koennte also zusaetzliche Kopfzeilen einschleusen.
+ * Im Nachrichtentext bleiben Zeilenumbrueche erhalten — dort gehoeren sie hin.
+ */
+function kuerzen(wert, max, mehrzeilig) {
+  let text = String(wert == null ? '' : wert);
+  text = mehrzeilig
+    ? text.replace(/\r\n?/g, '\n').replace(/[^\S\n]*[\u0000-\u0009\u000B-\u001F\u007F]+/g, ' ')
+    : text.replace(/[\u0000-\u001F\u007F]+/g, ' ');
+  return text.trim().slice(0, max);
+}
+
+/**
+ * Einfache Bremse pro IP-Adresse. Der Origin-Header schuetzt nur im Browser —
+ * ein Skript kann ihn beliebig setzen. Ohne diese Bremse koennte jemand, der
+ * die Adresse des Workers kennt, beliebig viele E-Mails ausloesen und damit
+ * das Tageskontingent verbrauchen und das Postfach fluten.
+ *
+ * Die Zaehlung laeuft ueber den Cache und gilt je Rechenzentrum, ist also eine
+ * wirksame Bremse, aber keine exakte Obergrenze. Fuer eine harte Grenze
+ * zusaetzlich eine Rate-Limiting-Regel im Cloudflare-Dashboard anlegen
+ * (siehe worker/README.md).
+ */
+async function bremseFrei(ip, grenze, fensterSekunden) {
+  if (!ip) return true;
+  try {
+    const schluessel = new Request(`https://ratelimit.invalid/${encodeURIComponent(ip)}`);
+    const cache = caches.default;
+    const treffer = await cache.match(schluessel);
+    const jetzt = Date.now();
+    let zeiten = [];
+    if (treffer) zeiten = await treffer.json().catch(() => []);
+    zeiten = zeiten.filter((t) => jetzt - t < fensterSekunden * 1000);
+    if (zeiten.length >= grenze) return false;
+    zeiten.push(jetzt);
+    await cache.put(
+      schluessel,
+      new Response(JSON.stringify(zeiten), {
+        headers: {
+          'Cache-Control': `max-age=${fensterSekunden}`,
+          'Content-Type': 'application/json'
+        }
+      })
+    );
+    return true;
+  } catch (err) {
+    // Cache nicht verfuegbar: lieber durchlassen als das Formular lahmlegen.
+    console.error('Bremse nicht auswertbar', err);
+    return true;
+  }
 }
 
 function baueText({ typ, bereich, ref, name, email, phone, preferred, message }) {
@@ -89,10 +148,30 @@ export default {
       return antwort({ ok: false, fehler: 'origin' }, 403, headers);
     }
 
+    // Groesse abweisen, bevor der Body ueberhaupt gelesen wird.
+    const laenge = Number(request.headers.get('Content-Length') || '0');
+    if (laenge > MAX_BODY_BYTES) {
+      return antwort({ ok: false, fehler: 'zu_gross' }, 413, headers);
+    }
+
+    let rohText;
+    try {
+      rohText = await request.text();
+    } catch (e) {
+      return antwort({ ok: false, fehler: 'body' }, 400, headers);
+    }
+    // Zweite Schranke fuer den Fall, dass Content-Length fehlt oder luegt.
+    if (rohText.length > MAX_BODY_BYTES) {
+      return antwort({ ok: false, fehler: 'zu_gross' }, 413, headers);
+    }
+
     let daten;
     try {
-      daten = await request.json();
+      daten = JSON.parse(rohText);
     } catch (e) {
+      return antwort({ ok: false, fehler: 'json' }, 400, headers);
+    }
+    if (!daten || typeof daten !== 'object' || Array.isArray(daten)) {
       return antwort({ ok: false, fehler: 'json' }, 400, headers);
     }
 
@@ -113,11 +192,21 @@ export default {
     const email = kuerzen(daten.email, GRENZEN.email);
     const phone = kuerzen(daten.phone, GRENZEN.phone);
     const preferred = kuerzen(daten.preferred, GRENZEN.preferred);
-    const message = kuerzen(daten.message, GRENZEN.message);
+    const message = kuerzen(daten.message, GRENZEN.message, true);
     const ref = (kuerzen(daten.ref, GRENZEN.ref).match(/[A-Z0-9-]+/) || [''])[0];
 
     if (!name || !/^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(email) || !ref) {
       return antwort({ ok: false, fehler: 'felder' }, 400, headers);
+    }
+
+    // Erst jetzt bremsen: offensichtlicher Unsinn wurde schon vorher abgewiesen
+    // und soll das Kontingent einer echten Person nicht aufbrauchen.
+    const ip = request.headers.get('CF-Connecting-IP') || '';
+    if (!(await bremseFrei(ip, BREMSE_ANZAHL, BREMSE_FENSTER_S))) {
+      return antwort({ ok: false, fehler: 'zu_viele' }, 429, {
+        ...headers,
+        'Retry-After': String(BREMSE_FENSTER_S)
+      });
     }
 
     const empfaenger = (env.RECIPIENTS || '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -130,7 +219,8 @@ export default {
       sender: { name: 'No Comfort Zone Website', email: env.SENDER_EMAIL },
       to: empfaenger.map((e) => ({ email: e })),
       // Antworten geht direkt an die anfragende Person.
-      replyTo: { email, name },
+      // Name zusaetzlich einzeilig: er landet in einer Kopfzeile.
+      replyTo: { email, name: einzeilig(name) },
       subject: betreff,
       textContent: baueText({ typ, bereich, ref, name, email, phone, preferred, message })
     };
