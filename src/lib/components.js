@@ -100,7 +100,8 @@ function step(num, title, text) {
 function inquiryForm(formId, type, title, intro, messagePlaceholder) {
   const id = esc(formId);
   const mail = esc(site.contact.email);
-  return `<form class="form" data-form-type="${esc(type)}" data-mailto="${mail}" data-whatsapp-number="${esc(site.contact.whatsappNumber)}" id="${id}" novalidate>
+  const endpoint = site.formEndpoint ? ` data-endpoint="${esc(site.formEndpoint)}"` : '';
+  return `<form class="form" data-form-type="${esc(type)}" data-mailto="${mail}" data-whatsapp-number="${esc(site.contact.whatsappNumber)}"${endpoint} id="${id}" novalidate>
   <h3>${esc(title)}</h3>
   <p class="form-intro">${esc(intro)}</p>
   <div class="form-row">
@@ -127,13 +128,17 @@ function inquiryForm(formId, type, title, intro, messagePlaceholder) {
     <label for="${id}-message">Nachricht</label>
     <textarea id="${id}-message" name="message" placeholder="${esc(messagePlaceholder)}" enterkeyhint="done" maxlength="1200"></textarea>
   </div>
+  <div class="form-field form-honeypot" aria-hidden="true">
+    <label for="${id}-website">Bitte dieses Feld leer lassen</label>
+    <input type="text" id="${id}-website" name="website" tabindex="-1" autocomplete="off">
+  </div>
   <div class="form-actions">
-    <button type="submit" class="btn solid">Anfrage senden (E-Mail zuerst)</button>
-    <button type="button" class="btn whatsapp" data-whatsapp-trigger>Anfrage senden (WhatsApp zuerst)</button>
+    <button type="submit" class="btn solid">Anfrage senden</button>
+    <button type="button" class="btn whatsapp" data-whatsapp-trigger>Senden + per WhatsApp melden</button>
   </div>
   <p class="form-status" id="${id}-status" data-form-status role="status" aria-live="polite"></p>
   <a class="btn whatsapp form-fallback" data-wa-fallback href="#" hidden>Dieselbe Anfrage per WhatsApp öffnen</a>
-  <p class="form-note">Deine Anfrage geht über <strong>beide</strong> Wege an ${mail} — die vollständigen Angaben über den Weg, den du wählst, und eine kurze Notiz über den anderen. Beide tragen dieselbe Vorgangsnummer, damit klar ist: eine Anfrage, keine zwei. Es öffnen sich dein E-Mail-Programm und WhatsApp mit vorbereitetem Text — kein automatischer Versand, keine Datenspeicherung durch uns.</p>
+  <p class="form-note">Deine Anfrage wird direkt an uns übermittelt — du bekommst hier sofort eine Bestätigung mit deiner Vorgangsnummer. Mit dem zweiten Button meldest du dieselbe Anfrage zusätzlich per WhatsApp, damit wir sie sofort sehen; die Vorgangsnummer verbindet beide, es bleibt eine Anfrage. Wir speichern deine Daten nur, um dir zu antworten.</p>
   <noscript>
     <p class="form-note form-note-warn">Die Formulare brauchen JavaScript, um deine Eingaben vorzubereiten. Schreib uns stattdessen direkt an <a href="mailto:${mail}" class="inline-link">${mail}</a> oder ruf an: <a href="tel:${esc(site.contact.phoneHref)}" class="inline-link">${esc(site.contact.phoneDisplay)}</a> — Stichwort „${esc(type)}".</p>
   </noscript>

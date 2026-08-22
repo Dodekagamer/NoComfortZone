@@ -1,0 +1,11 @@
+{
+  "name": "nocomfortzone-anfragen",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Cloudflare Worker: nimmt die Anfrageformulare entgegen und verschickt sie ueber Brevo (EU).",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "secret": "wrangler secret put BREVO_API_KEY"
+  }
+}

@@ -1,0 +1,19 @@
+# Cloudflare-Worker fuer den Anfrage-Versand.
+# Deployen mit:  npx wrangler deploy   (im Ordner worker/)
+name = "nocomfortzone-anfragen"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+
+[vars]
+# Nur von diesen Adressen werden Anfragen angenommen. Kommagetrennt.
+ALLOWED_ORIGINS = "https://dodekagamer.github.io"
+
+# Wer die Anfragen bekommt. Kommagetrennt — hier stehen beide Personen.
+# Sobald es getrennte Adressen gibt, einfach hier ergaenzen.
+RECIPIENTS = "nocomfortzone@gmail.com"
+
+# Absenderadresse. MUSS in Brevo als Absender verifiziert sein.
+SENDER_EMAIL = "nocomfortzone@gmail.com"
+
+# BREVO_API_KEY wird NICHT hier eingetragen, sondern als Secret gesetzt:
+#   npx wrangler secret put BREVO_API_KEY

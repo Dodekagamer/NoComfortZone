@@ -512,6 +512,14 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
    trotzdem sichtbar. */
 [hidden]{display:none !important;}
 
+/* Honigtopf gegen Spam-Bots: fuer Menschen unsichtbar, aber nicht per
+   display:none — manche Bots ueberspringen genau das. Screenreader sind ueber
+   aria-hidden und tabindex="-1" am Formularfeld aussen vor. */
+.form-honeypot{
+  position:absolute; width:1px; height:1px; overflow:hidden;
+  clip-path:inset(50%); white-space:nowrap;
+}
+
 .form-fallback{
   /* Nur sichtbar, wenn der Popup-Blocker den WhatsApp-Teil verhindert hat.
      Dann braucht dieser Schritt einen echten Klick der Person. */
@@ -521,6 +529,13 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .form-status:empty{display:none;}
 .form-status.is-warn{
   color:var(--safety); border-left:3px solid var(--safety); padding-left:12px;
+}
+/* Erfolgsmeldung: bewusst in der Akzentfarbe abgesetzt, damit die Bestaetigung
+   nach dem Absenden sofort ins Auge faellt. Die Aussage steht im Text, nicht
+   in der Farbe allein (WCAG 1.4.1). */
+.form-status.is-ok{
+  color:var(--white); border-left:3px solid var(--accent); padding-left:12px;
+  font-weight:600;
 }
 .form-note-warn{
   color:var(--white); border-left:3px solid var(--safety);

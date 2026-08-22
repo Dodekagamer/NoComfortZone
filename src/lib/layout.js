@@ -71,6 +71,18 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
   // zeigen deutlich mehr. Deshalb darf eine Seite fuer og:/twitter: eine laengere
   // Fassung mitgeben — der Markenclaim bleibt dort vollstaendig erhalten.
   const socialTitle = shareTitle || pageTitle;
+  // Die Formulare schicken die Anfrage per fetch an den Worker. Ohne passenden
+  // connect-src wuerde die CSP genau das blockieren (default-src ist 'none').
+  // Ist kein Endpunkt hinterlegt, bleibt es bei 'none' — dann laeuft die Seite
+  // ueber den mailto-Weg und braucht keine Verbindung nach aussen.
+  const connectSrc = (() => {
+    if (!site.formEndpoint) return "'none'";
+    try {
+      return new URL(site.formEndpoint).origin;
+    } catch (err) {
+      throw new Error(`site.json: formEndpoint ist keine gueltige URL: ${site.formEndpoint}`);
+    }
+  })();
   // Die Fehlerseite soll nicht im Index landen (GitHub Pages liefert sie zwar
   // mit Status 404 aus, das Meta ist die zweite, unabhaengige Absicherung).
   const robotsMeta = robots ? `\n<meta name="robots" content="${esc(robots)}">` : '';
@@ -91,7 +103,7 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
      dadurch greift CSS-Injection ins Leere. frame-ancestors fehlt bewusst —
      per <meta> ignorieren Browser die Direktive, und GitHub Pages kann keine
      echten HTTP-Header setzen. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src ${connectSrc}; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; manifest-src 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#15161a">
 <title>${esc(pageTitle)}</title>
