@@ -22,9 +22,13 @@ src/
     impressum.js, datenschutz.js
   assets/
     css/styles.css       Design-System (Farben, Fonts, Komponenten)
-    js/main.js            Mobile-Nav, Scroll-Hero (GSAP), Formular-Handler
+    js/main.js            Mobile-Nav, Scroll-Hero (eigener Code), Formular-Versand
     img/hero-bg.jpg        Hero-Hintergrundbild
     favicon.svg
+worker/                  Cloudflare Worker für den garantierten Anfrage-Versand
+  src/index.js           nimmt das Formular entgegen, verschickt über Brevo (EU)
+  wrangler.toml          Empfänger, erlaubte Herkunft, Absenderadresse
+  README.md              Einrichtung Schritt für Schritt
 ```
 
 Jede Datei in `src/pages/` exportiert `{ url, title, description, content }` — `build.js` rendert sie mit dem gemeinsamen Layout und schreibt sie nach `_site/<url>/index.html`.
@@ -43,7 +47,8 @@ Keine `npm install` nötig — es gibt keine externen Abhängigkeiten. Der Vorsc
 - **Keine externen Skripte.** Alles JavaScript kommt vom eigenen Server; die Scroll-Animation der Startseite ist eigener Code (kein GSAP/CDN mehr) — damit kein Supply-Chain-Risiko über Dritt-CDNs.
 - **Content-Security-Policy** als `<meta>` in `src/lib/layout.js`: `default-src 'none'`, `script-src 'self'`, `style-src` ohne `'unsafe-inline'`, dazu `object-src`/`base-uri`/`form-action`/`frame-src` auf `'none'`. Damit die Policy so streng bleiben kann, enthält die Seite **keine Inline-Style-Attribute** — Layout-Abstände laufen über Utility-Klassen in `styles.css`. `frame-ancestors` fehlt bewusst: die Direktive wirkt nur als echter HTTP-Header, und GitHub Pages kann keine Header setzen. Wer Clickjacking-Schutz braucht, muss hinter einen Proxy/CDN mit Header-Kontrolle (z. B. Cloudflare) wechseln.
 - **Daten aus `site.json`/`pricing.json` werden HTML-escaped** (`src/lib/escape.js`). Ihr könnt dort beliebigen Text eintragen — `Müller & Sohn`, Anführungszeichen, spitze Klammern — ohne die Seite zu zerlegen oder Markup einzuschleusen. URLs laufen zusätzlich durch `safeUrl()`, das nur `http(s):`, `mailto:`, `tel:` und relative Pfade durchlässt (ein versehentliches `javascript:` wird zu `#`). Inhalte in `src/pages/` sind bewusst ausgenommen — das ist Code und darf Markup enthalten.
-- **Formulare** senden nichts an einen Server; Eingaben werden ausschließlich URL-encodiert in `mailto:`/`wa.me`-Links eingesetzt (getestet gegen CRLF- und Parameter-Injection). Längenbegrenzungen verhindern überlange URLs, die Browser stillschweigend abschneiden würden.
+- **Formulare**: Ist in `site.json` ein `formEndpoint` hinterlegt, geht die Anfrage per `fetch` an den Cloudflare Worker in `worker/` (siehe `worker/README.md`) und wird von dort über Brevo als E-Mail zugestellt — mit echter Empfangsbestätigung auf der Seite. Ist das Feld leer, fällt alles automatisch auf den `mailto:`/`wa.me`-Weg zurück. Beide Wege sind gegen CRLF- und Parameter-Injection getestet; Längenbegrenzungen verhindern überlange URLs, die Browser stillschweigend abschneiden würden. `formEndpoint` muss `https://` sein — sonst bricht der Build ab, statt stillschweigend kaputte Formulare auszuliefern.
+- **Der Worker** begrenzt auf 5 Anfragen pro IP und 10 Minuten, weist Bodys über 16 KB ab, akzeptiert nur die bekannten Formulararten und entfernt Steuerzeichen aus allem, was in E-Mail-Kopfzeilen landet. Wichtig zu wissen: `ALLOWED_ORIGINS` allein ist **kein** Schutz — der Origin-Header lässt sich außerhalb eines Browsers frei setzen; die Bremse pro IP ist die eigentliche Absicherung.
 - **Externe Links** tragen durchgängig `rel="noopener noreferrer"`.
 - **GitHub-Actions-Rechte** sind minimal (`contents:read`, `pages:write`, `id-token:write`). Die Actions sind auf Major-Tags (`@v4`) statt auf Commit-SHAs gepinnt — bei den offiziellen `actions/*` ein bewusst akzeptiertes Restrisiko; für maximale Härtung könnte man auf SHAs pinnen.
 
@@ -59,7 +64,8 @@ GitHub Pages liefert dieses Repo (kein `<owner>.github.io`-Repo, keine eigene Do
 
 - **Preise** (`src/lib/pricing.json`): aktuell klar markierte Beispielpreise ("Beispielpreis"-Badge auf der Seite). Vor dem Launch durch echte Konditionen ersetzen.
 - **Impressum / Datenschutz** (`src/pages/impressum.js`, `datenschutz.js`): rechtlich vollständig strukturiert (§ 5 TMG / DSGVO), es fehlen aber noch **Name, Anschrift und USt-Status** der verantwortlichen Person — direkt in `src/lib/site.json` unter `legal` eintragen (`responsibleName`, `street`, `postalCode`, `vatStatus`). Vor dem echten Live-Betrieb zusätzlich kurz rechtlich prüfen lassen, insbesondere solange noch kein Gewerbe angemeldet ist.
-- **Formulare**: Buchungs-/Kontaktformulare senden nicht an ein Backend, sondern öffnen eine vorausgefüllte E-Mail (`mailto:`) oder WhatsApp-Nachricht (`wa.me`). Kontaktdaten in `src/lib/site.json` pflegen.
+- **Formulare / garantierter Versand**: Solange `formEndpoint` in `src/lib/site.json` leer ist, öffnen die Formulare nur eine vorausgefüllte E-Mail bzw. WhatsApp-Nachricht — ob sie abgeschickt wird, erfährt niemand. Für garantierte Zustellung den Worker aus `worker/` einrichten (Anleitung: `worker/README.md`, ca. 20 Minuten) und die Adresse eintragen. Kontaktdaten weiterhin in `src/lib/site.json` pflegen.
+  Der Datenschutztext passt sich automatisch an: Cloudflare und Brevo werden erst als Auftragsverarbeiter genannt, wenn der Endpunkt gesetzt ist.
 
 ## Analytics / Besucherzahlen (vorbereitet, bewusst nicht aktiviert)
 

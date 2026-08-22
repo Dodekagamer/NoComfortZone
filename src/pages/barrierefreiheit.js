@@ -25,7 +25,7 @@ module.exports = {
       <li><strong>Formulare:</strong> Alle Felder haben sichtbare Beschriftungen, Pflichtfelder sind gekennzeichnet, Fehler werden im Text benannt und dem jeweiligen Feld technisch zugeordnet — nicht nur farblich.</li>
       <li><strong>Bewegung:</strong> Wer im Betriebssystem „Bewegung reduzieren" eingestellt hat, bekommt die Startseite ohne Scroll-Animation.</li>
       <li><strong>Ohne JavaScript:</strong> Inhalte und Kontaktwege bleiben auch dann erreichbar, wenn JavaScript blockiert ist.</li>
-      <li><strong>Touch-Bedienung:</strong> Alle Schaltflächen und Links sind mindestens 44 × 44 Pixel groß.</li>
+      <li><strong>Touch-Bedienung:</strong> Schaltflächen, Menü- und Fußzeilen-Links sind mindestens 44 × 44 Pixel groß. Links mitten im Fließtext richten sich nach der Zeilenhöhe des Textes — für sie sieht die Norm ausdrücklich eine Ausnahme vor, weil sie sonst den Lesefluss zerreißen würden.</li>
     </ul>
 
     <h2>Bekannte Einschränkungen</h2>

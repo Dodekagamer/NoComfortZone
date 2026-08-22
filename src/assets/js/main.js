@@ -171,9 +171,10 @@ document.documentElement.classList.add('js');
   }
 
   /**
-   * Die vollständige Anfrage — geht über den Kanal raus, den die Person
-   * angeklickt hat. `anderer` benennt den Kanal, über den zusätzlich die
-   * Notiz eingeht, damit beim Empfänger klar ist, was gleich noch kommt.
+   * Die vollständige Anfrage. `anderer` benennt den Kanal, über den zusätzlich
+   * eine Kurznotiz eingeht — aber NUR, wenn sie auch wirklich rausgeht. Wird
+   * hier nichts übergeben, entfällt der Hinweis: eine angekündigte zweite
+   * Nachricht, die nie ankommt, lässt die Empfänger sonst darauf warten.
    */
   function vollNachricht(form, ref, anderer) {
     const d = formData(form);
@@ -181,12 +182,14 @@ document.documentElement.classList.add('js');
     if (d.phone) lines.push(`Telefon: ${d.phone}`);
     if (d.preferred) lines.push(`Wunschtermin: ${d.preferred}`);
     if (d.message) lines.push('', 'Nachricht:', d.message);
-    lines.push(
-      '',
-      '--',
-      `Zu diesem Vorgang geht euch zusätzlich eine kurze Notiz per ${anderer} zu.`,
-      `Gleiche Vorgangsnummer #${ref} — es ist dieselbe Anfrage, bitte nur einmal bearbeiten.`
-    );
+    if (anderer) {
+      lines.push(
+        '',
+        '--',
+        `Zu diesem Vorgang geht euch zusätzlich eine kurze Notiz per ${anderer} zu.`,
+        `Gleiche Vorgangsnummer #${ref} — es ist dieselbe Anfrage, bitte nur einmal bearbeiten.`
+      );
+    }
     return {
       subject: `[Anfrage: ${d.typ}]${d.name ? ' ' + d.name : ''} (#${ref})`,
       body: lines.join('\n')
@@ -336,7 +339,7 @@ document.documentElement.classList.add('js');
       }
     }
 
-    function whatsappOeffnen(text, ref) {
+    function whatsappOeffnen(text) {
       const win = window.open(waUrl(text), '_blank');
       if (win) {
         win.opener = null;
@@ -364,8 +367,10 @@ document.documentElement.classList.add('js');
       // Ohne eingerichteten Dienst bleibt es beim bisherigen mailto-Weg.
       if (!endpoint) {
         try {
-          if (mitWhatsapp && waNummer) whatsappOeffnen(waText, ref);
-          window.location.href = mailUrl(vollNachricht(form, ref, 'WhatsApp'));
+          // Erst oeffnen, dann die Mail bauen: nur ein tatsaechlich geoeffnetes
+          // WhatsApp-Fenster darf in der Mail angekuendigt werden.
+          const waGeoeffnet = mitWhatsapp && waNummer ? whatsappOeffnen(waText) : false;
+          window.location.href = mailUrl(vollNachricht(form, ref, waGeoeffnet ? 'WhatsApp' : null));
           say(`Vorgang #${ref}: Dein E-Mail-Programm sollte sich jetzt öffnen …`);
         } catch (err) {
           console.error('Anfrage konnte nicht vorbereitet werden:', err);
@@ -380,7 +385,7 @@ document.documentElement.classList.add('js');
         await perDienstSenden(ref);
         let text = `Angekommen! Vorgang #${ref} — wir melden uns bei dir.`;
         if (mitWhatsapp && waNummer) {
-          text += whatsappOeffnen(waText, ref)
+          text += whatsappOeffnen(waText)
             ? ' WhatsApp öffnet sich mit der passenden Kurznachricht.'
             : ' WhatsApp hat der Browser blockiert — der Button darunter öffnet sie.';
         }
@@ -389,7 +394,8 @@ document.documentElement.classList.add('js');
       } catch (err) {
         console.error('Versand fehlgeschlagen:', err);
         // Auffangnetz: Anfrage nicht verlieren, sondern über mailto anbieten.
-        window.location.href = mailUrl(vollNachricht(form, ref, 'WhatsApp'));
+        // Hier wird kein WhatsApp geoeffnet, also auch keins ankuendigen.
+        window.location.href = mailUrl(vollNachricht(form, ref, null));
         say(
           (err && err.status === 429
             ? 'Von hier kamen gerade sehr viele Anfragen, deshalb haben wir kurz gebremst. '
