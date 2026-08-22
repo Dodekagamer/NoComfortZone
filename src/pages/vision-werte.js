@@ -5,11 +5,16 @@ module.exports = {
   title: 'Vision & Werte — No Comfort Zone',
   description:
     'Was ist No Comfort Zone? Unsere Mission, Geschichte und die sechs Werte, an denen wir uns jeden Tag messen lassen.',
+  // Aufgabenteilung auf dieser Seite, damit sich nichts wiederholt: Der Hero
+  // sagt, WAS No Comfort Zone ist (Anspruch + Fakten), das Mission-Zitat
+  // darunter sagt, WARUM. Der Gedanke "Sport ist das Mittel, der Mensch das
+  // Ziel" stand vorher dreimal auf der Seite — in Überschrift, Einleitung und
+  // Zitat. Er gehört jetzt allein dem Zitat.
   content: () => `
 ${pageHero(
   'Was ist No Comfort Zone?',
-  'Sport ist unser Werkzeug. Der Mensch ist unser Ziel.',
-  'No Comfort Zone ist eine wachsende Sport- und Gesundheitsbewegung aus Karlsruhe. Wir bringen Menschen zusammen — draußen, mitten in der Gesellschaft — und nutzen Sport als Werkzeug, um stärkere, disziplinierte und verbundene Menschen zu formen. Wir bauen keine Sportgruppe. Wir bauen eine Bewegung.',
+  'Wir bauen keine Sportgruppe. Wir bauen eine Bewegung.',
+  'No Comfort Zone ist eine wachsende Sport- und Gesundheitsbewegung aus Karlsruhe. Wir trainieren draußen, mitten in der Gesellschaft — offen für alle Alters- und Leistungsstufen, vom ersten Versuch bis zum ambitionierten Training.',
   'Jetzt mitmachen',
   '/buchung/'
 )}
