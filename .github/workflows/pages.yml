@@ -19,6 +19,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Vollstaendige Historie: build.js liest das lastmod der Sitemap aus
+          # dem Git-Datum der jeweiligen Quelldatei. Der Standard-Klon reicht
+          # nur einen Commit tief — dann traegt jede Seite dasselbe Datum, und
+          # die Sitemap meldete bei jedem Deploy Aenderungen an allen Seiten.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
