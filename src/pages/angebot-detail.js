@@ -73,4 +73,7 @@ ${ctaBand(
 `
 }));
 
-module.exports = { pages, missingImages };
+// dataFiles: zusaetzliche Quellen fuer das Sitemap-Datum (siehe build.js).
+// Diese Seiten aendern sich, wenn offers.json sich aendert — nicht nur, wenn
+// dieses Modul angefasst wird.
+module.exports = { pages, missingImages, dataFiles: ['lib/offers.json'] };

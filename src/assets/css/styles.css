@@ -29,8 +29,9 @@ html{
      nimmt ihn aus dem "sichtbaren" Bereich heraus, damit angesprungene oder
      per Tab fokussierte Elemente darunter hervorgeholt werden (WCAG 2.4.11).
      scroll-margin allein genügt nicht: liegt ein Element bereits im Viewport,
-     scrollt der Browser gar nicht erst. */
-  scroll-padding-top:124px;
+     scrollt der Browser gar nicht erst. 96px = 82px Kopfzeile + Luft; vorher
+     standen hier 124px, weil die Navigation auf zwei Zeilen umbrach. */
+  scroll-padding-top:96px;
 }
 body{
   background:var(--asphalt);
@@ -108,7 +109,14 @@ header{
 body.home header{position:fixed; top:0; left:0; right:0;}
 .navbar{
   display:flex; align-items:center; justify-content:space-between;
-  padding:12px 0;
+  /* Nur senkrecht polstern: das Kurzschreibweise-"padding:12px 0" hat vorher
+     den seitlichen Abstand von .wrap ueberschrieben (gleiche Spezifitaet,
+     aber spaeter notiert). Dadurch klebten Logo und Menuetaste zwischen 621px
+     und 1180px direkt am Bildschirmrand und standen 28px links vom uebrigen
+     Seiteninhalt. Mit Langschreibweise bleibt der seitliche Abstand von .wrap
+     erhalten — inklusive der schmaleren Werte auf kleinen Bildschirmen. */
+  padding-top:12px;
+  padding-bottom:12px;
   gap:16px;
   min-height:64px;
 }
@@ -117,7 +125,13 @@ body.home header{position:fixed; top:0; left:0; right:0;}
   display:flex; align-items:center; min-height:44px; min-width:0;
 }
 .logo span{color:var(--accent);}
-nav ul{display:flex; gap:22px; list-style:none; flex-wrap:wrap;}
+/* gap 12px statt 22px: mit 22px brauchte die neunteilige Navigation 833px,
+   verfuegbar sind neben Logo und CTA aber nur 776px. Die Folge war ein Umbruch
+   auf zwei Zeilen bei JEDER Desktop-Breite — die Kopfzeile war dadurch 104px
+   statt 72px hoch. Mit 12px bleiben rund 23px Reserve, genug Puffer fuer die
+   etwas breitere Space-Mono-Schrift, sobald sie geladen ist. flex-wrap bleibt
+   als Sicherheitsnetz stehen, greift im Normalfall aber nicht mehr. */
+nav ul{display:flex; gap:12px; list-style:none; flex-wrap:wrap;}
 nav a{font-family:'Space Mono', monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; opacity:0.85;}
 nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 .nav-toggle{
@@ -316,7 +330,10 @@ footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr 1fr;}
 .footer-legal a{opacity:0.8; display:inline-flex; align-items:center; min-height:44px;}
 .footer-legal a:hover{opacity:1; color:var(--accent);}
 
-@media (max-width:980px){
+/* Umschaltpunkt 1180px (vorher 980px) — genau die Wrap-Maximalbreite: bis
+   hierher waechst der Platz neben Logo und CTA noch mit, darueber ist er
+   konstant und reicht fuer eine Zeile. Unterhalb uebernimmt das Menue. */
+@media (max-width:1180px){
   /* Die komplette Navigation einklappen — nicht nur die Liste. Sonst würden
      Elemente darin (z. B. der Mitmachen-CTA) weiter in der Kopfzeile liegen. */
   nav{display:none;}
@@ -385,10 +402,10 @@ footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr 1fr;}
 
 /* Sprungziele nicht unter der klebenden Kopfzeile verstecken (2.4.11).
    Muss über der höchsten Kopfzeile liegen (Navigationsleiste + Warnstreifen,
-   am Desktop zusammen 110px). Gilt auch für bedienbare Elemente ohne id:
+   am Desktop zusammen 82px). Gilt auch für bedienbare Elemente ohne id:
    beim Durchtabben scrollt der Browser sie sonst genau unter die Kopfzeile. */
 :target, [id],
-a, button, input, textarea, select, summary{scroll-margin-top:124px;}
+a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto;}

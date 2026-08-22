@@ -7,6 +7,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { execFileSync } = require('child_process');
 
 const SRC = path.join(__dirname, 'src');
 const OUT = path.join(__dirname, '_site');
@@ -59,6 +60,8 @@ function buildPages() {
         renderPage({
           title: page.title,
           description: page.description,
+          shareTitle: page.shareTitle,
+          robots: page.robots,
           bodyClass: page.bodyClass,
           url: page.url,
           content: typeof page.content === 'function' ? page.content() : page.content
@@ -67,7 +70,11 @@ function buildPages() {
       const outPath = outputPathFor(page.url);
       fs.mkdirSync(path.dirname(outPath), { recursive: true });
       fs.writeFileSync(outPath, html);
-      pages.push({ url: page.url });
+      // Quellen fuer das Sitemap-Datum: das Seitenmodul selbst und — bei
+      // datengetriebenen Seiten wie den Angebotsdetails — die Datendatei.
+      const sources = [path.join(PAGES_DIR, file)];
+      for (const extra of mod.dataFiles || []) sources.push(path.resolve(SRC, extra));
+      pages.push({ url: page.url, sources });
     }
   }
   return pages;
@@ -84,10 +91,41 @@ function writeStaticFile(relPath, content) {
   fs.writeFileSync(outPath, content);
 }
 
+/**
+ * Letztes Aenderungsdatum einer Quelldatei aus der Git-Historie.
+ * Wichtig fuer die Sitemap: stuende dort bei jedem Build das heutige Datum,
+ * meldete die Seite staendig Aenderungen, die es gar nicht gab — Suchmaschinen
+ * stufen ein solches lastmod als unzuverlaessig ein und ignorieren es.
+ */
+const gitDateCache = new Map();
+function gitDate(filePath) {
+  if (gitDateCache.has(filePath)) return gitDateCache.get(filePath);
+  let date = null;
+  try {
+    const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', filePath], {
+      cwd: __dirname,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(out)) date = out;
+  } catch (err) {
+    // kein Git verfuegbar (z. B. Tarball-Download) — dann greift der Fallback
+  }
+  gitDateCache.set(filePath, date);
+  return date;
+}
+
+function lastmodFor(sources) {
+  const heute = new Date().toISOString().slice(0, 10);
+  const dates = sources.map(gitDate).filter(Boolean);
+  // Noch nicht committete (neue) Dateien liefern kein Datum -> heutiges Datum.
+  return dates.length === sources.length ? dates.sort().pop() : heute;
+}
+
 function buildSitemap(pages) {
-  const lastmod = new Date().toISOString().slice(0, 10);
   const urls = pages
     .map((p) => {
+      const lastmod = lastmodFor(p.sources);
       // Startseite höher priorisieren, Rechtstexte niedriger — hilft Crawlern
       // bei der Einordnung, welche Seiten die eigentlichen Inhalte sind.
       const priority = p.url === '/' ? '1.0' : /impressum|datenschutz/.test(p.url) ? '0.3' : '0.8';
@@ -108,6 +146,8 @@ function build404() {
     renderPage({
       title: 'Seite nicht gefunden — No Comfort Zone',
       description: 'Diese Seite existiert nicht (mehr).',
+      // Die Fehlerseite gehoert nicht in den Suchindex.
+      robots: 'noindex, follow',
       url: '/404/',
       content: `
 <div class="error-404">

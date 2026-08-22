@@ -2,9 +2,13 @@ const { ctaBand, quickAnswer, pillarCard } = require('../lib/components');
 
 module.exports = {
   url: '/',
-  title: 'No Comfort Zone — Wir bauen keine Sportgruppe. Wir bauen eine Bewegung.',
+  // Google schneidet den Titel bei rund 60 Zeichen ab. Kurzfassung fuer die
+  // Suche, vollstaendiger Claim fuer Social-Vorschauen (shareTitle) und
+  // unveraendert im Hero der Seite selbst.
+  title: 'No Comfort Zone Karlsruhe — Wir bauen eine Bewegung.',
+  shareTitle: 'No Comfort Zone — Wir bauen keine Sportgruppe. Wir bauen eine Bewegung.',
   description:
-    'No Comfort Zone Karlsruhe: Sport, Gemeinschaft und persönliche Entwicklung. Community-Training und professionelles 1:1 Coaching mit Haki Sports — draußen, mitten in der Gesellschaft.',
+    'Community-Sport in Karlsruhe: Boxen, Calisthenics, Outdoor- und Kindertraining für alle. Dazu 1:1-Coaching mit Haki Sports. Erstes Training kostenlos.',
   bodyClass: 'home',
   content: () => `
 <!-- SCROLL INTRO: gepinnte Hero-Sequenz, wechselt beim Scrollen -->

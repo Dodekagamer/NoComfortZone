@@ -63,10 +63,17 @@ function renderFooter() {
 </footer>`;
 }
 
-function renderPage({ title, description, bodyClass, url, content }) {
+function renderPage({ title, description, shareTitle, robots, bodyClass, url, content }) {
   const bodyClassAttr = bodyClass ? ` class="${esc(bodyClass)}"` : '';
   const pageTitle = title || site.name;
   const pageDescription = description || site.defaultDescription;
+  // Suchergebnisse schneiden den <title> bei rund 60 Zeichen ab, Social-Vorschauen
+  // zeigen deutlich mehr. Deshalb darf eine Seite fuer og:/twitter: eine laengere
+  // Fassung mitgeben — der Markenclaim bleibt dort vollstaendig erhalten.
+  const socialTitle = shareTitle || pageTitle;
+  // Die Fehlerseite soll nicht im Index landen (GitHub Pages liefert sie zwar
+  // mit Status 404 aus, das Meta ist die zweite, unabhaengige Absicherung).
+  const robotsMeta = robots ? `\n<meta name="robots" content="${esc(robots)}">` : '';
   const canonicalUrl = `${SITE_URL}${url}`;
   const ogImage = `${SITE_URL}/assets/img/hero-bg.jpg`;
   // Nur die Startseite zeigt das Hero-Foto — dort lohnt der Vorabruf, weil es
@@ -88,11 +95,11 @@ function renderPage({ title, description, bodyClass, url, content }) {
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#15161a">
 <title>${esc(pageTitle)}</title>
-<meta name="description" content="${esc(pageDescription)}">
+<meta name="description" content="${esc(pageDescription)}">${robotsMeta}
 <link rel="canonical" href="${esc(canonicalUrl)}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(site.name)}">
-<meta property="og:title" content="${esc(pageTitle)}">
+<meta property="og:title" content="${esc(socialTitle)}">
 <meta property="og:description" content="${esc(pageDescription)}">
 <meta property="og:url" content="${esc(canonicalUrl)}">
 <meta property="og:image" content="${esc(ogImage)}">
@@ -101,14 +108,14 @@ function renderPage({ title, description, bodyClass, url, content }) {
 <meta property="og:image:alt" content="Gruppenfoto der No-Comfort-Zone-Community nach einem gemeinsamen Outdoor-Training in Karlsruhe">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${esc(pageTitle)}">
+<meta name="twitter:title" content="${esc(socialTitle)}">
 <meta name="twitter:description" content="${esc(pageDescription)}">
 <meta name="twitter:image" content="${esc(ogImage)}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Space+Mono:wght@400;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/styles.css">${preloadHero}
 ${structuredData({ url, title: pageTitle })}
 </head>
