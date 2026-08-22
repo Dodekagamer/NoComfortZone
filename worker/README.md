@@ -29,6 +29,38 @@ Einrichtung dauert etwa 20 Minuten und ist einmalig.
 > Der Schlüssel ist ein Passwort. Nicht ins Repository schreiben, nicht per
 > WhatsApp verschicken.
 
+### ⚠ Wichtig: Der Absender entscheidet, ob die Mail ankommt
+
+Aktuell steht als Absender `nocomfortzone@gmail.com`. Das funktioniert
+technisch, ist aber die schwächste Stelle des ganzen Aufbaus — und zwar aus
+einem Grund, der sich nicht wegkonfigurieren lässt:
+
+**Eine Mail lässt sich nur für eine Domain beglaubigen, die man selbst
+kontrolliert.** `gmail.com` gehört Google, nicht euch. Brevo kann dort also
+nicht als berechtigter Absender hinterlegt werden. Die üblichen Prüfungen
+(SPF, DKIM, DMARC) schlagen deshalb fehl, und Mailanbieter stufen solche
+Nachrichten gern als Spam oder Phishing ein. Verschärfend kommt hinzu, dass
+Absender und Empfänger dieselbe Adresse wären — ein Muster, das Gmail
+besonders streng behandelt.
+
+**Konsequenz:** Die Anfrage geht zwar garantiert raus, landet aber
+möglicherweise im Spam-Ordner. Prüft das nach dem ersten Testversand
+ausdrücklich mit.
+
+Zwei Wege, das zu lösen — der erste ist der richtige:
+
+1. **Eigene Domain verwenden** (z. B. `anfragen@eure-domain.de`) und sie in
+   Brevo verifizieren. Brevo zeigt dann die DNS-Einträge an, die einzutragen
+   sind; danach sind die Mails ordentlich beglaubigt und landen zuverlässig im
+   Posteingang. Eine Domain kostet wenige Euro im Jahr und steht ohnehin auf
+   eurer Liste.
+2. **Übergangslösung, solange es keine Domain gibt:** Nach dem ersten
+   Testversand im Gmail-Postfach nachsehen. Landet die Mail im Spam, dort
+   *„Kein Spam"* wählen und zusätzlich einen Filter anlegen
+   (Suchfeld → Filtersymbol → Absender eintragen → *Nie an Spam senden*).
+   Das wirkt nur für dieses eine Postfach — genau das ist hier aber der Fall,
+   weil beide Verantwortliche darauf zugreifen.
+
 ## Schritt 2 — Auftragsverarbeitungsvertrag (AVV)
 
 Brevo und Cloudflare verarbeiten personenbezogene Daten in eurem Auftrag. Beide

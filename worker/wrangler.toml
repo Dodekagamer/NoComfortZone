@@ -13,6 +13,10 @@ ALLOWED_ORIGINS = "https://dodekagamer.github.io"
 RECIPIENTS = "nocomfortzone@gmail.com"
 
 # Absenderadresse. MUSS in Brevo als Absender verifiziert sein.
+# ACHTUNG: gmail.com laesst sich nicht beglaubigen — die Domain gehoert nicht
+# euch, also koennen SPF/DKIM/DMARC nicht passen und die Mail kann im Spam
+# landen. Sobald eine eigene Domain existiert, hier eine Adresse darauf
+# eintragen. Hintergrund und Uebergangsloesung stehen in README.md.
 SENDER_EMAIL = "nocomfortzone@gmail.com"
 
 # BREVO_API_KEY wird NICHT hier eingetragen, sondern als Secret gesetzt:

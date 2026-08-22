@@ -684,3 +684,41 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
   display:inline-block; font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase;
   color:var(--asphalt); background:var(--safety); padding:8px 14px; margin-bottom:30px; letter-spacing:0.04em;
 }
+
+/* ---- DRUCK ---------------------------------------------------------------
+   Rechtstexte werden erfahrungsgemaess ausgedruckt oder als PDF gesichert.
+   Ohne diese Regeln kaeme eine fast schwarze Seite aus dem Drucker: viel
+   Toner, schlecht lesbar. Deshalb dunkle Schrift auf weissem Grund, und alles
+   weglassen, was auf Papier keinen Sinn ergibt (Navigation, Schaltflaechen,
+   Warnstreifen). Adressen hinter Links werden ausgeschrieben, weil man sie
+   auf Papier sonst nicht nachvollziehen kann.                              */
+@media print {
+  html, body{background:#fff !important; color:#000 !important;}
+  body{font-size:11pt; line-height:1.45;}
+
+  header, footer, .hazard-strip, .skip-link, .nav-toggle, nav,
+  .cta-band, .form-actions, .form-note, .scroll-cue, .breadcrumb,
+  .form-fallback, .offer-more{display:none !important;}
+
+  main{padding:0 !important;}
+  section{padding:12pt 0 !important; break-inside:avoid;}
+  .wrap{max-width:none !important; padding:0 !important;}
+
+  h1, h2, h3, p, li, td, th, .lead, .eyebrow, .legal, .legal *{
+    color:#000 !important; background:transparent !important;
+  }
+  h1{font-size:20pt;} h2{font-size:14pt; break-after:avoid;} h3{font-size:12pt; break-after:avoid;}
+  h2, h3{break-inside:avoid;}
+
+  a{color:#000 !important; text-decoration:underline;}
+  /* Zieladresse ausschreiben — auf Papier ist ein Link sonst wertlos.
+     Interne Anker und Seitenpfade bleiben aussen vor, die helfen nicht. */
+  main a[href^="http"]::after{content:" (" attr(href) ")"; font-size:9pt; word-break:break-all;}
+  /* Bei mailto- und tel-Links steht die Adresse bereits im Linktext — sie ein
+     zweites Mal in Klammern dahinterzusetzen waere nur Doppelung. */
+
+  img{max-width:100% !important;}
+  .offer-detail-media{display:none !important;}
+  .intro-pin, .scroll-intro{height:auto !important; min-height:0 !important;}
+  .intro-panel{opacity:1 !important; position:static !important; transform:none !important;}
+}
