@@ -48,6 +48,15 @@ module.exports = {
     <h2>Deine Rechte</h2>
     <p>Du hast jederzeit das Recht auf Auskunft (Art. 15 DSGVO), Berichtigung (Art. 16 DSGVO), Löschung (Art. 17 DSGVO), Einschränkung der Verarbeitung (Art. 18 DSGVO), Datenübertragbarkeit (Art. 20 DSGVO) sowie Widerspruch gegen die Verarbeitung (Art. 21 DSGVO) bezüglich deiner personenbezogenen Daten. Wende dich dazu an <a href="mailto:${esc(site.contact.email)}">${esc(site.contact.email)}</a>.</p>
 
+    <h2>Verschlüsselte Übertragung</h2>
+    <p>Diese Website wird ausschließlich über eine verschlüsselte Verbindung ausgeliefert (HTTPS/TLS). Du erkennst das am Schloss-Symbol in der Adresszeile deines Browsers. Damit können die Daten, die du überträgst — etwa die Angaben aus einem Anfrageformular — auf dem Weg nicht von Dritten mitgelesen werden.</p>
+
+    <h2>Einwilligungen</h2>
+    <p>Wir stützen keine Verarbeitung auf deine Einwilligung: Die Daten aus den Formularen verarbeiten wir, um deine Anfrage zu beantworten (Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO), und es werden weder Cookies gesetzt noch Analyse- oder Trackingdienste eingesetzt. Sollten wir dich künftig um eine Einwilligung bitten, kannst du diese jederzeit mit Wirkung für die Zukunft widerrufen (Art. 7 Abs. 3 DSGVO); die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung bleibt davon unberührt.</p>
+
+    <h2>Keine automatisierte Entscheidungsfindung</h2>
+    <p>Eine automatisierte Entscheidungsfindung einschließlich Profiling im Sinne von Art. 22 DSGVO findet nicht statt. Über deine Anfrage entscheiden ausschließlich Menschen.</p>
+
     <h2>Beschwerderecht bei der Aufsichtsbehörde</h2>
     <p>Du hast außerdem das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig ist:<br>
     Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg<br>

@@ -129,9 +129,21 @@ setzen — wer die Adresse des Workers kennt, könnte sonst beliebig viele
 E-Mails auslösen, das Brevo-Tageskontingent aufbrauchen und damit echte
 Anfragen blockieren. Die Bremse pro IP verhindert genau das.
 
-Sie zählt im Cache und gilt je Cloudflare-Rechenzentrum. Das ist eine wirksame
-Bremse, aber keine exakte Obergrenze. Wer es härter braucht, legt zusätzlich im
-Dashboard unter *Security → WAF → Rate limiting rules* eine Regel an.
+**Was sie leistet und was nicht:** Sie zählt im Cache, je Cloudflare-Rechen­
+zentrum, und liest-ändert-schreibt dabei nicht atomar. Gegen den normalen Fall —
+jemand schickt hintereinander zu viele Anfragen — wirkt sie zuverlässig
+(gemessen: ab der sechsten Anfrage `429`). Gegen einen **gleichzeitigen Schwall**
+wirkt sie nicht: werden zwölf Anfragen im selben Moment abgeschickt, kommen alle
+durch, weil jede den Zähler liest, bevor eine ihn erhöht hat.
+
+Wer diese Lücke schließen will, hat zwei Wege:
+
+1. **Cloudflare-Dashboard**, *Security → WAF → Rate limiting rules* — dort greift
+   die Begrenzung vor dem Worker und ist nicht umgehbar. Der einfachere Weg.
+2. **Durable Objects** statt Cache — technisch exakt, aber deutlich mehr Aufwand.
+
+Für den Anfang reicht die eingebaute Bremse: sie verhindert das realistische
+Szenario, dass ein Skript in Ruhe das Tageskontingent leerschickt.
 
 Die Werte stehen oben in `src/index.js` (`BREMSE_ANZAHL`, `BREMSE_FENSTER_S`)
 und lassen sich dort anpassen.

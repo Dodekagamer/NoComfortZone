@@ -46,6 +46,13 @@ function missingImages() {
  * faellt jetzt beim Bauen auf, nicht erst den Besuchern.
  */
 function pruefeDaten() {
+  if (!Array.isArray(offers) || offers.length === 0) {
+    throw new Error(
+      'src/lib/offers.json: die Liste "offers" ist leer. Ohne Angebote haetten ' +
+        'die Angebotsseite und die Navigation nichts zu zeigen — das faellt sonst ' +
+        'erst auf der fertigen Website auf.'
+    );
+  }
   const slugs = new Map();
   offers.forEach((offer, i) => {
     const wo = `offers[${i}]${offer.slug ? ` ("${offer.slug}")` : ''}`;
@@ -80,6 +87,17 @@ function pruefeDaten() {
           throw new Error(`src/lib/offers.json: ${wo}, Abschnitt ${j + 1} fehlt "${feld}".`);
         }
       }
+      // Der Dateiname wird zu einem Pfad im src-Attribut. Nur unbedenkliche
+      // Zeichen zulassen: ein Anfuehrungszeichen darin koennte sonst aus dem
+      // Attribut ausbrechen, und Schraegstriche wuerden aus dem Bildordner
+      // herausfuehren.
+      if (!/^[a-zA-Z0-9._-]+\.(jpg|jpeg|png|webp|svg)$/.test(s.image)) {
+        throw new Error(
+          `src/lib/offers.json: ${wo}, Abschnitt ${j + 1} hat einen unbrauchbaren ` +
+            `Dateinamen "${s.image}". Erlaubt sind Buchstaben, Ziffern, Punkt, ` +
+            `Bindestrich und Unterstrich, mit Endung .jpg/.jpeg/.png/.webp/.svg.`
+        );
+      }
     });
   });
 }
@@ -96,7 +114,7 @@ function renderSection(section, index) {
       <p>${esc(section.text)}</p>
     </div>
     <figure class="offer-detail-media${img.isPlaceholder ? ' is-placeholder' : ''}">
-      <img src="${img.src}" alt="${img.isPlaceholder ? 'Platzhalter, Foto folgt' : esc(section.alt)}"
+      <img src="${esc(img.src)}" alt="${img.isPlaceholder ? 'Platzhalter, Foto folgt' : esc(section.alt)}"
            width="1200" height="800" loading="lazy" decoding="async">
     </figure>
   </div>

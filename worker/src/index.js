@@ -84,9 +84,13 @@ function kuerzen(wert, max, mehrzeilig) {
  * (siehe worker/README.md).
  */
 async function bremseFrei(ip, grenze, fensterSekunden) {
-  if (!ip) return true;
   try {
-    const schluessel = new Request(`https://ratelimit.invalid/${encodeURIComponent(ip)}`);
+    // Ohne erkennbare IP NICHT durchwinken: eine Bremse, die im Zweifel
+    // aufmacht, ist keine. Solche Anfragen teilen sich einen gemeinsamen
+    // Topf — bei Cloudflare ist die Kopfzeile ohnehin immer gesetzt, das
+    // hier ist die Absicherung fuer den Fall, dass sie es einmal nicht ist.
+    const kennung = ip || 'ohne-ip';
+    const schluessel = new Request(`https://ratelimit.invalid/${encodeURIComponent(kennung)}`);
     const cache = caches.default;
     const treffer = await cache.match(schluessel);
     const jetzt = Date.now();

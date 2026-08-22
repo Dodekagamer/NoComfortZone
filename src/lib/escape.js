@@ -29,7 +29,13 @@ function esc(value) {
 function safeUrl(value) {
   const url = String(value === undefined || value === null ? '' : value).trim();
   if (/^(https?:|mailto:|tel:)/i.test(url)) return esc(url);
-  if (/^[/#]/.test(url)) return esc(url); // relativer Pfad oder Anker
+  // Genau EIN fuehrender Schraegstrich = eigener Pfad. Zwei ("//host/pfad")
+  // waeren protokollrelativ und zeigen auf einen FREMDEN Server — das sieht
+  // aus wie ein relativer Pfad, ist aber ein externer Link. Manche Browser
+  // behandeln Rueckwaerts-Schraegstriche dabei wie Schraegstriche, deshalb
+  // sind sie hier ebenfalls ausgeschlossen.
+  if (/^\/(?![/\\])/.test(url)) return esc(url); // relativer Pfad
+  if (url.startsWith('#')) return esc(url); // Anker
   return '#';
 }
 

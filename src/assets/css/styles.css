@@ -84,7 +84,17 @@ h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em
 .btn.solid{background:var(--accent); border-color:var(--accent); color:var(--asphalt);}
 .btn.solid:hover{background:var(--white); border-color:var(--white); color:var(--asphalt);}
 .btn.small{padding:10px 18px; font-size:11px; min-height:44px;}
-:focus-visible{outline:3px solid var(--safety); outline-offset:2px;}
+/* Fokusanzeige als Zweifarb-Ring: innen gelb, aussen dunkel.
+   Ein einfarbiger Ring reicht nicht — der gelbe Ring erreichte auf hellen
+   Flaechen nur 1,2:1 und auf dem gelben Haki-Button sogar 1:1, war dort also
+   unsichtbar. Mit beiden Farben ist immer eine davon deutlich sichtbar, und
+   die Ringe heben sich zusaetzlich voneinander ab (11,6:1). Gemessenes
+   Minimum ueber alle Hintergruende der Seite: 5,4:1 (WCAG 1.4.11: 3:1). */
+:focus-visible{
+  outline:3px solid var(--asphalt);
+  outline-offset:2px;
+  box-shadow:0 0 0 2px var(--safety);
+}
 
 /* HAZARD STRIPE — signature element */
 .hazard-strip{
@@ -499,7 +509,10 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
   font-size:16px; min-height:48px;
 }
 .form-field textarea{resize:vertical; min-height:110px;}
-.form-field input:focus, .form-field textarea:focus, .form-field select:focus{outline:2px solid var(--accent); border-color:var(--accent);}
+/* Eingabefelder: nur die Randfarbe wechseln. Den Ring liefert die
+   :focus-visible-Regel oben — sonst haetten Felder einen einfarbigen Ring
+   und damit dasselbe Sichtbarkeitsproblem. */
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus{border-color:var(--accent);}
 /* Fehlerhafte Felder: nicht allein über Farbe erkennbar (WCAG 1.4.1) —
    der dickere Rand und die Meldung im Statusbereich tragen die Information. */
 .form-field input[aria-invalid="true"],
