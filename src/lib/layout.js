@@ -105,7 +105,10 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
   // sonst erst nach dem CSS entdeckt wird (spürbar auf Mobilfunk).
   const preloadHero =
     url === '/'
-      ? '\n<link rel="preload" as="image" href="/assets/img/hero-bg.webp" type="image/webp" fetchpriority="high">'
+      ? '\n<link rel="preload" as="image" href="/assets/img/hero-bg.webp" type="image/webp" fetchpriority="high">' +
+        // Nur die Startseite hat die Scroll-Sequenz — nur dort lohnt das winzige
+        // Skript im <head>, das den Zustandswechsel beim Laden verhindert.
+        '\n<script src="/assets/js/enhance.js"></script>'
       : '';
   return `<!DOCTYPE html>
 <html lang="de">

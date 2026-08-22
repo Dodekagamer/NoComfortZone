@@ -101,6 +101,10 @@ h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em
 header{
   position:sticky; top:0; z-index:50;
   background:rgba(21,22,26,0.92);
+  /* -webkit- zuerst: Safari kennt die Eigenschaft ohne Prefix erst ab
+     Version 18. Ohne diese Zeile bleibt die Kopfzeile auf iOS bis 17
+     unscharf-los — nicht kaputt, aber eben nicht wie gestaltet. */
+  -webkit-backdrop-filter:blur(6px);
   backdrop-filter:blur(6px);
 }
 /* Startseite: die Kopfzeile schwebt über dem Hero, statt ihn nach unten zu

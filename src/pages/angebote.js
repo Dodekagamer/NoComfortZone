@@ -6,7 +6,7 @@ module.exports = {
   url: '/angebote/',
   title: 'Angebote — No Comfort Zone',
   description:
-    'Boxen, Calisthenics, Outdoor-Training, Kindertraining und Präventionskurse — die Community-Angebote von No Comfort Zone im Überblick.',
+    'Boxen, Calisthenics, Outdoor-Training, Kindertraining, Präventionskurse und Community-Events — alle Angebote von No Comfort Zone im Überblick.',
   content: () => `
 ${pageHero(
   'Was bekomme ich?',
