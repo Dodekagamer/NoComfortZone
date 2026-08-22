@@ -506,6 +506,17 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .form-note{font-size:12.5px; color:var(--concrete); margin-top:14px;}
 .form-field label .req{color:var(--accent);}
 /* Rückmeldung nach dem Absenden — leer, solange nichts zu sagen ist */
+/* Das hidden-Attribut muss staerker sein als jede display-Regel. Ohne diese
+   Zeile setzt z. B. .btn{display:inline-flex} das hidden aus dem Browser-
+   Stylesheet ausser Kraft, und ein als versteckt markiertes Element ist
+   trotzdem sichtbar. */
+[hidden]{display:none !important;}
+
+.form-fallback{
+  /* Nur sichtbar, wenn der Popup-Blocker den WhatsApp-Teil verhindert hat.
+     Dann braucht dieser Schritt einen echten Klick der Person. */
+  margin-top:12px; align-self:flex-start;
+}
 .form-status{font-size:14px; margin-top:14px; color:var(--white);}
 .form-status:empty{display:none;}
 .form-status.is-warn{

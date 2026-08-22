@@ -143,25 +143,78 @@ document.documentElement.classList.add('js');
   const forms = document.querySelectorAll('form[data-form-type]');
   if (!forms.length) return;
 
-  function buildMessage(form) {
-    const type = form.getAttribute('data-form-type');
+  /**
+   * Kurze, gut vorlesbare Vorgangsnummer. Sie ist der einzige Zweck dieser
+   * Funktion: dieselbe Anfrage läuft über zwei Kanäle ein, und die Nummer
+   * macht auf einen Blick klar, dass es EIN Vorgang ist und keine zwei.
+   */
+  function makeRef() {
+    const zeit = Date.now().toString(36).slice(-4);
+    const zufall = Math.random().toString(36).slice(2, 5);
+    return ('NCZ-' + zeit + zufall).toUpperCase();
+  }
+
+  function formData(form) {
     const data = new FormData(form);
     const value = (key) => (data.get(key) || '').toString().trim();
-    const name = value('name');
-    const lines = [`Anfrage: ${type}`, `Name: ${name}`, `E-Mail: ${value('email')}`];
-    if (value('phone')) lines.push(`Telefon: ${value('phone')}`);
-    if (value('preferred')) lines.push(`Wunschtermin: ${value('preferred')}`);
-    if (value('message')) lines.push('', 'Nachricht:', value('message'));
-
     return {
-      subject: `[Anfrage: ${type}]${name ? ' ' + name : ''}`,
+      typ: form.getAttribute('data-form-type'),
+      name: value('name'),
+      email: value('email'),
+      phone: value('phone'),
+      preferred: value('preferred'),
+      message: value('message')
+    };
+  }
+
+  /**
+   * Die vollständige Anfrage — geht über den Kanal raus, den die Person
+   * angeklickt hat. `anderer` benennt den Kanal, über den zusätzlich die
+   * Notiz eingeht, damit beim Empfänger klar ist, was gleich noch kommt.
+   */
+  function vollNachricht(form, ref, anderer) {
+    const d = formData(form);
+    const lines = [`Anfrage: ${d.typ}`, `Vorgang: ${ref}`, `Name: ${d.name}`, `E-Mail: ${d.email}`];
+    if (d.phone) lines.push(`Telefon: ${d.phone}`);
+    if (d.preferred) lines.push(`Wunschtermin: ${d.preferred}`);
+    if (d.message) lines.push('', 'Nachricht:', d.message);
+    lines.push(
+      '',
+      '--',
+      `Zu diesem Vorgang geht euch zusätzlich eine kurze Notiz per ${anderer} zu.`,
+      `Gleiche Vorgangsnummer ${ref} — es ist dieselbe Anfrage, bitte nur einmal bearbeiten.`
+    );
+    return {
+      subject: `[Anfrage: ${d.typ}]${d.name ? ' ' + d.name : ''} (${ref})`,
       body: lines.join('\n')
+    };
+  }
+
+  /**
+   * Die Kurznotiz fuer den zweiten Kanal. Bewusst KEINE Kopie der Anfrage:
+   * nur Vorgangsnummer, Betreff und der Hinweis, wo die vollen Angaben liegen.
+   * So sieht der Empfänger sofort, dass nichts doppelt zu bearbeiten ist.
+   */
+  function notizNachricht(form, ref, wo) {
+    const d = formData(form);
+    const body = [
+      `Kurze Notiz zu Vorgang ${ref}.`,
+      '',
+      `Die vollständige Anfrage „${d.typ}“${d.name ? ' von ' + d.name : ''} ist gerade per ${wo} rausgegangen — dort stehen alle Angaben.`,
+      'Dies hier ist nur der Hinweis, damit ihr sie schnell seht.',
+      'Es ist dieselbe Anfrage, bitte nur einmal bearbeiten.'
+    ].join('\n');
+    return {
+      subject: `[Notiz zu ${ref}] ${d.typ}${d.name ? ' — ' + d.name : ''}`,
+      body
     };
   }
 
   forms.forEach((form) => {
     const status = form.querySelector('[data-form-status]');
     const mail = form.getAttribute('data-mailto');
+    const waNummer = form.getAttribute('data-whatsapp-number');
+    const waFallback = form.querySelector('[data-wa-fallback]');
     const fields = form.querySelectorAll('input, textarea');
 
     function say(message, kind) {
@@ -201,29 +254,86 @@ document.documentElement.classList.add('js');
       });
     });
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      // novalidate im Markup -> wir lösen die Prüfung selbst aus, damit die
-      // Meldung erst nach dem Absenden erscheint und nicht beim Tippen.
+    function waUrl(text) {
+      return `https://wa.me/${waNummer}?text=${encodeURIComponent(text)}`;
+    }
+
+    function mailUrl(msg) {
+      return `mailto:${mail}?subject=${encodeURIComponent(msg.subject)}&body=${encodeURIComponent(msg.body)}`;
+    }
+
+    function bereit() {
       const invalid = markValidity();
       if (invalid) {
         say('Bitte fülle Name und E-Mail aus, dann kann es losgehen.', 'warn');
         invalid.focus();
-        return;
+        return false;
       }
+      return true;
+    }
+
+    /**
+     * Verschickt die Anfrage über BEIDE Wege. `primaer` bestimmt nur, welcher
+     * Kanal die vollständige Anfrage bekommt — der andere bekommt die Notiz.
+     *
+     * Reihenfolge ist wichtig: window.open muss direkt in der Klick-/Submit-
+     * Verarbeitung passieren, sonst greift der Popup-Blocker. Das mailto:
+     * danach navigiert die Seite nicht sichtbar weg, also überlebt der Status.
+     */
+    function senden(primaer) {
+      if (!bereit()) return;
+      const ref = makeRef();
+      const mitWhatsapp = !!waNummer;
+
       try {
-        const { subject, body } = buildMessage(form);
-        say('Dein E-Mail-Programm sollte sich jetzt öffnen …');
-        window.location.href =
-          `mailto:${mail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        // Öffnet sich nichts (kein Mailprogramm eingerichtet — auf dem Handy
-        // häufig), bleibt die Seite sichtbar. Dann den Weg per Hand anbieten.
+        if (!mitWhatsapp) {
+          window.location.href = mailUrl(vollNachricht(form, ref, 'E-Mail'));
+          say(`Dein E-Mail-Programm sollte sich jetzt öffnen … (Vorgang ${ref})`);
+          return;
+        }
+
+        const waText = primaer === 'whatsapp'
+          ? (() => { const m = vollNachricht(form, ref, 'E-Mail'); return `${m.subject}\n\n${m.body}`; })()
+          : (() => { const m = notizNachricht(form, ref, 'E-Mail'); return `${m.subject}\n\n${m.body}`; })();
+        const mailMsg = primaer === 'whatsapp'
+          ? notizNachricht(form, ref, 'WhatsApp')
+          : vollNachricht(form, ref, 'WhatsApp');
+
+        // Kein 'noopener' im Feature-String: damit gäbe window.open laut
+        // Spezifikation IMMER null zurück, und wir könnten einen echten
+        // Popup-Blocker nicht von einem geöffneten Fenster unterscheiden.
+        // opener danach selbst zu kappen erreicht dasselbe Schutzziel.
+        const win = window.open(waUrl(waText), '_blank');
+        if (win) win.opener = null;
+        window.location.href = mailUrl(mailMsg);
+
+        if (win) {
+          if (waFallback) waFallback.hidden = true;
+          say(
+            `Vorgang ${ref}: Die vollständige Anfrage geht per ` +
+              (primaer === 'whatsapp' ? 'WhatsApp' : 'E-Mail') +
+              ' raus, eine kurze Notiz zusätzlich per ' +
+              (primaer === 'whatsapp' ? 'E-Mail' : 'WhatsApp') +
+              ' — beide mit derselben Vorgangsnummer.'
+          );
+        } else if (waFallback) {
+          // Popup blockiert: der WhatsApp-Teil braucht einen echten Klick.
+          waFallback.href = waUrl(waText);
+          waFallback.hidden = false;
+          say(
+            `Vorgang ${ref}: Die E-Mail ist vorbereitet. WhatsApp hat der Browser ` +
+              'blockiert — mit dem Button darunter schickst du dieselbe Anfrage auch dort.',
+            'warn'
+          );
+        }
+
+        // Öffnet sich kein Mailprogramm (auf dem Handy häufig), bleibt die
+        // Seite sichtbar. Dann den Weg per Hand anbieten.
         window.setTimeout(() => {
-          if (!document.hidden) {
+          if (!document.hidden && win) {
             say(
-              'Falls sich kein E-Mail-Programm geöffnet hat: schreib uns direkt an ' +
-                mail +
-                ' — oder nutze den WhatsApp-Button.',
+              `Vorgang ${ref}: Falls sich kein E-Mail-Programm geöffnet hat, schreib uns ` +
+                `direkt an ${mail} und nenn die Vorgangsnummer — der WhatsApp-Teil ist raus.`,
               'warn'
             );
           }
@@ -232,36 +342,16 @@ document.documentElement.classList.add('js');
         console.error('Anfrage konnte nicht vorbereitet werden:', err);
         say('Das hat leider nicht geklappt. Schreib uns bitte direkt an ' + mail + '.', 'warn');
       }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // novalidate im Markup -> wir lösen die Prüfung selbst aus, damit die
+      // Meldung erst nach dem Absenden erscheint und nicht beim Tippen.
+      senden('mail');
     });
 
     const waBtn = form.querySelector('[data-whatsapp-trigger]');
-    if (waBtn) {
-      waBtn.addEventListener('click', () => {
-        const invalid = markValidity();
-        if (invalid) {
-          say('Bitte fülle Name und E-Mail aus, dann kann es losgehen.', 'warn');
-          invalid.focus();
-          return;
-        }
-        try {
-          const { subject, body } = buildMessage(form);
-          const text = `${subject}\n\n${body}`;
-          const win = window.open(
-            `https://wa.me/${form.getAttribute('data-whatsapp-number')}?text=${encodeURIComponent(text)}`,
-            '_blank',
-            'noopener'
-          );
-          say(
-            win
-              ? 'WhatsApp wird geöffnet …'
-              : 'Dein Browser hat das Fenster blockiert — bitte Pop-ups erlauben oder per E-Mail schreiben.',
-            win ? null : 'warn'
-          );
-        } catch (err) {
-          console.error('WhatsApp-Anfrage konnte nicht vorbereitet werden:', err);
-          say('Das hat leider nicht geklappt. Schreib uns bitte direkt an ' + mail + '.', 'warn');
-        }
-      });
-    }
+    if (waBtn) waBtn.addEventListener('click', () => senden('whatsapp'));
   });
 })();

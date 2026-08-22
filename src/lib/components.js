@@ -128,11 +128,12 @@ function inquiryForm(formId, type, title, intro, messagePlaceholder) {
     <textarea id="${id}-message" name="message" placeholder="${esc(messagePlaceholder)}" enterkeyhint="done" maxlength="1200"></textarea>
   </div>
   <div class="form-actions">
-    <button type="submit" class="btn solid">Per E-Mail senden</button>
-    <button type="button" class="btn whatsapp" data-whatsapp-trigger>Per WhatsApp anfragen</button>
+    <button type="submit" class="btn solid">Anfrage senden (E-Mail zuerst)</button>
+    <button type="button" class="btn whatsapp" data-whatsapp-trigger>Anfrage senden (WhatsApp zuerst)</button>
   </div>
   <p class="form-status" id="${id}-status" data-form-status role="status" aria-live="polite"></p>
-  <p class="form-note">Öffnet dein E-Mail-Programm bzw. WhatsApp mit vorausgefüllter Nachricht an ${mail} — kein automatischer Versand, keine Datenspeicherung durch uns.</p>
+  <a class="btn whatsapp form-fallback" data-wa-fallback href="#" hidden>Dieselbe Anfrage per WhatsApp öffnen</a>
+  <p class="form-note">Deine Anfrage geht über <strong>beide</strong> Wege an ${mail} — die vollständigen Angaben über den Weg, den du wählst, und eine kurze Notiz über den anderen. Beide tragen dieselbe Vorgangsnummer, damit klar ist: eine Anfrage, keine zwei. Es öffnen sich dein E-Mail-Programm und WhatsApp mit vorbereitetem Text — kein automatischer Versand, keine Datenspeicherung durch uns.</p>
   <noscript>
     <p class="form-note form-note-warn">Die Formulare brauchen JavaScript, um deine Eingaben vorzubereiten. Schreib uns stattdessen direkt an <a href="mailto:${mail}" class="inline-link">${mail}</a> oder ruf an: <a href="tel:${esc(site.contact.phoneHref)}" class="inline-link">${esc(site.contact.phoneDisplay)}</a> — Stichwort „${esc(type)}".</p>
   </noscript>
