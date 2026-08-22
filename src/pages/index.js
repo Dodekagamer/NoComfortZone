@@ -135,7 +135,7 @@ module.exports = {
     <div class="section-head">
       <span class="eyebrow">Für jeden ein Platz</span>
       <h2>Angebote nach Zielgruppe</h2>
-      <p>No Comfort Zone richtet sich nicht an "alle" — sondern an Menschen, die sich verändern möchten.</p>
+      <p>No Comfort Zone richtet sich nicht an „alle“ — sondern an Menschen, die sich verändern möchten.</p>
     </div>
     <div class="audience-list">
       <div class="audience-row">
@@ -171,15 +171,15 @@ module.exports = {
     </div>
     <div class="testimonials">
       <div class="t-card">
-        <p class="quote">"Ich bin heute stärker geworden — nicht nur körperlich, auch mental."</p>
+        <p class="quote">„Ich bin heute stärker geworden — nicht nur körperlich, auch mental.“</p>
         <div class="who">Trainingsteilnehmer:in, Karlsruhe</div>
       </div>
       <div class="t-card">
-        <p class="quote">"Zum ersten Mal habe ich das Gefühl, Teil von etwas Größerem zu sein."</p>
+        <p class="quote">„Zum ersten Mal habe ich das Gefühl, Teil von etwas Größerem zu sein.“</p>
         <div class="who">Teilnehmer:in, Familienprogramm</div>
       </div>
       <div class="t-card">
-        <p class="quote">"Hier zählt nicht, wie gut ich heute bin — sondern wie weit wir gemeinsam kommen."</p>
+        <p class="quote">„Hier zählt nicht, wie gut ich heute bin — sondern wie weit wir gemeinsam kommen.“</p>
         <div class="who">Teilnehmer:in, Jugendtraining</div>
       </div>
     </div>

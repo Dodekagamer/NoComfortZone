@@ -20,7 +20,7 @@ module.exports = {
 ${pageHero(
   'Für wen ist es?',
   'No Comfort Zone ist für jeden ein Platz.',
-  'Wir richten uns nicht an "alle" — sondern an Menschen, die sich verändern möchten. Egal ob jung, älter, allein, in der Familie oder als Organisation: Es gibt ein passendes Angebot.',
+  'Wir richten uns nicht an „alle“ — sondern an Menschen, die sich verändern möchten. Egal ob jung, älter, allein, in der Familie oder als Organisation: Es gibt ein passendes Angebot.',
   'Passendes Angebot finden',
   '/angebote/'
 )}

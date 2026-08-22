@@ -47,6 +47,10 @@ function applyBasePath(html) {
 function buildPages() {
   const files = fs.readdirSync(PAGES_DIR).filter((f) => f.endsWith('.js'));
   const pages = [];
+  // Schon vergebene Adressen merken. Zwei Seiten mit derselben URL wuerden
+  // sonst dieselbe Datei schreiben — die zweite ueberschreibt die erste, der
+  // Build meldet trotzdem Erfolg und eine Seite fehlt unbemerkt.
+  const vergeben = new Map();
   for (const file of files) {
     const mod = require(path.join(PAGES_DIR, file));
     // Ein Modul liefert entweder eine Seite oder — über `pages` — mehrere
@@ -67,6 +71,14 @@ function buildPages() {
           content: typeof page.content === 'function' ? page.content() : page.content
         })
       );
+      if (vergeben.has(page.url)) {
+        throw new Error(
+          `Zwei Seiten wollen dieselbe Adresse "${page.url}": ${vergeben.get(page.url)} und ${file}. ` +
+            `Bei den Angeboten ist meist ein doppelter "slug" in src/lib/offers.json die Ursache.`
+        );
+      }
+      vergeben.set(page.url, file);
+
       const outPath = outputPathFor(page.url);
       fs.mkdirSync(path.dirname(outPath), { recursive: true });
       fs.writeFileSync(outPath, html);

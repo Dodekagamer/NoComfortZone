@@ -5,9 +5,19 @@ const { esc } = require('../lib/escape');
 const { offers } = require('../lib/offers.json');
 
 const IMG_DIR = path.join(__dirname, '..', 'assets', 'img', 'angebote');
-const PLACEHOLDER = 'platzhalter.jpg';
+const PLACEHOLDER = 'platzhalter.svg';
 
 /**
+ * Zwei Dinge gelten nur fuer den Platzhalter:
+ * - Das Bild traegt seinen Hinweis selbst ("Foto folgt"). Eine zusaetzliche
+ *   Bildunterschrift waere doppelt; die frueher hier stehende Notiz "hier
+ *   kommt euer eigenes Foto hin" richtete sich ohnehin an uns und stand
+ *   sichtbar auf der oeffentlichen Seite.
+ * - Der alt-Text aus offers.json beschreibt das ECHTE Foto. Solange der
+ *   Platzhalter zu sehen ist, waere er schlicht falsch — Screenreader wuerden
+ *   ein Bild ansagen, das es nicht gibt. Deshalb bleibt alt dort leer
+ *   (dekoratives Bild); sobald das Foto liegt, greift der Text automatisch.
+ *
  * Solange ein Foto noch nicht hinterlegt ist, wird das Platzhalterbild
  * ausgeliefert und der Bildbereich als Platzhalter gekennzeichnet. Sobald die
  * Datei unter dem erwarteten Namen in src/assets/img/angebote/ liegt, wird sie
@@ -29,6 +39,53 @@ function missingImages() {
   return missing;
 }
 
+/**
+ * offers.json wird von Hand gepflegt (Texte, Bildnamen, Alt-Texte). Ein
+ * vergessenes Feld landete bisher als „undefined“ sichtbar auf der Seite,
+ * ein doppelter slug liess eine ganze Angebotsseite verschwinden. Beides
+ * faellt jetzt beim Bauen auf, nicht erst den Besuchern.
+ */
+function pruefeDaten() {
+  const slugs = new Map();
+  offers.forEach((offer, i) => {
+    const wo = `offers[${i}]${offer.slug ? ` ("${offer.slug}")` : ''}`;
+    for (const feld of ['slug', 'tag', 'title', 'teaser', 'lead']) {
+      if (!offer[feld] || !String(offer[feld]).trim()) {
+        throw new Error(`src/lib/offers.json: ${wo} fehlt das Feld "${feld}".`);
+      }
+    }
+    if (!/^[a-z0-9-]+$/.test(offer.slug)) {
+      throw new Error(
+        `src/lib/offers.json: ${wo} hat einen unbrauchbaren slug — erlaubt sind ` +
+          `Kleinbuchstaben, Ziffern und Bindestriche (daraus wird die Adresse).`
+      );
+    }
+    if (slugs.has(offer.slug)) {
+      throw new Error(
+        `src/lib/offers.json: slug "${offer.slug}" wird zweimal verwendet ` +
+          `(${slugs.get(offer.slug)} und ${wo}). Jede Adresse darf es nur einmal geben.`
+      );
+    }
+    slugs.set(offer.slug, wo);
+
+    if (!Array.isArray(offer.sections) || offer.sections.length !== 3) {
+      throw new Error(
+        `src/lib/offers.json: ${wo} braucht genau 3 Abschnitte, hat aber ` +
+          `${Array.isArray(offer.sections) ? offer.sections.length : 0}.`
+      );
+    }
+    offer.sections.forEach((s, j) => {
+      for (const feld of ['heading', 'text', 'image', 'alt']) {
+        if (!s[feld] || !String(s[feld]).trim()) {
+          throw new Error(`src/lib/offers.json: ${wo}, Abschnitt ${j + 1} fehlt "${feld}".`);
+        }
+      }
+    });
+  });
+}
+
+pruefeDaten();
+
 function renderSection(section, index) {
   const img = resolveImage(section.image);
   return `<section class="offer-detail${index % 2 === 1 ? ' is-reversed' : ''}">
@@ -39,9 +96,8 @@ function renderSection(section, index) {
       <p>${esc(section.text)}</p>
     </div>
     <figure class="offer-detail-media${img.isPlaceholder ? ' is-placeholder' : ''}">
-      <img src="${img.src}" alt="${esc(section.alt)}" width="1200" height="800"
-           loading="lazy" decoding="async">
-      ${img.isPlaceholder ? '<figcaption>Platzhalter — hier kommt euer eigenes Foto hin</figcaption>' : ''}
+      <img src="${img.src}" alt="${img.isPlaceholder ? 'Platzhalter, Foto folgt' : esc(section.alt)}"
+           width="1200" height="800" loading="lazy" decoding="async">
     </figure>
   </div>
 </section>`;

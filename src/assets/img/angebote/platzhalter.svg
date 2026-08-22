@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="presentation">
+  <!-- Platzhalter, solange kein echtes Foto hinterlegt ist. Bewusst ohne
+       interne Notiz: dieses Bild steht oeffentlich auf der Website. Die
+       Bildunterschrift im HTML sagt bereits "Foto folgt." -->
+  <defs>
+    <pattern id="streifen" width="56" height="56" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <rect width="56" height="56" fill="#1e2025"/>
+      <rect width="28" height="56" fill="#25201e"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="800" fill="#15161a"/>
+  <rect width="1200" height="800" fill="url(#streifen)" opacity="0.9"/>
+  <g fill="none" stroke="#6e6a61" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M498 328h44l22-30h72l22 30h44a26 26 0 0 1 26 26v128a26 26 0 0 1-26 26H498a26 26 0 0 1-26-26V354a26 26 0 0 1 26-26z"/>
+    <circle cx="600" cy="418" r="52"/>
+  </g>
+  <text x="600" y="560" text-anchor="middle" fill="#a49d8f"
+        font-family="'Space Mono', ui-monospace, monospace" font-size="34" letter-spacing="10">FOTO FOLGT</text>
+</svg>

@@ -598,10 +598,6 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .offer-detail-text p{color:var(--concrete); font-size:16.5px;}
 .offer-detail-media{margin:0; position:relative;}
 .offer-detail-media img{width:100%; height:auto; border:1px solid var(--line); display:block;}
-.offer-detail-media.is-placeholder figcaption{
-  margin-top:10px; font-family:'Space Mono', monospace; font-size:11.5px;
-  letter-spacing:0.04em; text-transform:uppercase; color:var(--safety);
-}
 @media (max-width:860px){
   .offer-detail{padding:44px 0;}
   .offer-detail-grid{grid-template-columns:1fr; gap:24px;}
