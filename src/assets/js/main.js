@@ -73,6 +73,66 @@ document.documentElement.classList.add('js');
  * Ablauf unverändert: Panel 1 -> 2 -> 3 -> finaler Hero, dazu der Warnstreifen-
  * Sweep und der ausblendende Scroll-Hinweis.
  */
+/* (2b) Inhalte beim Hereinscrollen einblenden.
+   Die Startposition setzt bereits enhance.js ueber die Klasse "anim" — hier
+   wird sie elementweise wieder aufgehoben, sobald ein Abschnitt ins Bild
+   kommt. Nur opacity und transform werden bewegt: beide erzeugen kein
+   Nachrechnen des Layouts, der Inhalt springt also nicht (CLS bleibt 0).
+   Die Auswahl unten muss mit der Liste in styles.css uebereinstimmen. */
+(function initEinblenden() {
+  const wurzel = document.documentElement;
+  if (!wurzel.classList.contains('anim')) return; // reduzierte Bewegung o. Ae.
+
+  const AUSWAHL = [
+    '.section-head',
+    '.offer-grid > *',
+    '.values-grid > *',
+    '.quickfacts-grid > *',
+    '.pillar-grid > *',
+    '.testimonials > *',
+    '.audience-row',
+    '.pricing-grid > *',
+    '.offer-detail-text',
+    '.offer-detail-media',
+    '.callout',
+    '.steps > *',
+    '.cta-band .wrap',
+    '.form'
+  ].join(',');
+
+  const ziele = [...document.querySelectorAll(AUSWAHL)];
+  // Uebernahme signalisieren, damit das Sicherheitsnetz in enhance.js ruht.
+  wurzel.classList.add('anim-aktiv');
+
+  if (!('IntersectionObserver' in window) || !ziele.length) {
+    wurzel.classList.remove('anim');
+    return;
+  }
+
+  ziele.forEach((el) => el.classList.add('einblenden'));
+
+  const beobachter = new IntersectionObserver(
+    (eintraege) => {
+      eintraege.forEach((e) => {
+        if (!e.isIntersecting) return;
+        // Geschwister leicht versetzt starten lassen — das wirkt geordnet
+        // statt wie ein gleichzeitiges Aufploppen. Gedeckelt, damit spaete
+        // Elemente einer langen Reihe nicht spuerbar hinterherhinken.
+        const geschwister = [...(e.target.parentElement ? e.target.parentElement.children : [])];
+        const platz = Math.min(geschwister.indexOf(e.target), 5);
+        e.target.style.transitionDelay = platz > 0 ? platz * 60 + 'ms' : '';
+        e.target.classList.add('ist-da');
+        beobachter.unobserve(e.target);
+      });
+    },
+    // Etwas frueher ausloesen, damit die Bewegung fertig ist, wenn der
+    // Abschnitt wirklich im Blick liegt.
+    { rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+  );
+
+  ziele.forEach((el) => beobachter.observe(el));
+})();
+
 (function initHeroSequence() {
   const section = document.querySelector('.scroll-intro');
   if (!section) return;

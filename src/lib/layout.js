@@ -105,10 +105,7 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
   // sonst erst nach dem CSS entdeckt wird (spürbar auf Mobilfunk).
   const preloadHero =
     url === '/'
-      ? '\n<link rel="preload" as="image" href="/assets/img/hero-bg.webp" type="image/webp" fetchpriority="high">' +
-        // Nur die Startseite hat die Scroll-Sequenz — nur dort lohnt das winzige
-        // Skript im <head>, das den Zustandswechsel beim Laden verhindert.
-        '\n<script src="/assets/js/enhance.js"></script>'
+      ? '\n<link rel="preload" as="image" href="/assets/img/hero-bg.webp" type="image/webp" fetchpriority="high">'
       : '';
   return `<!DOCTYPE html>
 <html lang="de">
@@ -144,6 +141,12 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Space+Mono:wght@400;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Winziges Skript, das <html> als "js" markiert, BEVOR der Body gerendert
+     wird. Es steht auf jeder Seite, weil die Einblend-Animationen ihre
+     Startposition sonst erst nachtraeglich bekaemen — dann waere der Inhalt
+     kurz zu sehen und wuerde danach wegspringen. Ein Inline-Skript verbietet
+     die CSP, deshalb eine eigene Datei. -->
+<script src="/assets/js/enhance.js"></script>
 <link rel="stylesheet" href="/assets/css/styles.css">${preloadHero}
 ${structuredData({ url, title: pageTitle })}
 </head>

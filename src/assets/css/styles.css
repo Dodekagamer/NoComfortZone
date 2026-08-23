@@ -15,6 +15,17 @@
   --safety:#ffc738;
   --white:#f5f3ed;
   --line: rgba(245,243,237,0.14);
+  /* ---- Bewegung ----------------------------------------------------------
+     Eigene Kurven statt des Browser-"ease": schneller Start, weiches Auslaufen.
+     Das wirkt entschlossen statt traege — und passt zur Tonalitaet der Marke.
+     Die Dauern sind bewusst kurz; Bewegung soll fuehren, nicht aufhalten.   */
+  --ease-aus:cubic-bezier(0.16, 1, 0.3, 1);      /* weiches Auslaufen */
+  --ease-weich:cubic-bezier(0.4, 0, 0.2, 1);     /* fuer Hin und Zurueck */
+  --ease-schwung:cubic-bezier(0.34, 1.4, 0.64, 1); /* leichter Ueberschwung */
+  --takt-kurz:140ms;
+  --takt:240ms;
+  --takt-lang:520ms;
+
   --field-line:#6e6a61;              /* 3,4:1 auf --asphalt (WCAG 1.4.11) */
   --maxw: 1180px;
   --accent: var(--hazard);
@@ -89,9 +100,26 @@ h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em
   background:none;
   cursor:pointer;
   text-align:center;
-  transition:all .2s ease;
+  /* Nur die Eigenschaften nennen, die sich wirklich aendern: "all" wuerde auch
+     Layoutwerte animieren und bei jedem neuen Stil unbeabsichtigt mitlaufen.
+     transform und opacity laufen zudem auf der Grafikkarte — das bleibt auch
+     auf aelteren Handys fluessig. */
+  transition:background-color var(--takt) var(--ease-weich),
+             border-color var(--takt) var(--ease-weich),
+             color var(--takt) var(--ease-weich),
+             transform var(--takt-kurz) var(--ease-schwung),
+             box-shadow var(--takt) var(--ease-weich);
+  will-change:transform;
 }
 .btn:hover{background:var(--white); color:var(--asphalt);}
+/* Anheben beim Zeigen, Eindruecken beim Klicken — kurze, koerperliche
+   Rueckmeldung. Nur fuer Geraete mit echtem Zeiger: auf Touchscreens bleibt
+   der Hover-Zustand sonst nach dem Tippen "kleben". */
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{transform:translateY(-2px);}
+}
+.btn:active{transform:translateY(0) scale(0.985); transition-duration:60ms;}
+
 .btn.solid{background:var(--accent); border-color:var(--accent); color:var(--asphalt);}
 .btn.solid:hover{background:var(--white); border-color:var(--white); color:var(--asphalt);}
 .btn.small{padding:10px 18px; font-size:11px; min-height:44px;}
@@ -439,7 +467,15 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto;}
-  *{transition:none !important;}
+  /* Nicht nur Uebergaenge: auch laufende Animationen (z. B. die Scroll-
+     Andeutung) und die Einblend-Startpositionen muessen weg, sonst bliebe
+     Bewegung uebrig oder Inhalt unsichtbar. */
+  *, *::before, *::after{
+    transition:none !important;
+    animation:none !important;
+    scroll-behavior:auto !important;
+  }
+  .anim .einblenden{opacity:1 !important; transform:none !important;}
 }
 
 /* ==========================================================================
@@ -721,4 +757,123 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
   .offer-detail-media{display:none !important;}
   .intro-pin, .scroll-intro{height:auto !important; min-height:0 !important;}
   .intro-panel{opacity:1 !important; position:static !important; transform:none !important;}
+}
+
+/* ---- BEWEGUNG: Karten, Links, Menue --------------------------------------
+   Zurueckhaltend gehalten: eine Idee anheben, Rahmen in der Akzentfarbe, mehr
+   nicht. Karten sind hier Flaechen mit harten Kanten — sie sollen sich nicht
+   wie Spielkarten anfuehlen.                                              */
+.offer-card, .value-card, .qf-card, .pillar-card, .t-card{
+  transition:transform var(--takt) var(--ease-aus),
+             border-color var(--takt) var(--ease-weich),
+             outline-color var(--takt) var(--ease-weich),
+             background-color var(--takt) var(--ease-weich);
+}
+/* Anheben und Einblenden greifen auf dieselbe Eigenschaft zu. Statt ueber
+   Spezifitaet zu streiten, addieren beide ihren Anteil in eigenen Variablen —
+   so kann eine Karte gleichzeitig eingeblendet werden und angehoben sein. */
+.offer-card, .value-card, .qf-card, .pillar-card, .t-card{
+  transform:translateY(calc(var(--einblend-y, 0px) + var(--hover-y, 0px)));
+}
+@media (hover:hover) and (pointer:fine){
+  .offer-card.is-link:hover{--hover-y:-4px; outline-color:var(--accent);}
+  .qf-card:hover, .pillar-card:hover{--hover-y:-3px;}
+  .value-card:hover{background:var(--asphalt-2);}
+}
+.offer-card.is-link:active{--hover-y:-1px; transition-duration:60ms;}
+
+/* Der Pfeil auf den Angebotskarten laeuft beim Zeigen ein Stueck mit. */
+.offer-more{
+  display:inline-block;
+  transition:transform var(--takt) var(--ease-aus), color var(--takt) var(--ease-weich);
+}
+@media (hover:hover) and (pointer:fine){
+  .offer-card.is-link:hover .offer-more{transform:translateX(5px);}
+}
+
+/* Fliesstext-Links: Unterstreichung waechst von links, statt hart zu erscheinen. */
+.inline-link{
+  background-image:linear-gradient(var(--accent), var(--accent));
+  background-repeat:no-repeat;
+  background-position:0 100%;
+  background-size:0% 1.5px;
+  transition:background-size var(--takt) var(--ease-aus), color var(--takt) var(--ease-weich);
+}
+@media (hover:hover) and (pointer:fine){
+  .inline-link:hover{background-size:100% 1.5px;}
+}
+
+/* Navigationspunkte: Farbe und Deckkraft weich statt schlagartig. */
+nav a{transition:opacity var(--takt-kurz) var(--ease-weich), color var(--takt-kurz) var(--ease-weich);}
+.footer-legal a, .footer-grid a{transition:color var(--takt-kurz) var(--ease-weich), opacity var(--takt-kurz) var(--ease-weich);}
+
+/* Menuetaste: das Symbol dreht sich beim Oeffnen leicht mit. */
+.nav-toggle{transition:border-color var(--takt) var(--ease-weich), transform var(--takt) var(--ease-schwung);}
+header[data-open="true"] .nav-toggle{transform:rotate(90deg); border-color:var(--accent);}
+
+/* Aufklappendes Menue: einblenden und leicht herunterfahren statt hart
+   erscheinen. Nur die Bewegung ist animiert — die Hoehe bleibt unangetastet,
+   sonst ruckelt es und der Inhalt darunter springt. */
+@media (max-width:1180px){
+  header[data-open="true"] nav{
+    animation:menue-auf var(--takt) var(--ease-aus) both;
+  }
+  @keyframes menue-auf{
+    from{opacity:0; transform:translateY(-8px);}
+    to{opacity:1; transform:none;}
+  }
+}
+
+/* Formularfelder: Rahmenwechsel beim Hineinklicken weich. */
+.form-field input, .form-field textarea, .form-field select{
+  transition:border-color var(--takt-kurz) var(--ease-weich),
+             background-color var(--takt-kurz) var(--ease-weich);
+}
+
+/* Statusmeldung der Formulare faehrt kurz ein, damit sie bemerkt wird. */
+.form-status:not(:empty){animation:status-ein var(--takt) var(--ease-aus) both;}
+@keyframes status-ein{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+
+/* ---- EINBLENDEN BEIM SCROLLEN --------------------------------------------
+   Die Startposition haengt an .anim (gesetzt von enhance.js im <head>, damit
+   nichts kurz aufblitzt) und wird von main.js elementweise aufgehoben.
+   Faellt main.js aus, nimmt enhance.js die Klasse nach 1,5 s selbst zurueck —
+   eine unsichtbare Seite darf nicht das Ergebnis eines Ladefehlers sein.
+   Bewegt werden nur opacity und transform: kein Layout-Nachrechnen, kein
+   Springen des Inhalts.                                                    */
+.anim .einblenden{
+  --einblend-y:18px;
+  opacity:0;
+  transform:translateY(calc(var(--einblend-y, 0px) + var(--hover-y, 0px)));
+  transition:opacity var(--takt-lang) var(--ease-aus),
+             transform var(--takt-lang) var(--ease-aus);
+}
+.anim .einblenden.ist-da{--einblend-y:0px; opacity:1;}
+
+/* Bilder in den Angebotsdetails kommen zusaetzlich minimal aus der Tiefe.
+   Sie sind nicht anhebbar, deshalb hier ohne Hover-Anteil. */
+.anim .offer-detail-media.einblenden{transform:translateY(18px) scale(0.985);}
+.anim .offer-detail-media.einblenden.ist-da{transform:none;}
+
+/* ---- SEITENWECHSEL -------------------------------------------------------
+   Weicher Uebergang zwischen zwei Seiten. Browser ohne Unterstuetzung
+   ignorieren den Block vollstaendig und wechseln wie bisher — es gibt also
+   nichts nachzuruesten und nichts, was kaputtgehen kann.                   */
+@view-transition{ navigation:auto; }
+
+::view-transition-old(root){
+  animation:seite-raus 120ms var(--ease-weich) both;
+}
+::view-transition-new(root){
+  animation:seite-rein var(--takt) var(--ease-aus) both;
+}
+@keyframes seite-raus{ to{opacity:0;} }
+@keyframes seite-rein{ from{opacity:0; transform:translateY(8px);} }
+
+/* Die Kopfzeile bleibt beim Wechsel stehen, statt mitzublenden — das haelt
+   den Wechsel ruhig und macht klar, dass man auf derselben Website bleibt. */
+header{ view-transition-name:kopfzeile; }
+
+@media (prefers-reduced-motion: reduce){
+  ::view-transition-old(root), ::view-transition-new(root){animation:none !important;}
 }
