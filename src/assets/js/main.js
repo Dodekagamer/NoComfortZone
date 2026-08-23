@@ -125,12 +125,47 @@ document.documentElement.classList.add('js');
         beobachter.unobserve(e.target);
       });
     },
-    // Etwas frueher ausloesen, damit die Bewegung fertig ist, wenn der
-    // Abschnitt wirklich im Blick liegt.
-    { rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+    // Bewusst ohne negativen Rand und mit Schwelle 0: Sobald ein Element den
+    // Bildschirm auch nur beruehrt, wird es eingeblendet. Ein spaeterer
+    // Ausloesepunkt sieht beim Scrollen zwar ruhiger aus, laesst aber Inhalte
+    // unsichtbar, die schon im Bild stehen — etwa nach einem Sprung auf einen
+    // Anker mitten in der Seite oder ganz am Seitenende, wo man nicht weiter
+    // scrollen kann.
+    { rootMargin: '0px', threshold: 0 }
   );
 
   ziele.forEach((el) => beobachter.observe(el));
+
+  /* Zusaetzliches Netz: Was im Bild steht und noch versteckt ist, wird direkt
+     gezeigt. Sichtbarer Inhalt darf nie von einer Animation abhaengen.
+
+     Mehrfach statt einmalig, weil ein Aufruf mit Ankersprung (z. B.
+     /vision-werte/#werte) weich dorthin scrollt — nach 400 ms ist der Browser
+     noch unterwegs, und ein einzelner Blick zu diesem Zeitpunkt sieht die
+     Zielelemente noch gar nicht. Nach rund zwei Sekunden ist jede
+     Ankerbewegung durch, dann wird nicht weiter nachgesehen. */
+  function sichtbaresNachziehen() {
+    let offen = 0;
+    ziele.forEach((el) => {
+      if (el.classList.contains('ist-da')) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight && r.bottom > 0) {
+        el.classList.add('ist-da');
+        beobachter.unobserve(el);
+      } else {
+        offen++;
+      }
+    });
+    return offen;
+  }
+  [400, 900, 1400, 2000].forEach((ms) => window.setTimeout(sichtbaresNachziehen, ms));
+
+  /* Der genaue Zeitpunkt, an dem ein Ankersprung ankommt, laesst sich nicht
+     erraten — "scrollend" sagt es dem Browser selbst. Wo es das nicht gibt,
+     bleiben die Zeitpunkte oben als Rueckfallebene. */
+  if ('onscrollend' in window) {
+    window.addEventListener('scrollend', sichtbaresNachziehen, { passive: true });
+  }
 })();
 
 (function initHeroSequence() {

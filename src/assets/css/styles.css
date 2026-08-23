@@ -732,6 +732,16 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
   html, body{background:#fff !important; color:#000 !important;}
   body{font-size:11pt; line-height:1.45;}
 
+  /* Beim Drucken wird nicht gescrollt — Abschnitte, die noch nie im Bild
+     waren, haetten ihre Einblendung nie ausgeloest und kaemen als weisse
+     Flaeche aus dem Drucker. Deshalb hier alles sichtbar setzen, ebenso
+     jede Bewegung abschalten. */
+  .anim .einblenden{opacity:1 !important; transform:none !important;}
+  *, *::before, *::after{
+    animation:none !important;
+    transition:none !important;
+  }
+
   header, footer, .hazard-strip, .skip-link, .nav-toggle, nav,
   .cta-band, .form-actions, .form-note, .scroll-cue, .breadcrumb,
   .form-fallback, .offer-more{display:none !important;}
