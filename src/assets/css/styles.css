@@ -71,14 +71,16 @@ a{color:inherit; text-decoration:none;}
    entstehen schnell sehr lange Komposita, und die Angebotstexte werden von Hand
    gepflegt — ohne diese Regel schob ein einziges langes Wort die Seite bei
    320px um ueber 600px nach rechts. */
-body{overflow-wrap:break-word;}
-h1,h2,h3{overflow-wrap:break-word; hyphens:auto;}
-
 /* main nimmt den Fokus nur ueber tabindex="-1" an (siehe layout.js); die
    Umrandung dafuer wuerde beim Anspringen stoeren und entfaellt. */
 main:focus{outline:none;}
 
-h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em; text-transform:uppercase; line-height:1.02;}
+h1,h2,h3{
+  font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em;
+  text-transform:uppercase; line-height:1.02;
+  /* Lange deutsche Komposita duerfen die Spalte nicht sprengen. */
+  overflow-wrap:break-word; hyphens:auto;
+}
 .eyebrow{
   font-family:'Space Mono', monospace;
   font-size:12.5px;
@@ -109,7 +111,8 @@ h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em
              color var(--takt) var(--ease-weich),
              transform var(--takt-kurz) var(--ease-schwung),
              box-shadow var(--takt) var(--ease-weich);
-  will-change:transform;
+  /* Kein will-change: das erzwaenge fuer JEDEN Button dauerhaft eine eigene
+     Grafikebene. Die Uebergaenge sind kurz und laufen auch so fluessig. */
 }
 .btn:hover{background:var(--white); color:var(--asphalt);}
 /* Anheben beim Zeigen, Eindruecken beim Klicken — kurze, koerperliche
@@ -149,6 +152,9 @@ h1,h2,h3{font-family:'Anton', sans-serif; font-weight:400; letter-spacing:0.01em
 /* HEADER */
 header{
   position:sticky; top:0; z-index:50;
+  /* Beim Seitenwechsel stehen bleiben, statt mitzublenden — das haelt den
+     Uebergang ruhig und zeigt, dass man auf derselben Website bleibt. */
+  view-transition-name:kopfzeile;
   background:rgba(21,22,26,0.92);
   /* -webkit- zuerst: Safari kennt die Eigenschaft ohne Prefix erst ab
      Version 18. Ohne diese Zeile bleibt die Kopfzeile auf iOS bis 17
@@ -185,12 +191,17 @@ body.home header{position:fixed; top:0; left:0; right:0;}
    etwas breitere Space-Mono-Schrift, sobald sie geladen ist. flex-wrap bleibt
    als Sicherheitsnetz stehen, greift im Normalfall aber nicht mehr. */
 nav ul{display:flex; gap:12px; list-style:none; flex-wrap:wrap;}
-nav a{font-family:'Space Mono', monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase; opacity:0.85;}
+nav a{
+  font-family:'Space Mono', monospace; font-size:12px; letter-spacing:0.05em;
+  text-transform:uppercase; opacity:0.85;
+  transition:opacity var(--takt-kurz) var(--ease-weich), color var(--takt-kurz) var(--ease-weich);
+}
 nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 .nav-toggle{
   display:none; background:none; border:2px solid var(--line); color:var(--white);
   width:44px; height:44px; font-size:20px; cursor:pointer; flex-shrink:0;
   align-items:center; justify-content:center;
+  transition:border-color var(--takt) var(--ease-weich), transform var(--takt) var(--ease-schwung);
 }
 .navbar-cta{display:flex; align-items:center; gap:12px; flex-shrink:0;}
 /* Nur im Mobile-Menü sichtbar (der Header-CTA wird dort ausgeblendet, s. u.) */
@@ -205,15 +216,53 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 .js .scroll-intro{height:440vh;}
 .intro-pin{
   position:sticky; top:0; height:100vh; overflow:hidden;
-  /* Erst JPEG als Fallback, dann WebP für alle Browser, die es können:
-     136 KB statt 263 KB — knapp die Hälfte weniger auf Mobilfunk. */
+  /* Der Verlauf steht in einer Variablen, weil er in jeder Groessenstufe
+     unten erneut gebraucht wird — sonst muesste man ihn viermal pflegen. */
+  --hero-verlauf:linear-gradient(180deg, rgba(21,22,26,0.62), rgba(21,22,26,0.94));
+
+  /* Zwei Deklarationen pro Stufe: zuerst ein einfaches JPEG, das jeder Browser
+     versteht, danach dieselbe Stufe als WebP ueber image-set(). Browser, die
+     image-set nicht kennen, verwerfen die zweite Zeile und behalten die erste.
+     Die Groessenstufen sparen auf dem Handy rund 100 KB — das Bild wurde
+     vorher in voller Breite auch an 390px-Bildschirme ausgeliefert. */
   background:
-    linear-gradient(180deg, rgba(21,22,26,0.62), rgba(21,22,26,0.94)),
+    var(--hero-verlauf),
     url('../img/hero-bg.jpg') center center / cover no-repeat;
   background:
-    linear-gradient(180deg, rgba(21,22,26,0.62), rgba(21,22,26,0.94)),
-    image-set(url('../img/hero-bg.webp') type('image/webp'),
-              url('../img/hero-bg.jpg') type('image/jpeg')) center center / cover no-repeat;
+    var(--hero-verlauf),
+    image-set(url('../img/hero-bg.webp') type('image/webp'))
+    center center / cover no-repeat;
+}
+
+/* Die Stufe haengt allein an der Bildschirmbreite — NICHT zusaetzlich an der
+   Pixeldichte. Das Vorabladen im <head> kann nur nach Breite unterscheiden;
+   waehlte das CSS nach einem anderen Kriterium, laedt das Geraet beide Dateien.
+   Genau das war der Fall: ein Handy zog 112 KB statt 36 KB, ein Tablet 212 KB.
+   Die weichere Aufloesung faellt nicht auf, weil ueber dem Foto ein Verlauf mit
+   62-94 % Deckkraft liegt. */
+@media (max-width:760px){
+  .intro-pin{
+    background:
+      var(--hero-verlauf),
+      url('../img/hero-bg-700.jpg') center center / cover no-repeat;
+    background:
+      var(--hero-verlauf),
+      image-set(url('../img/hero-bg-700.webp') type('image/webp'))
+      center center / cover no-repeat;
+  }
+}
+
+/* Mittlere Bildschirme: 1100er-Stufe. */
+@media (min-width:761px) and (max-width:1200px){
+  .intro-pin{
+    background:
+      var(--hero-verlauf),
+      url('../img/hero-bg-1100.jpg') center center / cover no-repeat;
+    background:
+      var(--hero-verlauf),
+      image-set(url('../img/hero-bg-1100.webp') type('image/webp'))
+      center center / cover no-repeat;
+  }
 }
 /* Bewusst 100vh und NICHT 100dvh:
    dvh ist die *dynamische* Viewport-Höhe und ändert sich am Handy laufend,
@@ -265,8 +314,12 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
      Scroll-Hinweis schon vor dem ersten Scrollen zu sehen ist. */
   position:absolute; bottom:120px; left:50%; transform:translateX(-50%); z-index:3;
   font-family:'Space Mono', monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
-  color:var(--concrete); display:flex; flex-direction:column; align-items:center; gap:8px;
+  color:var(--concrete); flex-direction:column; align-items:center; gap:8px;
+  /* Ohne JavaScript gibt es keine Sequenz — ein Scroll-Hinweis waere dann
+     irrefuehrend. Deshalb ist "aus" der Grundzustand und .js schaltet ein. */
+  display:none;
 }
+.js .scroll-cue{display:flex;}
 .scroll-cue::after{content:""; width:1px; height:34px; background:var(--concrete); animation:scrollcue 1.6s ease-in-out infinite;}
 @keyframes scrollcue{0%{transform:scaleY(0); transform-origin:top;} 50%{transform:scaleY(1); transform-origin:top;} 50.01%{transform-origin:bottom;} 100%{transform:scaleY(0); transform-origin:bottom;}}
 @media (max-width:860px){
@@ -279,10 +332,6 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
      Desktop statt wie zuvor 2,2x, was sich am Handy zu hastig anfühlte. */
   .js .scroll-intro{height:352vh;}
 }
-/* Ohne JS gibt es keine Sequenz -> Scroll-Hinweis wäre irreführend */
-.scroll-cue{display:none;}
-.js .scroll-cue{display:flex;}
-
 /* SECTION SCAFFOLDING */
 section{padding:100px 0;}
 .section-head{max-width:640px; margin-bottom:56px;}
@@ -559,6 +608,8 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
   padding:13px 14px; font-family:'Inter', sans-serif; width:100%;
   /* 16px ist Pflicht: darunter zoomt iOS Safari beim Antippen automatisch rein */
   font-size:16px; min-height:48px;
+  transition:border-color var(--takt-kurz) var(--ease-weich),
+             background-color var(--takt-kurz) var(--ease-weich);
 }
 .form-field textarea{resize:vertical; min-height:110px;}
 /* Eingabefelder: nur die Randfarbe wechseln. Den Ring liefert die
@@ -604,7 +655,7 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
    in der Farbe allein (WCAG 1.4.1). */
 .form-status.is-ok{
   color:var(--white); border-left:3px solid var(--accent); padding-left:12px;
-  font-weight:600;
+  font-weight:700;   /* 600 wurde eigens geladen und sonst nirgends genutzt */
 }
 .form-note-warn{
   color:var(--white); border-left:3px solid var(--safety);
@@ -639,7 +690,11 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .offer-card.is-link:hover{background:var(--asphalt-2);}
 .offer-card.is-link p{flex-grow:1;}
 .offer-more{
+  /* display NICHT ueberschreiben: als Kind der Flex-Karte wird inline-flex zu
+     flex, und nur so bleibt der Text im 44px hohen Tippbereich mittig. Ein
+     spaeter angehaengtes "inline-block" hatte das still ausgehebelt. */
   display:inline-flex; align-items:center; min-height:44px; margin-top:6px;
+  transition:transform var(--takt) var(--ease-aus), color var(--takt) var(--ease-weich);
   font-family:'Space Mono', monospace; font-size:12px; letter-spacing:0.05em;
   text-transform:uppercase; color:var(--accent);
 }
@@ -701,8 +756,17 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
    Abstände zentral (auch mobil) angepasst werden können. */
 .stack-top{margin-top:40px;}
 .stack-top-sm{margin-top:20px;}
-.inline-link{text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px;}
-.inline-link:hover{color:var(--accent);}
+/* Die Unterstreichung bleibt im Ruhezustand sichtbar — sonst waeren Links im
+   Fliesstext nur an der Farbe zu erkennen (WCAG 1.4.1). Beim Zeigen wird sie
+   kraeftiger und die Schrift nimmt die Akzentfarbe an.
+   Frueher lag hier zusaetzlich eine mitwachsende Linie aus einem Verlauf —
+   zusammen ergab das zwei Unterstreichungen uebereinander. */
+.inline-link{
+  text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:3px;
+  transition:color var(--takt) var(--ease-weich),
+             text-decoration-thickness var(--takt) var(--ease-weich);
+}
+.inline-link:hover{color:var(--accent); text-decoration-thickness:2px;}
 .btn-row{display:flex; gap:16px; flex-wrap:wrap;}
 .note-small{margin-top:36px; font-size:13px;}
 @media (max-width:620px){
@@ -773,53 +837,28 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
    Zurueckhaltend gehalten: eine Idee anheben, Rahmen in der Akzentfarbe, mehr
    nicht. Karten sind hier Flaechen mit harten Kanten — sie sollen sich nicht
    wie Spielkarten anfuehlen.                                              */
-.offer-card, .value-card, .qf-card, .pillar-card, .t-card{
-  transition:transform var(--takt) var(--ease-aus),
-             border-color var(--takt) var(--ease-weich),
-             outline-color var(--takt) var(--ease-weich),
-             background-color var(--takt) var(--ease-weich);
-}
 /* Anheben und Einblenden greifen auf dieselbe Eigenschaft zu. Statt ueber
    Spezifitaet zu streiten, addieren beide ihren Anteil in eigenen Variablen —
    so kann eine Karte gleichzeitig eingeblendet werden und angehoben sein. */
 .offer-card, .value-card, .qf-card, .pillar-card, .t-card{
   transform:translateY(calc(var(--einblend-y, 0px) + var(--hover-y, 0px)));
+  transition:transform var(--takt) var(--ease-aus),
+             border-color var(--takt) var(--ease-weich),
+             outline-color var(--takt) var(--ease-weich),
+             background-color var(--takt) var(--ease-weich);
 }
 @media (hover:hover) and (pointer:fine){
   .offer-card.is-link:hover{--hover-y:-4px; outline-color:var(--accent);}
+  .offer-card.is-link:hover .offer-more{transform:translateX(5px);}
   .qf-card:hover, .pillar-card:hover{--hover-y:-3px;}
   .value-card:hover{background:var(--asphalt-2);}
 }
 .offer-card.is-link:active{--hover-y:-1px; transition-duration:60ms;}
 
-/* Der Pfeil auf den Angebotskarten laeuft beim Zeigen ein Stueck mit. */
-.offer-more{
-  display:inline-block;
-  transition:transform var(--takt) var(--ease-aus), color var(--takt) var(--ease-weich);
-}
-@media (hover:hover) and (pointer:fine){
-  .offer-card.is-link:hover .offer-more{transform:translateX(5px);}
-}
-
-/* Fliesstext-Links: Unterstreichung waechst von links, statt hart zu erscheinen. */
-.inline-link{
-  background-image:linear-gradient(var(--accent), var(--accent));
-  background-repeat:no-repeat;
-  background-position:0 100%;
-  background-size:0% 1.5px;
-  transition:background-size var(--takt) var(--ease-aus), color var(--takt) var(--ease-weich);
-}
-@media (hover:hover) and (pointer:fine){
-  .inline-link:hover{background-size:100% 1.5px;}
-}
-
 /* Navigationspunkte: Farbe und Deckkraft weich statt schlagartig. */
-nav a{transition:opacity var(--takt-kurz) var(--ease-weich), color var(--takt-kurz) var(--ease-weich);}
-.footer-legal a, .footer-grid a{transition:color var(--takt-kurz) var(--ease-weich), opacity var(--takt-kurz) var(--ease-weich);}
-
 /* Menuetaste: das Symbol dreht sich beim Oeffnen leicht mit. */
-.nav-toggle{transition:border-color var(--takt) var(--ease-weich), transform var(--takt) var(--ease-schwung);}
 header[data-open="true"] .nav-toggle{transform:rotate(90deg); border-color:var(--accent);}
+.footer-legal a, .footer-grid a{transition:color var(--takt-kurz) var(--ease-weich), opacity var(--takt-kurz) var(--ease-weich);}
 
 /* Aufklappendes Menue: einblenden und leicht herunterfahren statt hart
    erscheinen. Nur die Bewegung ist animiert — die Hoehe bleibt unangetastet,
@@ -832,12 +871,6 @@ header[data-open="true"] .nav-toggle{transform:rotate(90deg); border-color:var(-
     from{opacity:0; transform:translateY(-8px);}
     to{opacity:1; transform:none;}
   }
-}
-
-/* Formularfelder: Rahmenwechsel beim Hineinklicken weich. */
-.form-field input, .form-field textarea, .form-field select{
-  transition:border-color var(--takt-kurz) var(--ease-weich),
-             background-color var(--takt-kurz) var(--ease-weich);
 }
 
 /* Statusmeldung der Formulare faehrt kurz ein, damit sie bemerkt wird. */
@@ -879,10 +912,6 @@ header[data-open="true"] .nav-toggle{transform:rotate(90deg); border-color:var(-
 }
 @keyframes seite-raus{ to{opacity:0;} }
 @keyframes seite-rein{ from{opacity:0; transform:translateY(8px);} }
-
-/* Die Kopfzeile bleibt beim Wechsel stehen, statt mitzublenden — das haelt
-   den Wechsel ruhig und macht klar, dass man auf derselben Website bleibt. */
-header{ view-transition-name:kopfzeile; }
 
 @media (prefers-reduced-motion: reduce){
   ::view-transition-old(root), ::view-transition-new(root){animation:none !important;}

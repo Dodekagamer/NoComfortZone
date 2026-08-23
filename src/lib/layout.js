@@ -105,7 +105,12 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
   // sonst erst nach dem CSS entdeckt wird (spürbar auf Mobilfunk).
   const preloadHero =
     url === '/'
-      ? '\n<link rel="preload" as="image" href="/assets/img/hero-bg.webp" type="image/webp" fetchpriority="high">'
+      ? // Vorabladen passend zur Bildschirmbreite. Ohne das "media" wuerde hier
+        // immer die grosse Fassung gezogen und die Groessenstufen im CSS waeren
+        // wirkungslos — das Handy laedt sonst beide Dateien.
+        '\n<link rel="preload" as="image" href="/assets/img/hero-bg-700.webp" type="image/webp" media="(max-width:760px)" fetchpriority="high">' +
+        '\n<link rel="preload" as="image" href="/assets/img/hero-bg-1100.webp" type="image/webp" media="(min-width:761px) and (max-width:1200px)" fetchpriority="high">' +
+        '\n<link rel="preload" as="image" href="/assets/img/hero-bg.webp" type="image/webp" media="(min-width:1201px)" fetchpriority="high">'
       : '';
   return `<!DOCTYPE html>
 <html lang="de">
@@ -140,7 +145,7 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Space+Mono:wght@400;700&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Space+Mono:wght@400;700&amp;family=Inter:wght@400;700;800&amp;display=swap" rel="stylesheet">
 <!-- Winziges Skript, das <html> als "js" markiert, BEVOR der Body gerendert
      wird. Es steht auf jeder Seite, weil die Einblend-Animationen ihre
      Startposition sonst erst nachtraeglich bekaemen — dann waere der Inhalt
