@@ -2,6 +2,28 @@ const site = require('./site.json');
 const { SITE_URL } = require('./base-path');
 const { esc, safeUrl } = require('./escape');
 const { structuredData } = require('./structured-data');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+
+/**
+ * Das winzige Vorab-Skript wird direkt in die Seite geschrieben statt als
+ * eigene Datei geladen. Es muss vor dem Rendern des Bodys laufen, waere als
+ * externe Datei also eine blockierende Anfrage auf JEDER Seite — fuer unter
+ * einem Kilobyte.
+ *
+ * Die Content-Security-Policy erlaubt keine Inline-Skripte pauschal
+ * ('unsafe-inline' waere ein Freibrief fuer eingeschleusten Code). Stattdessen
+ * wird hier der SHA-256-Abdruck genau dieses einen Skripts berechnet und in die
+ * Policy aufgenommen: nur exakt dieser Inhalt darf laufen, jede Abweichung
+ * blockiert der Browser. Weicht der Abdruck einmal ab, faellt die Seite auf den
+ * Zustand ohne JavaScript zurueck — sichtbar bleibt alles.
+ */
+const VORAB_SKRIPT = fs
+  .readFileSync(path.join(__dirname, '..', 'assets', 'js', 'enhance.js'), 'utf8')
+  .trim();
+const VORAB_HASH =
+  "'sha256-" + crypto.createHash('sha256').update(VORAB_SKRIPT, 'utf8').digest('base64') + "'";
 
 function renderNav(currentUrl) {
   const items = site.nav
@@ -121,7 +143,7 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
      dadurch greift CSS-Injection ins Leere. frame-ancestors fehlt bewusst —
      per <meta> ignorieren Browser die Direktive, und GitHub Pages kann keine
      echten HTTP-Header setzen. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src ${connectSrc}; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' ${VORAB_HASH}; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src ${connectSrc}; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; manifest-src 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#15161a">
 <title>${esc(pageTitle)}</title>
@@ -146,12 +168,12 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Space+Mono:wght@400;700&amp;family=Inter:wght@400;700;800&amp;display=swap" rel="stylesheet">
-<!-- Winziges Skript, das <html> als "js" markiert, BEVOR der Body gerendert
-     wird. Es steht auf jeder Seite, weil die Einblend-Animationen ihre
-     Startposition sonst erst nachtraeglich bekaemen — dann waere der Inhalt
-     kurz zu sehen und wuerde danach wegspringen. Ein Inline-Skript verbietet
-     die CSP, deshalb eine eigene Datei. -->
-<script src="/assets/js/enhance.js"></script>
+<!-- Markiert <html> als "js", BEVOR der Body gerendert wird — sonst bekaemen
+     die Einblend-Animationen ihre Startposition erst nachtraeglich und der
+     Inhalt wuerde kurz aufblitzen. Direkt eingebettet statt als Datei: eine
+     eigene Anfrage wuerde hier das Rendern aufhalten. Erlaubt wird es ueber
+     seinen Abdruck in der Content-Security-Policy, nicht ueber 'unsafe-inline'. -->
+<script>${VORAB_SKRIPT}</script>
 <link rel="stylesheet" href="/assets/css/styles.css">${preloadHero}
 ${structuredData({ url, title: pageTitle })}
 </head>
