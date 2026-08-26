@@ -51,17 +51,17 @@ function renderFooter() {
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <h3>No Comfort Zone</h3>
+        <h2>No Comfort Zone</h2>
         <p class="footer-claim">Eine Gemeinschaft von Menschen, die gemeinsam wachsen möchten. Nicht perfekt. Nicht elitär. Sondern ehrlich. Haki Sports ist unser professionelles 1:1-Coaching-Angebot innerhalb der Bewegung.</p>
       </div>
       <div>
-        <h3>Kontakt</h3>
+        <h2>Kontakt</h2>
         <a href="mailto:${esc(site.contact.email)}">${esc(site.contact.email)}</a>
         <a href="tel:${esc(site.contact.phoneHref)}">${esc(site.contact.phoneDisplay)}</a>
         <p>${esc(site.contact.address)}</p>
       </div>
       <div>
-        <h3>Folgen &amp; mitreden</h3>
+        <h2>Folgen &amp; mitreden</h2>
         ${site.social
           .map((s) => `<a href="${safeUrl(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.label)}</a>`)
           .join('\n        ')}
@@ -70,7 +70,7 @@ function renderFooter() {
           .join('\n        ')}
       </div>
       <div>
-        <h3>Navigation</h3>
+        <h2>Navigation</h2>
         ${navLinks}
       </div>
     </div>

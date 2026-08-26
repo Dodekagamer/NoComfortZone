@@ -283,6 +283,19 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
 /* Ohne JS: nur der finale Hero ist sichtbar (Headline + CTAs erreichbar).
    Mit JS: Sequenz startet bei Panel 1, die übrigen blendet main.js ein. */
 .intro-panel.p1, .intro-panel.p2, .intro-panel.p3{opacity:0;}
+
+/* Ohne JS läuft keine Sequenz — dann darf der Hero so hoch werden, wie sein
+   Inhalt es braucht. Auf einem 360x640-Bildschirm brauchen Überschrift, Text
+   und die beiden Buttons zusammen 790px; feste 100vh plus overflow:hidden
+   hätten den oberen Teil abgeschnitten. Die drei Sequenz-Tafeln werden ganz
+   entfernt statt nur unsichtbar gestellt — sonst lägen drei durchsichtige
+   Flächen über den Buttons. */
+html:not(.js) .scroll-intro{height:auto;}
+html:not(.js) .intro-pin{position:relative; height:auto; min-height:100vh;}
+html:not(.js) .intro-panel.p1,
+html:not(.js) .intro-panel.p2,
+html:not(.js) .intro-panel.p3{display:none;}
+html:not(.js) .intro-panel.final{position:relative; inset:auto; padding:88px 24px;}
 .js .intro-panel{opacity:0;}
 .js .intro-panel.p1{opacity:1;}
 .js .intro-panel.final{opacity:0;}
@@ -414,7 +427,7 @@ footer{padding:80px 0 40px;}
 footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr 1fr;}
 @media (max-width:980px){ footer .footer-grid{grid-template-columns:1fr 1fr;} }
 @media (max-width:620px){ footer .footer-grid{grid-template-columns:1fr;} }
-.footer-grid h3{font-family:'Inter'; font-weight:800; font-size:15px; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:18px; color:var(--concrete);}
+.footer-grid h2, .footer-grid h3{font-family:'Inter'; font-weight:800; font-size:15px; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:18px; color:var(--concrete);}
 .footer-grid p{font-size:15px; color:var(--white); opacity:0.9; display:block; margin-bottom:8px;}
 .footer-claim{max-width:38ch; opacity:0.75;}
 /* Tap-Ziel: Padding statt größerer Schrift — Optik bleibt, Fläche wächst */
@@ -437,9 +450,24 @@ footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr 1fr;}
    konstant und reicht fuer eine Zeile. Unterhalb uebernimmt das Menue. */
 @media (max-width:1180px){
   /* Die komplette Navigation einklappen — nicht nur die Liste. Sonst würden
-     Elemente darin (z. B. der Mitmachen-CTA) weiter in der Kopfzeile liegen. */
-  nav{display:none;}
-  .nav-toggle{display:flex;}
+     Elemente darin (z. B. der Mitmachen-CTA) weiter in der Kopfzeile liegen.
+
+     Nur mit JavaScript einklappen: die Taste lässt sich ohne JS nicht bedienen.
+     Vorher stand dort eine tote Taste, und in der Kopfzeile war gar kein
+     Menüpunkt mehr erreichbar (gemessen: 0 sichtbare Navigationslinks) — man
+     musste bis in die Fußzeile scrollen. Ohne JS bleibt die Liste deshalb
+     stehen und bricht in eine eigene Zeile um. */
+  .js nav{display:none;}
+  .js .nav-toggle{display:flex;}
+  html:not(.js) .navbar{flex-wrap:wrap; row-gap:8px;}
+  html:not(.js) nav{order:3; flex-basis:100%;}
+  html:not(.js) nav ul{gap:10px 18px;}
+  html:not(.js) nav a{display:flex; align-items:center; min-height:44px;}
+  /* Ohne JS ist die Kopfzeile drei Zeilen hoch. Bliebe sie kleben, verdeckte
+     sie dauerhaft ein Viertel des Bildschirms — auf der Startseite, wo sie
+     über dem Hero schwebt, sogar die Überschrift. Also mitscrollen lassen. */
+  html:not(.js) header,
+  html:not(.js) body.home header{position:static;}
   header[data-open="true"] nav{
     display:block; position:absolute; top:100%; left:0; right:0;
     background:var(--asphalt); border-bottom:1px solid var(--line);

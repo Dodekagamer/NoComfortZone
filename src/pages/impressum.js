@@ -4,7 +4,8 @@ const { esc, safeUrl } = require('../lib/escape');
 module.exports = {
   url: '/impressum/',
   title: 'Impressum — No Comfort Zone',
-  description: 'Impressum von No Comfort Zone gemäß § 5 TMG.',
+  description:
+    'Impressum von No Comfort Zone aus Karlsruhe: Anbieterkennzeichnung nach § 5 TMG und § 18 MStV, Kontaktdaten und Hinweise zur Haftung.',
   content: () => `
 <section>
   <div class="wrap legal">

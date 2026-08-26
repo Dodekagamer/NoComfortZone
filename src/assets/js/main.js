@@ -15,15 +15,36 @@ document.documentElement.classList.add('js');
   const nav = document.getElementById('siteNav');
   if (!header || !toggle || !nav) return;
 
+  /* Bei offenem Menü ist der Rest der Seite festgestellt (body: overflow
+     hidden). Ohne weitere Maßnahme wandert der Tastaturfokus trotzdem dorthin:
+     gemessen landete er auf Links bei y ≈ 3500–4200 px — weit außerhalb des
+     Bildschirms, und weil nicht gescrollt werden kann, auch nicht erreichbar.
+     Der Fokusring wäre dann unsichtbar (WCAG 2.4.7). "inert" nimmt diese
+     Bereiche solange komplett aus Tastatur- und Screenreader-Zugriff. */
+  const ruhendeBereiche = [
+    document.querySelector('.skip-link'),
+    document.querySelector('main'),
+    document.querySelector('footer')
+  ].filter(Boolean);
+
+  function restStilllegen(still) {
+    ruhendeBereiche.forEach((el) => {
+      if (still) el.setAttribute('inert', '');
+      else el.removeAttribute('inert');
+    });
+  }
+
   function closeMenu() {
     header.removeAttribute('data-open');
     document.body.classList.remove('nav-open');
+    restStilllegen(false);
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Menü öffnen');
   }
   function openMenu() {
     header.setAttribute('data-open', 'true');
     document.body.classList.add('nav-open');
+    restStilllegen(true);
     toggle.setAttribute('aria-expanded', 'true');
     toggle.setAttribute('aria-label', 'Menü schließen');
   }
@@ -57,6 +78,21 @@ document.documentElement.classList.add('js');
     if (e.key === 'Escape' && isOpen()) {
       closeMenu();
       toggle.focus();
+      return;
+    }
+    /* Auffangnetz für ältere Browser ohne "inert": dort bleibt der Fokus sonst
+       nicht im Menü. Am letzten Menüpunkt springt Tab zurück auf die Taste,
+       rückwärts von der Taste ans Menüende. */
+    if (e.key !== 'Tab' || !isOpen() || 'inert' in HTMLElement.prototype) return;
+    const stationen = [...nav.querySelectorAll('a')];
+    if (!stationen.length) return;
+    const letzte = stationen[stationen.length - 1];
+    if (!e.shiftKey && document.activeElement === letzte) {
+      e.preventDefault();
+      toggle.focus();
+    } else if (e.shiftKey && document.activeElement === toggle) {
+      e.preventDefault();
+      letzte.focus();
     }
   });
 
@@ -449,12 +485,24 @@ document.documentElement.classList.add('js');
       return false;
     }
 
+    /* Ein zweiter Klick, während der erste noch läuft, baut eine komplett neue
+       Anfrage mit neuer Vorgangsnummer. Gemessen: dreimal schnell geklickt =
+       drei E-Mail-Entwürfe, und mit eingerichtetem Dienst wären es drei Mails
+       plus drei von fünf erlaubten Anfragen im Zeitfenster. Auf dem Handy
+       passiert genau das, weil nach dem Antippen sichtbar erst nichts
+       geschieht. Deshalb ab dem ersten Klick sperren. */
+    let laeuft = false;
+    let entsperrUhr = null;
+
     /**
      * `mitWhatsapp` steuert nur den Zusatzweg. Die E-Mail geht in beiden
      * Fällen an beide Verantwortlichen — sie ist der verlässliche Kanal.
      */
     async function senden(mitWhatsapp) {
-      if (!bereit()) return;
+      if (laeuft || !bereit()) return;
+      laeuft = true;
+      window.clearTimeout(entsperrUhr);
+      buttonsSperren(true);
       const ref = makeRef();
       const notiz = notizNachricht(form, ref, 'E-Mail');
       const waText = `${notiz.subject}\n\n${notiz.body}`;
@@ -471,10 +519,15 @@ document.documentElement.classList.add('js');
           console.error('Anfrage konnte nicht vorbereitet werden:', err);
           say('Das hat leider nicht geklappt. Schreib uns bitte direkt an ' + mail + '.', 'warn');
         }
+        /* Ob das E-Mail-Programm wirklich aufgegangen ist, erfährt die Seite
+           nie. Also nur kurz sperren — danach darf man es erneut versuchen. */
+        entsperrUhr = window.setTimeout(() => {
+          laeuft = false;
+          buttonsSperren(false);
+        }, 4000);
         return;
       }
 
-      buttonsSperren(true);
       say('Anfrage wird gesendet …');
       try {
         await perDienstSenden(ref);
@@ -500,6 +553,7 @@ document.documentElement.classList.add('js');
           'warn'
         );
       } finally {
+        laeuft = false;
         buttonsSperren(false);
       }
     }

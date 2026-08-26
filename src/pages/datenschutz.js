@@ -4,7 +4,8 @@ const { esc, safeUrl } = require('../lib/escape');
 module.exports = {
   url: '/datenschutz/',
   title: 'Datenschutz — No Comfort Zone',
-  description: 'Datenschutzerklärung von No Comfort Zone gemäß DSGVO.',
+  description:
+    'Datenschutzerklärung von No Comfort Zone: welche Daten beim Besuch der Seite und bei Anfragen verarbeitet werden, auf welcher Grundlage und welche Rechte du hast.',
   content: () => `
 <section>
   <div class="wrap legal">
