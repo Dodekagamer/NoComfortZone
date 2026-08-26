@@ -33,7 +33,7 @@ ${pageHero(
 <section>
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">So einfach geht's</span>
+      <span class="eyebrow">So einfach geht’s</span>
       <h2>Wie werde ich Mitglied?</h2>
     </div>
     <div class="steps">

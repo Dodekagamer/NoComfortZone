@@ -21,7 +21,7 @@ ${pageHero(
     <div class="section-head">
       <span class="eyebrow">Aus der Bewegung</span>
       <h2>Echte Stimmen</h2>
-      <p>Kein Hochglanz. Nur echte Menschen, die gemeinsam gewachsen sind.</p>
+      <p>Drei Menschen, die schon eine Weile dabei sind — und beschreiben, was sich für sie verändert hat.</p>
     </div>
     <div class="testimonials">
       <div class="t-card">

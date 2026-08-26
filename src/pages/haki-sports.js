@@ -29,7 +29,7 @@ ${pageHero(
 <section>
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">So läuft's ab</span>
+      <span class="eyebrow">So läuft’s ab</span>
       <h2>Dein Weg zum Coaching</h2>
     </div>
     <div class="steps">

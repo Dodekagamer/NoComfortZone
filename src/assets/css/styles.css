@@ -829,8 +829,22 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
 
   img{max-width:100% !important;}
   .offer-detail-media{display:none !important;}
+
+  /* Der Hero: gestapelt statt gepinnt, und OHNE das Foto. Gedruckt lag der
+     schwarze Text sonst auf dem dunklen Bild — praktisch unlesbar — und das
+     vollflaechige Foto verbrauchte ueber zwei A4-Seiten hinweg Toner. */
   .intro-pin, .scroll-intro{height:auto !important; min-height:0 !important;}
+  .intro-pin{background:none !important;}
+  .intro-sweep{display:none !important;}
   .intro-panel{opacity:1 !important; position:static !important; transform:none !important;}
+
+  /* Flaechige Schaltflaechen werden zu Umrissen — dieselbe Aussage, ein
+     Bruchteil der Farbe. */
+  .btn, .btn.solid, .price-badge, .tag, .hero-tag{
+    background:none !important; color:#000 !important;
+    border:1px solid #000 !important;
+  }
+  .hero-tag::before{display:none !important;}
 }
 
 /* ---- BEWEGUNG: Karten, Links, Menue --------------------------------------
