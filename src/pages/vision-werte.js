@@ -86,6 +86,6 @@ ${pageHero(
   </div>
 </section>
 
-${ctaBand('Bereit, Teil der Bewegung zu werden?', 'Community entdecken', '/community/', '', 'Mitglied werden', '/mitgliedschaft/')}
+${ctaBand('Bereit, Teil der Bewegung zu werden?', 'Community entdecken', '/community/', '', 'Wie du mitmachst', '/mitgliedschaft/')}
 `
 };

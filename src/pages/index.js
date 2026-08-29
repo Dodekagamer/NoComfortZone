@@ -60,7 +60,7 @@ module.exports = {
       ${quickAnswer('Was ist Haki Sports?', 'Unser 1:1-Coaching-Angebot', 'Professionelles Personal Training innerhalb von No Comfort Zone — individuell, für alle, die gezielt an sich arbeiten wollen.', 'Haki Sports entdecken', '/haki-sports/')}
       ${quickAnswer('Für wen ist es?', 'Für jeden ein Platz', 'Junge Erwachsene, Jugendliche, Familien, Menschen ab 40, Unternehmen und Schulen — jeweils mit passendem Angebot.', 'Zielgruppen ansehen', '/zielgruppe/')}
       ${quickAnswer('Was bekomme ich?', 'Training, Community, Entwicklung', 'Boxen, Calisthenics, Outdoor-Training und mehr — plus eine Gemeinschaft, die dich trägt.', 'Angebote ansehen', '/angebote/')}
-      ${quickAnswer('Was kostet es?', 'Transparente Mitgliedschaften', 'Faire, planbare Mitgliedschaften und Coaching-Pakete. Aktuelle Beispielpreise auf der Mitgliedschaftsseite.', 'Preise ansehen', '/mitgliedschaft/')}
+      ${quickAnswer('Was kostet es?', 'Das erste Training nichts', 'Feste Beiträge gibt es erst, wenn der Verein eingetragen ist. Bis dahin sagen wir offen, wo wir stehen.', 'Beiträge & Stand', '/mitgliedschaft/')}
       ${quickAnswer('Wie mache ich mit?', 'Erstes Training kostenlos', 'Probetraining buchen, uns kennenlernen, danach entscheiden. Kein Risiko, keine Verpflichtung.', 'Jetzt buchen', '/buchung/')}
     </div>
   </div>
@@ -75,7 +75,7 @@ module.exports = {
       <p>No Comfort Zone und Haki Sports gehören zusammen — aber sie sind nicht dasselbe. So findest du sofort das Richtige für dich.</p>
     </div>
     <div class="pillar-grid">
-      ${pillarCard('ncz', 'No Comfort Zone', 'Community. Bewegung. Zukünftiger Verein.', 'Gemeinsames Training, Gemeinschaft und persönliche Entwicklung — draußen, für alle Altersgruppen und Leistungsniveaus. Das ist der Kern unserer Bewegung.', 'Mitglied werden', '/mitgliedschaft/')}
+      ${pillarCard('ncz', 'No Comfort Zone', 'Community. Bewegung. Zukünftiger Verein.', 'Gemeinsames Training, Gemeinschaft und persönliche Entwicklung — draußen, für alle Altersgruppen und Leistungsniveaus. Das ist der Kern unserer Bewegung.', 'Wie du mitmachst', '/mitgliedschaft/')}
       ${pillarCard('haki', 'Haki Sports', 'Professionelles 1:1 Coaching.', 'Individuelles Personal Training für alle, die gezielt und unter persönlicher Betreuung an ihren Zielen arbeiten wollen — als eigenständiges Angebot innerhalb von No Comfort Zone.', 'Haki Sports buchen', '/haki-sports/')}
     </div>
   </div>
@@ -189,6 +189,6 @@ module.exports = {
   </div>
 </section>
 
-${ctaBand('Verlass deine Komfortzone.', 'Jetzt kostenlos reinschnuppern', '/buchung/', '', 'Mitgliedschaften ansehen', '/mitgliedschaft/')}
+${ctaBand('Verlass deine Komfortzone.', 'Jetzt kostenlos reinschnuppern', '/buchung/', '', 'Wie du mitmachst', '/mitgliedschaft/')}
 `
 };

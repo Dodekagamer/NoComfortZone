@@ -1,28 +1,31 @@
 {
-  "note": "Beispielpreise — werden von No Comfort Zone final bestätigt. Für aktuelle Konditionen sprich uns direkt an.",
+  "noteBadge": "Beiträge stehen noch nicht fest",
+  "noteText": "No Comfort Zone ist heute eine Bewegung, kein eingetragener Verein — feste Monatsbeiträge gibt es deshalb noch nicht, und wir stellen hier auch keine erfundenen Zahlen hin. Was du heute tun kannst: kostenlos zum Training kommen. Alles Weitere besprechen wir persönlich, sobald es etwas zu besprechen gibt.",
+  "hakiNoteBadge": "Preis nach dem Erstgespräch",
+  "hakiNoteText": "Haki Sports ist 1:1-Coaching und wird individuell abgestimmt — Ziel, Umfang und Rhythmus bestimmen den Preis. Du bekommst dein Angebot im Erstgespräch, bevor du dich entscheidest.",
   "nczMemberships": [
     {
       "id": "schnupper",
       "name": "Schnupper",
       "price": 0,
       "unit": "1 Training",
-      "placeholder": true,
-      "highlight": false,
+      "badge": "Heute möglich",
+      "highlight": true,
       "tagline": "Zum Reinschnuppern",
       "features": [
         "1x kostenloses Probetraining",
         "Kennenlernen der Gruppe & Trainer",
         "Unverbindlich, keine Anmeldung nötig"
-      ]
+      ],
+      "highlightLabel": "Fang hier an"
     },
     {
       "id": "community",
       "name": "Community",
-      "price": 39,
-      "unit": "Monat",
-      "placeholder": true,
-      "highlight": true,
-      "tagline": "Das Herzstück von No Comfort Zone",
+      "priceText": "Beitrag steht noch nicht fest",
+      "badge": "In Planung",
+      "highlight": false,
+      "tagline": "Geplant: das Herzstück",
       "features": [
         "Alle Community-Trainings (Boxen, Calisthenics, Outdoor)",
         "Zugang zur Trainingsgruppe & Community-Events",
@@ -32,11 +35,10 @@
     {
       "id": "familie",
       "name": "Familie",
-      "price": 65,
-      "unit": "Monat",
-      "placeholder": true,
+      "priceText": "Beitrag steht noch nicht fest",
+      "badge": "In Planung",
       "highlight": false,
-      "tagline": "Für Eltern & Kinder gemeinsam",
+      "tagline": "Geplant: für Eltern & Kinder",
       "features": [
         "Zugang für bis zu 2 Erwachsene + Kinder",
         "Kindertraining & Familien-Events inklusive",
@@ -48,9 +50,8 @@
     {
       "id": "einzeltraining",
       "name": "Einzeltraining",
-      "price": 60,
-      "unit": "Einheit",
-      "placeholder": true,
+      "priceText": "Auf Anfrage",
+      "badge": "Angebot im Erstgespräch",
       "highlight": false,
       "tagline": "Einzeln, flexibel buchbar",
       "features": [
@@ -62,23 +63,22 @@
     {
       "id": "paket10",
       "name": "10er-Paket",
-      "price": 550,
-      "unit": "Paket",
-      "placeholder": true,
+      "priceText": "Auf Anfrage",
+      "badge": "Angebot im Erstgespräch",
       "highlight": true,
       "tagline": "Für kontinuierliche Fortschritte",
       "features": [
         "10x 60 Minuten 1:1 Coaching",
         "Individueller Trainings- & Entwicklungsplan",
         "Laufende Anpassung & Betreuung"
-      ]
+      ],
+      "highlightLabel": "Empfohlen"
     },
     {
       "id": "coaching-programm",
       "name": "Coaching-Programm",
-      "price": null,
-      "unit": "auf Anfrage",
-      "placeholder": true,
+      "priceText": "Auf Anfrage",
+      "badge": "Angebot im Erstgespräch",
       "highlight": false,
       "tagline": "Langfristige Begleitung",
       "features": [

@@ -4,12 +4,12 @@ module.exports = {
   url: '/buchung/',
   title: 'Buchung — Probetraining, Mitgliedschaft & Haki Sports',
   description:
-    'Probetraining buchen, Mitglied werden oder Haki Sports 1:1 Coaching anfragen — alle Buchungswege von No Comfort Zone an einem Ort.',
+    'Probetraining anfragen, sich für die spätere Mitgliedschaft vormerken lassen oder Haki Sports 1:1 Coaching buchen — alle Wege zu No Comfort Zone an einem Ort.',
   content: () => `
 ${pageHero(
   'Wie mache ich mit?',
   'Buchung',
-  'Egal ob Probetraining, Mitgliedschaft oder 1:1 Coaching bei Haki Sports — wähle unten die passende Anfrage. Formular ausfüllen und per E-Mail oder WhatsApp senden, wir melden uns zeitnah zurück.'
+  'Probetraining, Vormerkung für die spätere Mitgliedschaft oder 1:1 Coaching bei Haki Sports — wähle unten die passende Anfrage. Formular ausfüllen und per E-Mail oder WhatsApp senden, wir melden uns zeitnah zurück.'
 )}
 
 <section id="probetraining">
@@ -29,11 +29,11 @@ ${pageHero(
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Community-Mitgliedschaft</span>
-      <h2>Mitglied werden</h2>
-      <p>Du kennst uns schon oder willst direkt einsteigen? Hier kannst du deine Mitgliedschaft anfragen.</p>
+      <h2>Auf die Mitgliedschaft warten</h2>
+      <p>Feste Mitgliedschaften gibt es erst, wenn No Comfort Zone als Verein eingetragen ist. Wenn du dann von Anfang an dabei sein willst, sag hier Bescheid — wir melden uns, sobald es losgeht.</p>
     </div>
-    ${inquiryForm('form-mitgliedschaft', 'Mitgliedschaft', 'Mitgliedschaft anfragen', 'Sag uns, welche Mitgliedschaft dich interessiert (z. B. Community oder Familie).', 'z. B. Interesse an Community-Mitgliedschaft')}
-    <p class="form-note stack-top-sm">Details zu Leistungen & Preisen: <a href="/mitgliedschaft/" class="inline-link">Mitgliedschaft & Preise</a></p>
+    ${inquiryForm('form-mitgliedschaft', 'Mitgliedschaft', 'Vormerken lassen', 'Sag uns, was dich interessieren würde (z. B. Community oder Familie) — dann melden wir uns, sobald Mitgliedschaften starten.', 'z. B. Interesse an Community-Mitgliedschaft')}
+    <p class="form-note stack-top-sm">Wo wir gerade stehen: <a href="/mitgliedschaft/" class="inline-link">Mitgliedschaft &amp; Beiträge</a></p>
   </div>
 </section>
 

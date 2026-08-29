@@ -1,4 +1,4 @@
-const { pageHero, step, priceCard, ctaBand } = require('../lib/components');
+const { pageHero, step, priceCard, ctaBand, inquiryForm } = require('../lib/components');
 const { site } = require('../lib/layout');
 const { safeUrl } = require('../lib/escape');
 const pricing = require('../lib/pricing.json');
@@ -14,14 +14,14 @@ ${pageHero(
   'Was ist Haki Sports?',
   'Professionelles 1:1 Coaching.',
   'Haki Sports ist das eigenständige Personal-Training-Angebot innerhalb von No Comfort Zone. Kein Gruppentraining, keine Community-Session — sondern individuelle Betreuung, ganz auf dich und deine Ziele zugeschnitten.',
-  'Haki Sports buchen',
-  '/buchung/#haki-sports'
+  'Haki Sports anfragen',
+  '#anfrage'
 )}
 
 <section>
   <div class="wrap">
     <div class="callout">
-      <p><strong>Wichtig zu wissen:</strong> No Comfort Zone ist unsere Community und Bewegung — offene Gruppentrainings, Mitgliedschaften, Zusammenhalt. Haki Sports ist etwas anderes: professionelles 1:1-Coaching für Menschen, die individuell und unter persönlicher Anleitung an sich arbeiten wollen. Community-Angebote findest du unter <a href="/angebote/">Angebote</a>.</p>
+      <p><strong>Wichtig zu wissen:</strong> No Comfort Zone ist unsere Community und Bewegung — offene Gruppentrainings, gemeinsame Events, Zusammenhalt. Haki Sports ist etwas anderes: professionelles 1:1-Coaching für Menschen, die individuell und unter persönlicher Anleitung an sich arbeiten wollen. Community-Angebote findest du unter <a href="/angebote/">Angebote</a>.</p>
     </div>
   </div>
 </section>
@@ -47,8 +47,9 @@ ${pageHero(
     <div class="section-head">
       <span class="eyebrow">Coaching-Pakete</span>
       <h2>Was kostet Haki Sports?</h2>
+      <p>${pricing.hakiNoteText}</p>
     </div>
-    <span class="price-note">${pricing.note}</span>
+    <span class="price-note">${pricing.hakiNoteBadge}</span>
     <div class="pricing-grid">
       ${pricing.hakiCoaching.map((plan) => priceCard(plan)).join('\n      ')}
     </div>
@@ -68,6 +69,25 @@ ${(() => {
     : '';
 })()}
 
-${ctaBand('Bereit für individuelles Coaching?', 'Haki Sports anfragen', '/buchung/#haki-sports', '', 'Zurück zu No Comfort Zone', '/vision-werte/')}
+<div class="hazard-strip thin"></div>
+
+<section id="anfrage">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Direkt hier</span>
+      <h2>Erstgespräch anfragen</h2>
+      <p>Unverbindlich. Im Gespräch klären wir dein Ziel, den passenden Umfang — und erst dann den Preis.</p>
+    </div>
+    ${inquiryForm(
+      'form-haki',
+      'Haki Sports Buchung',
+      'Haki Sports anfragen',
+      'Beschreibe kurz dein Ziel (z. B. Kraftaufbau, Gewichtsreduktion, Wettkampfvorbereitung) und deine bevorzugten Zeiten.',
+      'z. B. Ziel: Kraftaufbau, 2x pro Woche'
+    )}
+  </div>
+</section>
+
+${ctaBand('Lieber erst die Bewegung dahinter kennenlernen?', 'No Comfort Zone entdecken', '/vision-werte/', '', 'Häufige Fragen', '/haeufige-fragen/')}
 `
 };

@@ -37,20 +37,32 @@ function pillarCard(kind, tag, title, text, buttonText, buttonHref) {
 </div>`;
 }
 
-// Werte aus pricing.json werden escaped — die Datei wird von Hand gepflegt.
+/* Werte aus pricing.json werden escaped — die Datei wird von Hand gepflegt.
+   `priceText` schlaegt eine Zahl bewusst: Solange kein Verein eingetragen ist,
+   gibt es keine festen Beitraege, und eine erfundene Zahl bleibt im Kopf
+   haengen, das Wort "Beispielpreis" darunter nicht. Die Karte sagt dann
+   stattdessen, was wirklich gilt. */
 function priceValue(plan) {
-  if (plan.price === 0) return 'Kostenlos';
+  if (plan.priceText) return esc(plan.priceText);
+  if (plan.price === 0) return `Kostenlos<span class="unit">/ ${esc(plan.unit)}</span>`;
   if (plan.price) return `€${esc(euro(plan.price))}<span class="unit">/ ${esc(plan.unit)}</span>`;
-  return `Individuell<span class="unit">${esc(plan.unit)}</span>`;
+  return 'Auf Anfrage';
 }
 
 function priceCard(plan) {
   const features = (plan.features || []).map((f) => `<li>${esc(f)}</li>`).join('\n    ');
-  return `<div class="price-card${plan.highlight ? ' highlight' : ''}">
+  /* Der Hinweis ueber der hervorgehobenen Karte kam frueher fest aus dem CSS
+     ("Beliebt"). Auf einer kostenlosen Schnupperkarte ist das eine Behauptung,
+     die niemand pruefen kann — deshalb sagt jetzt die Datendatei, was dort
+     steht. */
+  const hinweis = plan.highlight
+    ? ` data-hinweis="${esc(plan.highlightLabel || 'Empfohlen')}"`
+    : '';
+  return `<div class="price-card${plan.highlight ? ' highlight' : ''}"${hinweis}>
   <span class="price-tagline">${esc(plan.tagline)}</span>
   <h3>${esc(plan.name)}</h3>
-  <div class="price">${priceValue(plan)}</div>
-  ${plan.price ? '<span class="price-badge">Beispielpreis</span>' : '<span class="price-badge">Unverbindlich</span>'}
+  <div class="price${plan.priceText ? ' price-offen' : ''}">${priceValue(plan)}</div>
+  <span class="price-badge">${esc(plan.badge || 'Unverbindlich')}</span>
   <ul>
     ${features}
   </ul>

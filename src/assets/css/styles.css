@@ -184,13 +184,13 @@ body.home header{position:fixed; top:0; left:0; right:0;}
   display:flex; align-items:center; min-height:44px; min-width:0;
 }
 .logo span{color:var(--accent);}
-/* gap 12px statt 22px: mit 22px brauchte die neunteilige Navigation 833px,
-   verfuegbar sind neben Logo und CTA aber nur 776px. Die Folge war ein Umbruch
-   auf zwei Zeilen bei JEDER Desktop-Breite — die Kopfzeile war dadurch 104px
-   statt 72px hoch. Mit 12px bleiben rund 23px Reserve, genug Puffer fuer die
-   etwas breitere Space-Mono-Schrift, sobald sie geladen ist. flex-wrap bleibt
-   als Sicherheitsnetz stehen, greift im Normalfall aber nicht mehr. */
-nav ul{display:flex; gap:12px; list-style:none; flex-wrap:wrap;}
+/* Der Abstand war zwischenzeitlich auf 12px gedrueckt, weil neun gleichrangige
+   Menuepunkte mit 22px 833px brauchten — neben Logo und CTA stehen aber nur
+   776px zur Verfuegung, die Kopfzeile brach dadurch bei JEDER Desktop-Breite
+   auf zwei Zeilen um. Seit "Zielgruppe" und "Buchung" in der Fusszeile stehen,
+   sind es sieben Punkte und rund 653px — mit 22px bleiben gut 120px Reserve.
+   flex-wrap bleibt als Sicherheitsnetz stehen. */
+nav ul{display:flex; gap:22px; list-style:none; flex-wrap:wrap;}
 nav a{
   font-family:'Space Mono', monospace; font-size:12px; letter-spacing:0.05em;
   text-transform:uppercase; opacity:0.85;
@@ -586,6 +586,39 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .pillar-card.haki .btn.solid{background:var(--safety); border-color:var(--safety);}
 @media (max-width:860px){ .pillar-grid{grid-template-columns:1fr;} }
 
+/* HAEUFIGE FRAGEN
+   Bewusst <details>/<summary> statt eines eigenen Akkordeons: das oeffnet und
+   schliesst ohne JavaScript, ist von Haus aus mit Tastatur bedienbar und wird
+   von Screenreadern als auf-/zuklappbar angesagt. Wir nehmen nur den
+   Standard-Pfeil weg und setzen ein eigenes Zeichen. */
+.faq{border-top:1px solid var(--line);}
+.faq-item{border-bottom:1px solid var(--line); background:var(--asphalt-2);}
+.faq-item summary{
+  list-style:none; cursor:pointer;
+  display:flex; align-items:center; gap:16px;
+  min-height:44px; padding:20px 24px;
+  font-family:'Inter', sans-serif; font-weight:800; font-size:17px; line-height:1.35;
+  transition:background var(--takt-kurz) var(--ease-weich), color var(--takt-kurz) var(--ease-weich);
+}
+.faq-item summary::-webkit-details-marker{display:none;}
+.faq-item summary::after{
+  content:"+"; margin-left:auto; flex-shrink:0;
+  font-family:'Space Mono', monospace; font-size:22px; line-height:1;
+  color:var(--accent);
+  transition:transform var(--takt) var(--ease-schwung);
+}
+.faq-item[open] summary::after{content:"–"; transform:rotate(180deg);}
+.faq-item summary:hover{background:var(--asphalt); color:var(--accent);}
+.faq-antwort{padding:0 24px 24px; max-width:70ch;}
+.faq-antwort p{color:var(--concrete); font-size:15.5px; line-height:1.7;}
+.form-nebenweg{
+  margin-top:22px; color:var(--concrete); font-size:14.5px; line-height:1.6; max-width:60ch;
+}
+@media (max-width:620px){
+  .faq-item summary{padding:16px 18px; font-size:16px; gap:12px;}
+  .faq-antwort{padding:0 18px 20px;}
+}
+
 /* PRICING */
 .price-note{
   font-family:'Space Mono', monospace; font-size:12.5px; letter-spacing:0.04em;
@@ -599,7 +632,7 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 }
 .price-card.highlight{border-color:var(--accent); position:relative;}
 .price-card.highlight::before{
-  content:"Beliebt"; position:absolute; top:-13px; right:24px;
+  content:attr(data-hinweis); position:absolute; top:-13px; right:24px;
   background:var(--accent); color:var(--asphalt); font-family:'Space Mono', monospace;
   font-size:11px; text-transform:uppercase; letter-spacing:0.06em; padding:5px 12px;
 }
@@ -607,6 +640,14 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .price-card h3{font-size:22px; text-transform:none; font-family:'Inter'; font-weight:800; margin-bottom:18px;}
 .price-card .price{font-family:'Anton', sans-serif; font-size:40px; text-transform:uppercase; margin-bottom:4px;}
 .price-card .price .unit{font-family:'Space Mono', monospace; font-size:13px; text-transform:uppercase; color:var(--concrete); margin-left:4px;}
+/* Steht statt einer Zahl ein ganzer Satz in der Karte ("Beitrag steht noch
+   nicht fest"), waere Anton in 40px eine Wand aus Versalien. Dann kleiner, in
+   der Textschrift und mit normalem Wortbild. */
+.price-card .price.price-offen{
+  font-family:'Inter', sans-serif; font-weight:800; font-size:19px;
+  text-transform:none; letter-spacing:0; line-height:1.3;
+  color:var(--concrete); margin-bottom:8px;
+}
 .price-card .price-badge{font-family:'Space Mono', monospace; font-size:11px; color:var(--concrete); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:20px; display:block;}
 .price-card ul{list-style:none; margin-bottom:28px; flex-grow:1;}
 .price-card li{font-size:14.5px; color:var(--concrete); padding:8px 0 8px 20px; position:relative; border-top:1px solid var(--line);}

@@ -1,27 +1,28 @@
-const { pageHero, priceCard, step, ctaBand } = require('../lib/components');
+const { pageHero, priceCard, step, ctaBand, inquiryForm } = require('../lib/components');
 const pricing = require('../lib/pricing.json');
 
 module.exports = {
   url: '/mitgliedschaft/',
   title: 'Mitgliedschaft & Preise — No Comfort Zone',
   description:
-    'Was kostet No Comfort Zone und wie wirst du Mitglied? Mitgliedschaftsstufen, Leistungen und die nächsten Schritte im Überblick.',
+    'Was kostet No Comfort Zone und wie wirst du Teil davon? Das erste Training ist kostenlos — feste Beiträge gibt es erst, wenn der Verein steht.',
   content: () => `
 ${pageHero(
   'Was kostet es? Wie werde ich Mitglied?',
   'Mitgliedschaft & Preise',
-  'Transparente, planbare Mitgliedschaften ohne versteckte Kosten. Wähle die Stufe, die zu dir passt — jederzeit monatlich kündbar.',
+  'Das erste Training ist kostenlos und unverbindlich. Feste Monatsbeiträge gibt es erst, wenn No Comfort Zone als Verein eingetragen ist — bis dahin sagen wir dir ehrlich, wo wir stehen.',
   'Jetzt Probetraining buchen',
-  '/buchung/'
+  '#anfrage'
 )}
 
 <section>
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Community-Mitgliedschaften</span>
-      <h2>Deine Mitgliedschaft</h2>
+      <h2>Heute mitmachen, später Mitglied werden</h2>
+      <p>${pricing.noteText}</p>
     </div>
-    <span class="price-note">${pricing.note}</span>
+    <span class="price-note">${pricing.noteBadge}</span>
     <div class="pricing-grid">
       ${pricing.nczMemberships.map((plan) => priceCard(plan)).join('\n      ')}
     </div>
@@ -34,12 +35,12 @@ ${pageHero(
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">So einfach geht’s</span>
-      <h2>Wie werde ich Mitglied?</h2>
+      <h2>Wie machst du mit?</h2>
     </div>
     <div class="steps">
       ${step('01', 'Probetraining buchen', 'Du meldest dich unverbindlich zu einem kostenlosen Probetraining an — über das Buchungsformular oder direkt per WhatsApp.')}
-      ${step('02', 'Kennenlern-Gespräch', 'Wir lernen uns kennen, klären deine Ziele und finden die passende Mitgliedschaft oder das passende Angebot für dich.')}
-      ${step('03', 'Anmeldung & Loslegen', 'Du entscheidest dich für deine Mitgliedschaft, wir richten alles ein — und du bist Teil der Bewegung.')}
+      ${step('02', 'Kennenlern-Gespräch', 'Wir lernen uns kennen, klären deine Ziele und finden das passende Training für dich — Gruppe oder 1:1 mit Haki Sports.')}
+      ${step('03', 'Dabeibleiben', 'Passt es für beide Seiten, kommst du einfach weiter zum Training. Sobald der Verein steht, wird daraus eine richtige Mitgliedschaft — du erfährst es zuerst.')}
     </div>
   </div>
 </section>
@@ -47,11 +48,30 @@ ${pageHero(
 <section>
   <div class="wrap">
     <div class="callout">
-      <p><strong>Bald verfügbar:</strong> Online-Anmeldung und -Zahlung direkt über die Website, ein eigener Mitgliederbereich sowie ein digitaler Trainingskalender sind für die nächste Ausbaustufe von No Comfort Zone geplant. Aktuell läuft die Anmeldung persönlich über das Kennenlern-Gespräch.</p>
+      <p><strong>Woran wir arbeiten:</strong> die Eintragung als Verein (No-Comfort-Zone e.&nbsp;V.) und darauf aufbauend echte Mitgliedschaften, Online-Anmeldung und -Zahlung, ein Mitgliederbereich und ein digitaler Trainingskalender. Bis dahin läuft alles persönlich — über das Kennenlern-Gespräch und die WhatsApp-Gruppe.</p>
     </div>
   </div>
 </section>
 
-${ctaBand('Bereit für den ersten Schritt?', 'Probetraining buchen', '/buchung/', '', 'Fragen? Kontakt aufnehmen', '/kontakt/')}
+<div class="hazard-strip thin"></div>
+
+<section id="anfrage">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Direkt hier</span>
+      <h2>Erstes Training anfragen</h2>
+      <p>Kostenlos und unverbindlich. Du musst dich zu nichts entscheiden — auch nicht zu einer Mitgliedschaft, die es noch gar nicht gibt.</p>
+    </div>
+    ${inquiryForm(
+      'form-probetraining',
+      'Probetraining',
+      'Probetraining anfragen',
+      'Erzähl uns kurz, welches Training dich interessiert und wann es dir passt.',
+      'z. B. Interesse an Boxen, dienstags abends'
+    )}
+  </div>
+</section>
+
+${ctaBand('Noch Fragen offen?', 'Häufige Fragen lesen', '/haeufige-fragen/', '', 'Kontakt aufnehmen', '/kontakt/')}
 `
 };

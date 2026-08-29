@@ -26,7 +26,13 @@ const VORAB_HASH =
   "'sha256-" + crypto.createHash('sha256').update(VORAB_SKRIPT, 'utf8').digest('base64') + "'";
 
 function renderNav(currentUrl) {
+  /* Nur die Hauptpunkte stehen in der Kopfzeile. "Zielgruppe", "Buchung" und
+     "Häufige Fragen" beantworten Fragen, die man auf dem Weg stellt, nicht am
+     Anfang — sie stehen weiterhin in der Fußzeile, im Text verlinkt und in der
+     Sitemap. Neun gleichrangige Punkte passten nur mit 12px Abstand in eine
+     Zeile und beantworteten aus Besuchersicht viermal dieselbe Frage. */
   const items = site.nav
+    .filter((item) => item.primary !== false)
     .map((item) => {
       const active = item.url === currentUrl ? ' aria-current="page"' : '';
       return `<li><a href="${safeUrl(item.url)}"${active}>${esc(item.label)}</a></li>`;

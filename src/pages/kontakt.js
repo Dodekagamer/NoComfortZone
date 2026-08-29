@@ -11,7 +11,9 @@ module.exports = {
 ${pageHero(
   'Wie erreiche ich euch?',
   'Kontakt',
-  'Ob Frage, Feedback oder Kooperationsanfrage — wir freuen uns, von dir zu hören.'
+  'Ob Frage, Feedback oder Kooperationsanfrage — wir freuen uns, von dir zu hören. Viele Antworten stehen schon in den häufigen Fragen.',
+  'Häufige Fragen ansehen',
+  '/haeufige-fragen/'
 )}
 
 <section>

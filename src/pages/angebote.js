@@ -1,5 +1,6 @@
-const { pageHero, ctaBand } = require('../lib/components');
-const { esc } = require('../lib/escape');
+const { pageHero, ctaBand, inquiryForm } = require('../lib/components');
+const site = require('../lib/site.json');
+const { esc, safeUrl } = require('../lib/escape');
 const { offers } = require('../lib/offers.json');
 
 module.exports = {
@@ -12,8 +13,8 @@ ${pageHero(
   'Was bekomme ich?',
   'Unsere Angebote',
   'No Comfort Zone bündelt Community-Training für alle Alters- und Leistungsstufen. Draußen, in der Gruppe, mit echten Trainern und echtem Zusammenhalt.',
-  'Probetraining buchen',
-  '/buchung/'
+  'Probetraining anfragen',
+  '#anfrage'
 )}
 
 <section>
@@ -21,7 +22,7 @@ ${pageHero(
     <div class="section-head">
       <span class="eyebrow">Community-Training</span>
       <h2>Programme im Überblick</h2>
-      <p>Alle Angebote sind Teil der No-Comfort-Zone-Community — buchbar über eine Mitgliedschaft oder als Probetraining. Tipp auf ein Angebot für alle Details.</p>
+      <p>Alle Angebote sind Teil der No-Comfort-Zone-Community. Das erste Training ist immer kostenlos — tipp auf ein Angebot für alle Details.</p>
     </div>
     <div class="offer-grid">
       ${offers
@@ -46,6 +47,33 @@ ${pageHero(
   </div>
 </section>
 
-${ctaBand('Finde dein Angebot.', 'Zielgruppen ansehen', '/zielgruppe/', '', 'Mitgliedschaft & Preise', '/mitgliedschaft/')}
+<div class="hazard-strip thin"></div>
+
+<section id="anfrage">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Direkt hier</span>
+      <h2>Erstes Training anfragen</h2>
+      <p>Kostenlos und unverbindlich. Schreib dazu, was dich interessiert — wir melden uns mit dem nächsten passenden Termin.</p>
+    </div>
+    ${inquiryForm(
+      'form-probetraining',
+      'Probetraining',
+      'Probetraining anfragen',
+      'Erzähl uns kurz, welches Training dich interessiert und wann es dir passt.',
+      'z. B. Interesse an Boxen, dienstags abends'
+    )}
+    ${(() => {
+      const gruppe = site.groups && site.groups[0];
+      return gruppe
+        ? `<p class="form-nebenweg">Noch nicht bereit für ein Formular? Komm einfach in die
+      WhatsApp-Gruppe <a href="${safeUrl(gruppe.url)}" target="_blank" rel="noopener noreferrer" class="inline-link">${esc(gruppe.label)}</a>
+      — dort laufen Termine und kurzfristige Absprachen.</p>`
+        : '';
+    })()}
+  </div>
+</section>
+
+${ctaBand('Für wen ist das alles?', 'Zielgruppen ansehen', '/zielgruppe/', '', 'Häufige Fragen', '/haeufige-fragen/')}
 `
 };
