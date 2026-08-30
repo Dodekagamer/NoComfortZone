@@ -1,6 +1,6 @@
 const { pageHero, step, priceCard, ctaBand, inquiryForm } = require('../lib/components');
 const { site } = require('../lib/layout');
-const { safeUrl } = require('../lib/escape');
+const { esc, safeUrl } = require('../lib/escape');
 const pricing = require('../lib/pricing.json');
 
 module.exports = {
@@ -47,9 +47,9 @@ ${pageHero(
     <div class="section-head">
       <span class="eyebrow">Coaching-Pakete</span>
       <h2>Was kostet Haki Sports?</h2>
-      <p>${pricing.hakiNoteText}</p>
+      <p>${esc(pricing.hakiNoteText)}</p>
     </div>
-    <span class="price-note">${pricing.hakiNoteBadge}</span>
+    <span class="price-note">${esc(pricing.hakiNoteBadge)}</span>
     <div class="pricing-grid">
       ${pricing.hakiCoaching.map((plan) => priceCard(plan)).join('\n      ')}
     </div>

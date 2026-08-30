@@ -1,5 +1,6 @@
 const { pageHero, priceCard, step, ctaBand, inquiryForm } = require('../lib/components');
 const pricing = require('../lib/pricing.json');
+const { esc } = require('../lib/escape');
 
 module.exports = {
   url: '/mitgliedschaft/',
@@ -20,9 +21,9 @@ ${pageHero(
     <div class="section-head">
       <span class="eyebrow">Community-Mitgliedschaften</span>
       <h2>Heute mitmachen, später Mitglied werden</h2>
-      <p>${pricing.noteText}</p>
+      <p>${esc(pricing.noteText)}</p>
     </div>
-    <span class="price-note">${pricing.noteBadge}</span>
+    <span class="price-note">${esc(pricing.noteBadge)}</span>
     <div class="pricing-grid">
       ${pricing.nczMemberships.map((plan) => priceCard(plan)).join('\n      ')}
     </div>

@@ -5,7 +5,12 @@ const site = require('../lib/site.json');
 /* Antworten stehen nur hier drin, wenn sie belegt sind — durch die Seite selbst
    oder durch eine Aussage von No Comfort Zone. Wo etwas noch nicht feststeht
    (Trainingszeiten, Beiträge), sagt die Antwort genau das, statt etwas
-   Plausibles zu erfinden. */
+   Plausibles zu erfinden.
+
+   Die Antworten werden bewusst als HTML eingesetzt (nicht escaped), damit
+   Links und Hervorhebungen darin funktionieren. Das ist nur sicher, solange
+   sie hier im Quelltext stehen. Wandern sie einmal in eine Datendatei oder
+   ein Redaktionssystem, muss vorher escaped werden. */
 const fragen = [
   {
     f: 'Muss ich Mitglied sein, um mitzumachen?',
