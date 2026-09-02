@@ -1,4 +1,4 @@
-const { site } = require('./layout');
+const site = require('./site.json');
 const { esc, safeUrl } = require('./escape');
 
 function euro(value) {
@@ -116,8 +116,60 @@ function step(num, title, text) {
  * Kein Backend: Absenden öffnet mailto:-Link, WhatsApp-Button öffnet wa.me-Link.
  * Beide werden clientseitig in main.js aus den Feldwerten gebaut.
  */
-function inquiryForm(formId, type, title, intro, messagePlaceholder) {
-  const id = esc(formId);
+/**
+ * Die fuenf Formulararten an einer Stelle. Vorher standen dieselben fuenf
+ * Argumente an bis zu drei Aufrufstellen — beim Probetraining etwa auf
+ * /angebote/, /mitgliedschaft/ und /buchung/, jedes Mal wortgleich abgetippt.
+ *
+ * WICHTIG: "type" ist der Wert, den der Worker in worker/src/index.js gegen
+ * seine Erlaubnisliste prueft. Weicht er ab, weist der Dienst die Anfrage mit
+ * "typ" zurueck. Beide Listen muessen zusammen geaendert werden.
+ */
+const FORMS = {
+  probetraining: {
+    type: 'Probetraining',
+    title: 'Probetraining anfragen',
+    intro: 'Erzähl uns kurz, welches Training dich interessiert und wann es dir passt.',
+    placeholder: 'z. B. Interesse an Boxen, dienstags abends'
+  },
+  mitgliedschaft: {
+    type: 'Mitgliedschaft',
+    title: 'Vormerken lassen',
+    intro:
+      'Sag uns, was dich interessieren würde (z. B. Community oder Familie) — dann melden wir uns, sobald Mitgliedschaften starten.',
+    placeholder: 'z. B. Interesse an Community-Mitgliedschaft'
+  },
+  haki: {
+    type: 'Haki Sports Buchung',
+    title: 'Haki Sports anfragen',
+    intro:
+      'Beschreibe kurz dein Ziel (z. B. Kraftaufbau, Gewichtsreduktion, Wettkampfvorbereitung) und deine bevorzugten Zeiten.',
+    placeholder: 'z. B. Ziel: Kraftaufbau, 2x pro Woche'
+  },
+  kontakt: {
+    type: 'Allgemeine Anfrage',
+    title: 'Allgemeine Anfrage',
+    intro: 'Schreib uns, wobei wir helfen können.',
+    placeholder: 'Deine Nachricht an uns'
+  },
+  b2b: {
+    type: 'Unternehmen/Schule Kooperation',
+    title: 'Kooperation anfragen',
+    intro:
+      'Erzähl uns von deiner Organisation und was du dir vorstellst (z. B. Firmenfitness, Schul-AG, Workshop).',
+    placeholder: 'z. B. Firmenfitness für 20 Mitarbeitende, wöchentlich'
+  }
+};
+
+function inquiryForm(key) {
+  const form = FORMS[key];
+  if (!form) {
+    throw new Error(
+      `inquiryForm("${key}"): unbekannte Formularart. Bekannt sind: ${Object.keys(FORMS).join(', ')}.`
+    );
+  }
+  const { type, title, intro, placeholder: messagePlaceholder } = form;
+  const id = esc('form-' + key);
   const mail = esc(site.contact.email);
   const endpoint = site.formEndpoint ? ` data-endpoint="${esc(site.formEndpoint)}"` : '';
   return `<form class="form" data-form-type="${esc(type)}" data-mailto="${mail}" data-whatsapp-number="${esc(site.contact.whatsappNumber)}"${endpoint} id="${id}" novalidate>

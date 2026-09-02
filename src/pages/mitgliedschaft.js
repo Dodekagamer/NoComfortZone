@@ -63,13 +63,7 @@ ${pageHero(
       <h2>Erstes Training anfragen</h2>
       <p>Kostenlos und unverbindlich. Du musst dich zu nichts entscheiden — auch nicht zu einer Mitgliedschaft, die es noch gar nicht gibt.</p>
     </div>
-    ${inquiryForm(
-      'form-probetraining',
-      'Probetraining',
-      'Probetraining anfragen',
-      'Erzähl uns kurz, welches Training dich interessiert und wann es dir passt.',
-      'z. B. Interesse an Boxen, dienstags abends'
-    )}
+    ${inquiryForm('probetraining')}
   </div>
 </section>
 

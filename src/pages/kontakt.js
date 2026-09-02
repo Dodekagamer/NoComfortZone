@@ -1,5 +1,5 @@
 const { pageHero, inquiryForm } = require('../lib/components');
-const { site } = require('../lib/layout');
+const site = require('../lib/site.json');
 const { esc, safeUrl } = require('../lib/escape');
 
 module.exports = {
@@ -42,7 +42,7 @@ ${pageHero(
           .join('\n        ')}
       </div>
     </div>
-    ${inquiryForm('form-kontakt', 'Allgemeine Anfrage', 'Allgemeine Anfrage', 'Schreib uns, wobei wir helfen können.', 'Deine Nachricht an uns')}
+    ${inquiryForm('kontakt')}
   </div>
 </section>
 
@@ -55,7 +55,7 @@ ${pageHero(
       <h2>Unternehmen &amp; Schulen</h2>
       <p>Ob betriebliches Gesundheitsmanagement, Firmenfitness, Schul-AGs oder Jugendhilfe-Kooperationen — wir entwickeln gemeinsam mit euch ein passendes Angebot für eure Organisation.</p>
     </div>
-    ${inquiryForm('form-b2b', 'Unternehmen/Schule Kooperation', 'Kooperation anfragen', 'Erzähl uns von deiner Organisation und was du dir vorstellst (z. B. Firmenfitness, Schul-AG, Workshop).', 'z. B. Firmenfitness für 20 Mitarbeitende, wöchentlich')}
+    ${inquiryForm('b2b')}
   </div>
 </section>
 `

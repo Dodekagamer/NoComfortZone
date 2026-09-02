@@ -17,7 +17,7 @@ const vm = require('vm');
  * CSS: überspringt Zeichenketten, damit ein Kommentaranfang in einem
  * content-Wert oder einer data-URL nicht falsch erkannt wird.
  */
-function cssKommentareEntfernen(text) {
+function stripCssComments(text) {
   let raus = '';
   let i = 0;
   while (i < text.length) {
@@ -55,7 +55,7 @@ function cssKommentareEntfernen(text) {
  * jemand später ein mehrzeiliges Template-Literal einbaut, in dem eine Zeile
  * mit zwei Schrägstrichen beginnt — geht der Originaltext raus.
  */
-function jsKommentareEntfernen(text) {
+function stripJsComments(text) {
   const behalten = [];
   let imBlock = false;
   for (const zeile of text.split('\n')) {
@@ -91,7 +91,7 @@ function jsKommentareEntfernen(text) {
  */
 const MARKE = '\u0001';
 
-function htmlKommentareEntfernen(html) {
+function stripHtmlComments(html) {
   const geschuetzt = [];
   const platzhalter = html.replace(
     /<(script|style|pre|textarea)\b[\s\S]*?<\/\1>/gi,
@@ -104,4 +104,4 @@ function htmlKommentareEntfernen(html) {
   return ohne.replace(new RegExp(MARKE + '(\\d+)' + MARKE, 'g'), (_, i) => geschuetzt[Number(i)]);
 }
 
-module.exports = { cssKommentareEntfernen, jsKommentareEntfernen, htmlKommentareEntfernen };
+module.exports = { stripCssComments, stripJsComments, stripHtmlComments };

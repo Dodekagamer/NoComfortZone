@@ -15,7 +15,7 @@ const PAGES_DIR = path.join(SRC, 'pages');
 const ASSETS_DIR = path.join(SRC, 'assets');
 
 const { renderPage } = require('./src/lib/layout');
-const { cssKommentareEntfernen, jsKommentareEntfernen, htmlKommentareEntfernen } = require('./src/lib/minify');
+const { stripCssComments, stripJsComments, stripHtmlComments } = require('./src/lib/minify');
 const { BASE_PATH, SITE_URL } = require('./src/lib/base-path');
 const { pageHero } = require('./src/lib/components');
 
@@ -45,6 +45,15 @@ function applyBasePath(html) {
   return html.replace(/(href|src)="\/(?!\/)/g, `$1="${BASE_PATH}/`);
 }
 
+/**
+ * Der immer gleiche Weg vom Seitenmodul zur fertigen Datei: rendern, die
+ * Adressen auf den Unterpfad umschreiben, Kommentare entfernen. Stand vorher
+ * zweimal dreifach verschachtelt da — einmal hier, einmal fuer die 404-Seite.
+ */
+function finishPage(options) {
+  return stripHtmlComments(applyBasePath(renderPage(options)));
+}
+
 function buildPages() {
   const files = fs.readdirSync(PAGES_DIR).filter((f) => f.endsWith('.js'));
   const pages = [];
@@ -61,17 +70,15 @@ function buildPages() {
       if (!page.url || !page.content) {
         throw new Error(`Seite in ${file} braucht mindestens { url, content }`);
       }
-      const html = htmlKommentareEntfernen(applyBasePath(
-        renderPage({
-          title: page.title,
-          description: page.description,
-          shareTitle: page.shareTitle,
-          robots: page.robots,
-          bodyClass: page.bodyClass,
-          url: page.url,
-          content: typeof page.content === 'function' ? page.content() : page.content
-        })
-      ));
+      const html = finishPage({
+        title: page.title,
+        description: page.description,
+        shareTitle: page.shareTitle,
+        robots: page.robots,
+        bodyClass: page.bodyClass,
+        url: page.url,
+        content: typeof page.content === 'function' ? page.content() : page.content
+      });
       if (vergeben.has(page.url)) {
         throw new Error(
           `Zwei Seiten wollen dieselbe Adresse "${page.url}": ${vergeben.get(page.url)} und ${file}. ` +
@@ -99,8 +106,8 @@ function copyAssets() {
 
   // Kommentare bleiben in src/, gehen aber nicht mit an den Besucher.
   const kuerzen = [
-    ['css/styles.css', cssKommentareEntfernen],
-    ['js/main.js', jsKommentareEntfernen]
+    ['css/styles.css', stripCssComments],
+    ['js/main.js', stripJsComments]
   ];
   for (const [rel, funktion] of kuerzen) {
     const datei = path.join(dest, rel);
@@ -166,20 +173,18 @@ function buildRobots() {
 }
 
 function build404() {
-  const html = htmlKommentareEntfernen(applyBasePath(
-    renderPage({
-      title: 'Seite nicht gefunden — No Comfort Zone',
-      description: 'Diese Seite existiert nicht (mehr).',
-      // Die Fehlerseite gehoert nicht in den Suchindex.
-      robots: 'noindex, follow',
-      url: '/404/',
-      content: `
+  const html = finishPage({
+    title: 'Seite nicht gefunden — No Comfort Zone',
+    description: 'Diese Seite existiert nicht (mehr).',
+    // Die Fehlerseite gehoert nicht in den Suchindex.
+    robots: 'noindex, follow',
+    url: '/404/',
+    content: `
 <div class="error-404">
 ${pageHero('404', 'Diese Seite gibt es nicht.', 'Der Link ist entweder veraltet oder falsch getippt. Auf der Startseite findest du alles Wichtige.', 'Zur Startseite', '/', 'Kontakt aufnehmen', '/kontakt/')}
 </div>
 `
-    })
-  ));
+  });
   writeStaticFile('404.html', html);
 }
 

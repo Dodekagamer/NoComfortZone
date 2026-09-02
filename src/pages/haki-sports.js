@@ -1,5 +1,5 @@
 const { pageHero, step, priceCard, ctaBand, inquiryForm } = require('../lib/components');
-const { site } = require('../lib/layout');
+const site = require('../lib/site.json');
 const { esc, safeUrl } = require('../lib/escape');
 const pricing = require('../lib/pricing.json');
 
@@ -78,13 +78,7 @@ ${(() => {
       <h2>Erstgespräch anfragen</h2>
       <p>Unverbindlich. Im Gespräch klären wir dein Ziel, den passenden Umfang — und erst dann den Preis.</p>
     </div>
-    ${inquiryForm(
-      'form-haki',
-      'Haki Sports Buchung',
-      'Haki Sports anfragen',
-      'Beschreibe kurz dein Ziel (z. B. Kraftaufbau, Gewichtsreduktion, Wettkampfvorbereitung) und deine bevorzugten Zeiten.',
-      'z. B. Ziel: Kraftaufbau, 2x pro Woche'
-    )}
+    ${inquiryForm('haki')}
   </div>
 </section>
 

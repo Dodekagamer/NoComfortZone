@@ -7,28 +7,31 @@ Statisch generierte, mehrseitige Website. Kein Framework, keine externen npm-Abh
 ## Struktur
 
 ```
-build.js            Build-Skript (liest src/pages/*.js, schreibt _site/)
-serve.js             Lokaler Vorschau-Server (kein Dependency nötig)
+build.js                Baut die Website: liest src/pages/*.js, schreibt _site/
+serve.js                Lokaler Vorschau-Server (ohne Abhängigkeiten)
+.github/workflows/      Deploy nach GitHub Pages bei jedem Push auf main
 src/
   lib/
-    site.json         Globale Daten: Navigation, Kontakt, Social-Links
-    pricing.json       Mitgliedschafts- & Coaching-Preise (Platzhalter, s. u.)
-    layout.js           HTML-Grundgerüst (Head, Header/Nav, Footer, Scripts)
-    components.js        Wiederverwendbare Bausteine (Preis-Karte, Formular, ...)
-  pages/
-    index.js            Startseite
-    vision-werte.js, angebote.js, zielgruppe.js, mitgliedschaft.js,
-    buchung.js, community.js, haki-sports.js, kontakt.js,
-    impressum.js, datenschutz.js
+    site.json           Navigation, Kontakt, Social-Links, Gruppen
+    pricing.json        Mitgliedschaften und Coaching-Pakete
+    offers.json         Die sechs Angebote samt Detailseiten-Inhalt
+    layout.js           HTML-Grundgerüst: Head, CSP, Header, Footer
+    components.js       Bausteine (Preis-Karte, Formulare, Hero, CTA-Band)
+    escape.js           esc() und safeUrl() für alles aus den Datendateien
+    structured-data.js  JSON-LD (Organisation, Website, Brotkrumen)
+    base-path.js        /NoComfortZone bzw. leer bei eigener Domain
+    minify.js           Entfernt Kommentare aus dem ausgelieferten Code
+  pages/                Je Datei eine Seite; angebot-detail.js erzeugt sechs
   assets/
-    css/styles.css       Design-System (Farben, Fonts, Komponenten)
-    js/main.js            Mobile-Nav, Scroll-Hero (eigener Code), Formular-Versand
-    img/hero-bg.jpg        Hero-Hintergrundbild
-    favicon.svg
-worker/                  Cloudflare Worker für den garantierten Anfrage-Versand
-  src/index.js           nimmt das Formular entgegen, verschickt über Brevo (EU)
-  wrangler.toml          Empfänger, erlaubte Herkunft, Absenderadresse
-  README.md              Einrichtung Schritt für Schritt
+    css/styles.css      Design-System und alle Komponenten
+    js/main.js          Menü, Hero-Sequenz, Einblendungen, Formularversand
+    js/enhance.js       Winziges Vorab-Skript, wird ins HTML eingebettet
+    fonts/              Anton, Space Mono, Inter (woff2, SIL OFL)
+    img/                Hero in drei Breiten, Angebotsfotos, Platzhalter
+worker/                 Cloudflare Worker für den garantierten Versand
+  src/index.js          Nimmt das Formular an, verschickt über Brevo (EU)
+  wrangler.toml         Empfänger, erlaubte Herkunft, Absenderadresse
+  README.md             Einrichtung Schritt für Schritt
 ```
 
 Jede Datei in `src/pages/` exportiert `{ url, title, description, content }` — `build.js` rendert sie mit dem gemeinsamen Layout und schreibt sie nach `_site/<url>/index.html`.

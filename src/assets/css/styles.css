@@ -70,7 +70,6 @@
   --field-line:#6e6a61;              /* 3,4:1 auf --asphalt (WCAG 1.4.11) */
   --maxw: 1180px;
   --accent: var(--hazard);
-  --accent-dim: var(--hazard-dim);
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 html{
@@ -865,7 +864,7 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .coming-soon p{color:var(--concrete); font-size:14.5px;}
 
 /* HAKI SPORTS THEME (subtile Abgrenzung: gelb statt orange als Akzent) */
-body.theme-haki{ --accent: var(--safety); --accent-dim: #e0ac1f; }
+body.theme-haki{ --accent: var(--safety); }
 body.theme-haki .intro-panel .center,
 body.theme-haki .mission blockquote .center{ color: var(--safety); }
 
@@ -873,7 +872,7 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
    setzt denselben gelben Akzent nur für diesen Abschnitt, damit die Trennung
    Community vs. 1:1-Coaching auch dort sofort sichtbar ist. */
 .theme-haki-section{
-  --accent: var(--safety); --accent-dim:#e0ac1f;
+  --accent: var(--safety);
   background:var(--asphalt-2);
   border-top:1px solid var(--line); border-bottom:1px solid var(--line);
 }

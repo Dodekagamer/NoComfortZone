@@ -19,7 +19,7 @@ ${pageHero(
       <h2>Probetraining buchen</h2>
       <p>Ein kostenloses, unverbindliches Training zum Kennenlernen von No Comfort Zone.</p>
     </div>
-    ${inquiryForm('form-probetraining', 'Probetraining', 'Probetraining anfragen', 'Erzähl uns kurz, welches Training dich interessiert und wann es dir passt.', 'z. B. Interesse an Boxen, dienstags abends')}
+    ${inquiryForm('probetraining')}
   </div>
 </section>
 
@@ -32,7 +32,7 @@ ${pageHero(
       <h2>Auf die Mitgliedschaft warten</h2>
       <p>Feste Mitgliedschaften gibt es erst, wenn No Comfort Zone als Verein eingetragen ist. Wenn du dann von Anfang an dabei sein willst, sag hier Bescheid — wir melden uns, sobald es losgeht.</p>
     </div>
-    ${inquiryForm('form-mitgliedschaft', 'Mitgliedschaft', 'Vormerken lassen', 'Sag uns, was dich interessieren würde (z. B. Community oder Familie) — dann melden wir uns, sobald Mitgliedschaften starten.', 'z. B. Interesse an Community-Mitgliedschaft')}
+    ${inquiryForm('mitgliedschaft')}
     <p class="form-note stack-top-sm">Wo wir gerade stehen: <a href="/mitgliedschaft/" class="inline-link">Mitgliedschaft &amp; Beiträge</a></p>
   </div>
 </section>
@@ -46,7 +46,7 @@ ${pageHero(
       <h2>Haki Sports buchen</h2>
       <p>Professionelles Personal Training, individuell auf dich zugeschnitten. Details zum Angebot: <a href="/haki-sports/" class="inline-link">Haki Sports ansehen</a>.</p>
     </div>
-    ${inquiryForm('form-haki', 'Haki Sports Buchung', 'Haki Sports anfragen', 'Beschreibe kurz dein Ziel (z. B. Kraftaufbau, Gewichtsreduktion, Wettkampfvorbereitung) und deine bevorzugten Zeiten.', 'z. B. Ziel: Kraftaufbau, 2x pro Woche')}
+    ${inquiryForm('haki')}
   </div>
 </section>
 `

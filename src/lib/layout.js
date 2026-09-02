@@ -5,7 +5,7 @@ const { structuredData } = require('./structured-data');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { jsKommentareEntfernen } = require('./minify');
+const { stripJsComments } = require('./minify');
 
 /**
  * Das winzige Vorab-Skript wird direkt in die Seite geschrieben statt als
@@ -20,7 +20,7 @@ const { jsKommentareEntfernen } = require('./minify');
  * blockiert der Browser. Weicht der Abdruck einmal ab, faellt die Seite auf den
  * Zustand ohne JavaScript zurueck — sichtbar bleibt alles.
  */
-const VORAB_SKRIPT = jsKommentareEntfernen(
+const VORAB_SKRIPT = stripJsComments(
   fs.readFileSync(path.join(__dirname, '..', 'assets', 'js', 'enhance.js'), 'utf8')
 ).trim();
 const VORAB_HASH =
@@ -216,4 +216,4 @@ ${renderFooter()}
 `;
 }
 
-module.exports = { renderPage, site };
+module.exports = { renderPage };

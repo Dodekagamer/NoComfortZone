@@ -1,4 +1,4 @@
-const { site } = require('../lib/layout');
+const site = require('../lib/site.json');
 const { esc } = require('../lib/escape');
 
 module.exports = {

@@ -56,13 +56,7 @@ ${pageHero(
       <h2>Erstes Training anfragen</h2>
       <p>Kostenlos und unverbindlich. Schreib dazu, was dich interessiert — wir melden uns mit dem nächsten passenden Termin.</p>
     </div>
-    ${inquiryForm(
-      'form-probetraining',
-      'Probetraining',
-      'Probetraining anfragen',
-      'Erzähl uns kurz, welches Training dich interessiert und wann es dir passt.',
-      'z. B. Interesse an Boxen, dienstags abends'
-    )}
+    ${inquiryForm('probetraining')}
     ${(() => {
       const gruppe = site.groups && site.groups[0];
       return gruppe
