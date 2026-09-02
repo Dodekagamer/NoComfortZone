@@ -37,11 +37,11 @@ module.exports = {
     <p>Die Anfrage-/Buchungsformulare dieser Website (z. B. Probetraining, Mitgliedschaft, Haki Sports, Unternehmens-/Schulanfragen) senden keine Daten an einen Server und werden von uns nicht auf dieser Website gespeichert. Beim Absenden öffnet sich clientseitig dein E-Mail-Programm bzw. WhatsApp mit einer vorausgefüllten Nachricht an ${esc(site.contact.email)} bzw. ${esc(site.contact.phoneDisplay)}. Die von dir eingegebenen Daten (z. B. Name, E-Mail-Adresse, Nachricht) werden ausschließlich über den von dir gewählten Kanal — dein eigenes E-Mail-Programm oder WhatsApp — direkt an uns übermittelt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Bearbeitung deiner Anfrage bzw. Anbahnung eines Vertrags) bzw. Art. 6 Abs. 1 lit. f DSGVO für allgemeine Anfragen. Für die anschließende Kommunikation per E-Mail oder WhatsApp gelten die Datenschutzbestimmungen des jeweiligen Anbieters.</p>
     `}
 
-    <h2>Externe Schriftarten (Google Fonts)</h2>
-    <p>Diese Website bindet aktuell Schriftarten (Anton, Space Mono, Inter) über Google Fonts ein, die beim Aufruf der Seite direkt von Servern von Google (fonts.googleapis.com, fonts.gstatic.com) geladen werden. Dabei wird deine IP-Adresse an Google übertragen; Google kann technische Daten wie IP-Adresse, Browsereinstellungen und Aufrufzeitpunkt erheben. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer einheitlichen, performanten Darstellung der Website). Mehr Informationen: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von Google</a>. <strong>Wir planen kurzfristig die Umstellung auf lokal auf unserem eigenen Server gehostete Schriftarten</strong>, wodurch diese Datenübertragung an Google vollständig entfällt — dieser Abschnitt wird dann entsprechend aktualisiert bzw. entfernt.</p>
+    <h2>Schriftarten</h2>
+    <p>Die auf dieser Website verwendeten Schriftarten (Anton, Space Mono, Inter) werden von unserem eigenen Server ausgeliefert. Es besteht dabei <strong>keine Verbindung zu Google Fonts oder einem anderen Drittanbieter</strong>; es werden keine Daten – insbesondere keine IP-Adresse – an Dritte übertragen. Die Schriften stehen unter der SIL Open Font License 1.1.</p>
 
     <h2>Cookies &amp; Tracking</h2>
-    <p>Diese Website setzt keine Cookies und kein Tracking (z. B. Analytics, Reichweitenmessung) ein. Alle Skripte werden von unserem eigenen Server ausgeliefert; außer den oben genannten Schriftarten werden keine Inhalte von Drittanbietern nachgeladen.</p>
+    <p>Diese Website setzt keine Cookies und kein Tracking (z. B. Analytics, Reichweitenmessung) ein. Alle Skripte, Stylesheets, Schriften und Bilder werden von unserem eigenen Server ausgeliefert. Beim Aufruf der Seite werden keinerlei Inhalte von Drittanbietern nachgeladen.</p>
 
     <h2>Speicherdauer</h2>
     <p>Daten aus Kontakt-/Buchungsformularen werden nicht auf dieser Website gespeichert (siehe oben). Technische Zugriffsdaten (Server-Logfiles) werden nach den Vorgaben des Hosting-Anbieters GitHub verarbeitet und automatisiert gelöscht bzw. anonymisiert.</p>
@@ -65,7 +65,7 @@ module.exports = {
     <a href="https://www.baden-wuerttemberg.datenschutz.de/" target="_blank" rel="noopener noreferrer">www.baden-wuerttemberg.datenschutz.de</a></p>
 
     <h2>Änderungen dieser Datenschutzerklärung</h2>
-    <p>Wir passen diese Datenschutzerklärung an, sobald sich die Datenverarbeitung auf dieser Website ändert (z. B. bei Umstellung auf lokal gehostete Schriftarten/Skripte oder Einführung neuer Funktionen wie Online-Zahlung oder eines Mitgliederbereichs).</p>
+    <p>Wir passen diese Datenschutzerklärung an, sobald sich die Datenverarbeitung auf dieser Website ändert (z. B. bei Einführung einer Reichweitenmessung, einer Online-Zahlung oder eines Mitgliederbereichs).</p>
 
     <p class="note-small">Hinweis: Diese Erklärung ist inhaltlich vollständig strukturiert, es fehlen aber noch Name und Anschrift der verantwortlichen Person (Platzhalter oben, direkt in <code>src/lib/site.json</code> unter <code>legal</code> eintragbar). Vor dem Live-Betrieb empfehlen wir zusätzlich eine kurze rechtliche Prüfung.</p>
   </div>

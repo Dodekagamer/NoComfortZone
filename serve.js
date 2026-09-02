@@ -21,7 +21,10 @@ const MIME = {
   '.jpeg': 'image/jpeg',
   '.png': 'image/png',
   '.xml': 'application/xml; charset=utf-8',
-  '.txt': 'text/plain; charset=utf-8'
+  '.txt': 'text/plain; charset=utf-8',
+  '.woff2': 'font/woff2',
+  '.webp': 'image/webp',
+  '.ico': 'image/x-icon'
 };
 
 const server = http.createServer((req, res) => {

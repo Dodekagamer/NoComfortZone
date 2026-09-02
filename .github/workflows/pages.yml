@@ -14,23 +14,30 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+# Die Actions haengen an Commit-SHAs, nicht an "@v4". Ein beweglicher Tag
+# zeigt morgen auf anderen Code: wer das Action-Repository uebernimmt, kann v4
+# umhaengen und laeuft dann in diesem Workflow mit Schreibrechten auf Pages.
+# Der Kommentar hinter dem SHA sagt, welche Version gemeint ist — zum
+# Aktualisieren den neuen SHA mit
+#   git ls-remote --tags https://github.com/<owner>/<repo> | grep 'refs/tags/v4$'
+# holen und hier eintragen.
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
         with:
           # Vollstaendige Historie: build.js liest das lastmod der Sitemap aus
           # dem Git-Datum der jeweiligen Quelldatei. Der Standard-Klon reicht
           # nur einen Commit tief — dann traegt jede Seite dasselbe Datum, und
           # die Sitemap meldete bei jedem Deploy Aenderungen an allen Seiten.
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4
         with:
           node-version: 22
       - name: Build site
         run: node build.js
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa  # v3
         with:
           path: _site
 
@@ -42,4 +49,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4

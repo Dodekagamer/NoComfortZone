@@ -149,7 +149,7 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
      dadurch greift CSS-Injection ins Leere. frame-ancestors fehlt bewusst —
      per <meta> ignorieren Browser die Direktive, und GitHub Pages kann keine
      echten HTTP-Header setzen. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' ${VORAB_HASH}; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src ${connectSrc}; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' ${VORAB_HASH}; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src ${connectSrc}; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; manifest-src 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="theme-color" content="#15161a">
 <title>${esc(pageTitle)}</title>
@@ -171,9 +171,13 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
 <meta name="twitter:image" content="${esc(ogImage)}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Space+Mono:wght@400;700&amp;family=Inter:wght@400;700;800&amp;display=swap" rel="stylesheet">
+<!-- Die Schriften liegen jetzt im Projekt (siehe styles.css). Vorgeladen werden
+     nur die beiden, die schon fuer das erste Bild gebraucht werden: Anton fuer
+     die Ueberschrift, Inter fuer den Fliesstext. Die uebrigen vier findet der
+     Browser beim Lesen des Stylesheets frueh genug. crossorigin ist auch bei
+     eigener Domain Pflicht, sonst laedt die Datei zweimal. -->
+<link rel="preload" href="/assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Markiert <html> als "js", BEVOR der Body gerendert wird — sonst bekaemen
      die Einblend-Animationen ihre Startposition erst nachtraeglich und der
      Inhalt wuerde kurz aufblitzen. Direkt eingebettet statt als Datei: eine

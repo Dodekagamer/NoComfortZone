@@ -1,3 +1,44 @@
+/* SCHRIFTEN — selbst ausgeliefert, nicht von Google
+   Vorher lud die Seite die Schriften über fonts.googleapis.com und
+   fonts.gstatic.com. Das kostete zwei fremde Verbindungen samt eines
+   render-blockierenden Umwegs, bevor überhaupt etwas gezeichnet wurde — und es
+   übertrug bei jedem Aufruf die IP-Adresse der Besucher an Google, was in
+   Deutschland das bekannte Abmahnrisiko ist.
+
+   Jetzt liegen die sechs tatsächlich benutzten Schnitte im Latin-Ausschnitt
+   hier im Projekt (zusammen rund 124 KB), kommen von derselben Domain wie die
+   Seite und starten dadurch auf einer bereits offenen Verbindung. Alle drei
+   Familien stehen unter der SIL Open Font License 1.1; die Lizenztexte liegen
+   im selben Ordner und müssen dort bleiben.
+
+   Kein unicode-range: es gibt nur diesen einen Ausschnitt. Fehlt ein Zeichen
+   (z. B. der Pfeil →), setzt der Browser es aus einer Systemschrift — genau
+   wie vorher auch. */
+@font-face{
+  font-family:'Anton'; font-style:normal; font-weight:400; font-display:swap;
+  src:url('../fonts/anton-latin-400-normal.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Space Mono'; font-style:normal; font-weight:400; font-display:swap;
+  src:url('../fonts/space-mono-latin-400-normal.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Space Mono'; font-style:normal; font-weight:700; font-display:swap;
+  src:url('../fonts/space-mono-latin-700-normal.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Inter'; font-style:normal; font-weight:400; font-display:swap;
+  src:url('../fonts/inter-latin-400-normal.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Inter'; font-style:normal; font-weight:700; font-display:swap;
+  src:url('../fonts/inter-latin-700-normal.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Inter'; font-style:normal; font-weight:800; font-display:swap;
+  src:url('../fonts/inter-latin-800-normal.woff2') format('woff2');
+}
+
 /* ==========================================================================
    NO COMFORT ZONE — Design System
    Basis 1:1 aus der bestehenden Startseiten-Vorlage übernommen (Farben,
