@@ -5,6 +5,7 @@ const { structuredData } = require('./structured-data');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { jsKommentareEntfernen } = require('./minify');
 
 /**
  * Das winzige Vorab-Skript wird direkt in die Seite geschrieben statt als
@@ -19,9 +20,9 @@ const crypto = require('crypto');
  * blockiert der Browser. Weicht der Abdruck einmal ab, faellt die Seite auf den
  * Zustand ohne JavaScript zurueck — sichtbar bleibt alles.
  */
-const VORAB_SKRIPT = fs
-  .readFileSync(path.join(__dirname, '..', 'assets', 'js', 'enhance.js'), 'utf8')
-  .trim();
+const VORAB_SKRIPT = jsKommentareEntfernen(
+  fs.readFileSync(path.join(__dirname, '..', 'assets', 'js', 'enhance.js'), 'utf8')
+).trim();
 const VORAB_HASH =
   "'sha256-" + crypto.createHash('sha256').update(VORAB_SKRIPT, 'utf8').digest('base64') + "'";
 

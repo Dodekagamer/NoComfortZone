@@ -6,6 +6,13 @@ function euro(value) {
   return Number(value).toLocaleString('de-DE');
 }
 
+/* WICHTIG — Vertrag dieser Bausteine: die uebergebenen Texte werden NICHT
+   escaped, damit die Seiten in src/pages/ Markup mitgeben koennen (Links,
+   <strong>, Umbrueche). Das ist nur sicher, solange die Werte im Quelltext
+   stehen. Alles, was aus einer Datendatei kommt — offers.json, pricing.json,
+   site.json — muss am Aufrufort durch esc(). Genau das war hier schon zweimal
+   vergessen worden und faellt in keinem Test auf, den nicht jemand mit
+   Angriffswerten baut. */
 function ctaBand(headline, buttonText, buttonHref, text, secondaryText, secondaryHref) {
   return `<div class="cta-band">
   <div class="wrap">

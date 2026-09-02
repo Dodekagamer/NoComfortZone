@@ -15,6 +15,7 @@ const PAGES_DIR = path.join(SRC, 'pages');
 const ASSETS_DIR = path.join(SRC, 'assets');
 
 const { renderPage } = require('./src/lib/layout');
+const { cssKommentareEntfernen, jsKommentareEntfernen, htmlKommentareEntfernen } = require('./src/lib/minify');
 const { BASE_PATH, SITE_URL } = require('./src/lib/base-path');
 const { pageHero } = require('./src/lib/components');
 
@@ -60,7 +61,7 @@ function buildPages() {
       if (!page.url || !page.content) {
         throw new Error(`Seite in ${file} braucht mindestens { url, content }`);
       }
-      const html = applyBasePath(
+      const html = htmlKommentareEntfernen(applyBasePath(
         renderPage({
           title: page.title,
           description: page.description,
@@ -70,7 +71,7 @@ function buildPages() {
           url: page.url,
           content: typeof page.content === 'function' ? page.content() : page.content
         })
-      );
+      ));
       if (vergeben.has(page.url)) {
         throw new Error(
           `Zwei Seiten wollen dieselbe Adresse "${page.url}": ${vergeben.get(page.url)} und ${file}. ` +
@@ -95,6 +96,17 @@ function buildPages() {
 function copyAssets() {
   const dest = path.join(OUT, 'assets');
   fs.cpSync(ASSETS_DIR, dest, { recursive: true });
+
+  // Kommentare bleiben in src/, gehen aber nicht mit an den Besucher.
+  const kuerzen = [
+    ['css/styles.css', cssKommentareEntfernen],
+    ['js/main.js', jsKommentareEntfernen]
+  ];
+  for (const [rel, funktion] of kuerzen) {
+    const datei = path.join(dest, rel);
+    const vorher = fs.readFileSync(datei, 'utf8');
+    fs.writeFileSync(datei, funktion(vorher));
+  }
 }
 
 function writeStaticFile(relPath, content) {
@@ -154,7 +166,7 @@ function buildRobots() {
 }
 
 function build404() {
-  const html = applyBasePath(
+  const html = htmlKommentareEntfernen(applyBasePath(
     renderPage({
       title: 'Seite nicht gefunden — No Comfort Zone',
       description: 'Diese Seite existiert nicht (mehr).',
@@ -167,7 +179,7 @@ ${pageHero('404', 'Diese Seite gibt es nicht.', 'Der Link ist entweder veraltet 
 </div>
 `
     })
-  );
+  ));
   writeStaticFile('404.html', html);
 }
 

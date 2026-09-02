@@ -126,7 +126,7 @@ const pages = offers.map((offer) => ({
   title: `${offer.title} — Angebote — No Comfort Zone`,
   description: offer.teaser,
   content: () => `
-${pageHero(offer.tag, offer.title, offer.lead, 'Probetraining buchen', '/buchung/', 'Alle Angebote', '/angebote/')}
+${pageHero(esc(offer.tag), esc(offer.title), esc(offer.lead), 'Probetraining buchen', '/buchung/', 'Alle Angebote', '/angebote/')}
 
 <nav class="breadcrumb" aria-label="Brotkrumen-Navigation">
   <div class="wrap">
@@ -137,7 +137,7 @@ ${pageHero(offer.tag, offer.title, offer.lead, 'Probetraining buchen', '/buchung
 ${offer.sections.map(renderSection).join('\n\n')}
 
 ${ctaBand(
-  `Lust auf ${offer.title}?`,
+  `Lust auf ${esc(offer.title)}?`,
   'Probetraining buchen',
   '/buchung/',
   'Das erste Training ist kostenlos und unverbindlich.',
