@@ -240,9 +240,35 @@ document.documentElement.classList.add('js');
     return easeInOut(Math.max(0, 1 - (progress - (end - FADE)) / FADE)); // ausblenden
   }
 
+  /* Ist der Bildschirm zu flach fuer die gepinnte Sequenz, laeuft dieselbe
+     statische Fassung wie ohne JavaScript. Gemessen auf einem Handy im
+     Querformat (740x360): die Endtafel braucht 486px, der gepinnte Hero ist
+     360px hoch — Ueberschrift oben und beide Buttons unten wurden von
+     overflow:hidden abgeschnitten. Die Hoehe wird nur beim Laden und bei
+     Groessenaenderung gemessen, nicht bei jedem Scrollbild: offsetHeight
+     erzwingt ein Neuberechnen des Layouts. */
+  const wurzel = document.documentElement;
+  const endTafel = panels[3].firstElementChild;
+  let statisch = false;
+
+  function lagePruefen() {
+    statisch = endTafel ? endTafel.offsetHeight + 96 > window.innerHeight : false;
+    wurzel.classList.toggle('hero-statisch', statisch);
+    if (statisch) {
+      // Inline-Werte der Sequenz zuruecknehmen, damit das CSS uebernimmt.
+      panels.forEach((panel) => {
+        panel.style.opacity = '';
+        panel.style.transform = '';
+      });
+      if (sweep) sweep.style.transform = '';
+      if (cue) cue.style.opacity = '';
+    }
+  }
+
   let ticking = false;
   function update() {
     ticking = false;
+    if (statisch) return;
     const rect = section.getBoundingClientRect();
     const scrollable = rect.height - window.innerHeight;
     const progress = scrollable <= 0 ? 1 : Math.min(1, Math.max(0, -rect.top / scrollable));
@@ -266,8 +292,45 @@ document.documentElement.classList.add('js');
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('resize', () => {
+    lagePruefen();
+    onScroll();
+  });
+  lagePruefen();
   update();
+})();
+
+/* Beim Drucken alle Antworten aufklappen. Ein geschlossenes <details> druckt
+   nur seine Frage — die Seite käme sonst mit zehn Fragen und einer Antwort aus
+   dem Drucker. Danach wird der Zustand von vorher wiederhergestellt, damit sich
+   am Bildschirm nichts verändert. */
+(function initDruckAufklappen() {
+  const bloecke = [...document.querySelectorAll('details')];
+  if (!bloecke.length) return;
+
+  let vorher = null;
+  function aufklappen() {
+    if (vorher) return;
+    vorher = bloecke.map((d) => d.open);
+    bloecke.forEach((d) => {
+      d.open = true;
+    });
+  }
+  function zurueck() {
+    if (!vorher) return;
+    bloecke.forEach((d, i) => {
+      d.open = vorher[i];
+    });
+    vorher = null;
+  }
+
+  window.addEventListener('beforeprint', aufklappen);
+  window.addEventListener('afterprint', zurueck);
+  // Nicht jeder Browser feuert beforeprint; die Druck-Media-Query tut es.
+  const druck = window.matchMedia && window.matchMedia('print');
+  if (druck && druck.addEventListener) {
+    druck.addEventListener('change', (e) => (e.matches ? aufklappen() : zurueck()));
+  }
 })();
 
 (function initInquiryForms() {

@@ -146,10 +146,10 @@ function inquiryForm(formId, type, title, intro, messagePlaceholder) {
   </div>
   <div class="form-actions">
     <button type="submit" class="btn solid">Anfrage senden</button>
-    <button type="button" class="btn whatsapp" data-whatsapp-trigger>Senden + per WhatsApp melden</button>
+    <button type="button" class="btn whatsapp" data-whatsapp-trigger>Senden + WhatsApp</button>
   </div>
   <p class="form-status" id="${id}-status" data-form-status role="status" aria-live="polite"></p>
-  <a class="btn whatsapp form-fallback" data-wa-fallback href="#" hidden>Dieselbe Anfrage per WhatsApp öffnen</a>
+  <a class="btn whatsapp form-fallback" data-wa-fallback href="#" hidden>Per WhatsApp öffnen</a>
   <p class="form-note">Deine Anfrage wird direkt an uns übermittelt — du bekommst hier sofort eine Bestätigung mit deiner Vorgangsnummer. Mit dem zweiten Button meldest du dieselbe Anfrage zusätzlich per WhatsApp, damit wir sie sofort sehen; die Vorgangsnummer verbindet beide, es bleibt eine Anfrage. Wir speichern deine Daten nur, um dir zu antworten.</p>
   <noscript>
     <p class="form-note form-note-warn">Die Formulare brauchen JavaScript, um deine Eingaben vorzubereiten. Schreib uns stattdessen direkt an <a href="mailto:${mail}" class="inline-link">${mail}</a> oder ruf an: <a href="tel:${esc(site.contact.phoneHref)}" class="inline-link">${esc(site.contact.phoneDisplay)}</a> — Stichwort „${esc(type)}".</p>

@@ -331,12 +331,26 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
    hätten den oberen Teil abgeschnitten. Die drei Sequenz-Tafeln werden ganz
    entfernt statt nur unsichtbar gestellt — sonst lägen drei durchsichtige
    Flächen über den Buttons. */
-html:not(.js) .scroll-intro{height:auto;}
-html:not(.js) .intro-pin{position:relative; height:auto; min-height:100vh;}
+/* Dieselbe statische Fassung greift zusaetzlich, wenn der Bildschirm zu flach
+   fuer die gepinnte Sequenz ist — Handy im Querformat, kleines Laptopfenster,
+   geteilter Bildschirm. Gemessen bei 740x360: die Endtafel braucht 486px, der
+   Hero ist 360px hoch und schneidet mit overflow:hidden ab. Sichtbar war eine
+   angeschnittene Ueberschrift und zwei halbe Buttons. main.js setzt
+   "hero-statisch", sobald der Inhalt nicht mehr hineinpasst. */
+html:not(.js) .scroll-intro,
+html.hero-statisch .scroll-intro{height:auto;}
+html:not(.js) .intro-pin,
+html.hero-statisch .intro-pin{position:relative; height:auto; min-height:100vh;}
 html:not(.js) .intro-panel.p1,
 html:not(.js) .intro-panel.p2,
-html:not(.js) .intro-panel.p3{display:none;}
-html:not(.js) .intro-panel.final{position:relative; inset:auto; padding:88px 24px;}
+html:not(.js) .intro-panel.p3,
+html.hero-statisch .intro-panel.p1,
+html.hero-statisch .intro-panel.p2,
+html.hero-statisch .intro-panel.p3{display:none;}
+html:not(.js) .intro-panel.final,
+html.hero-statisch .intro-panel.final{position:relative; inset:auto; padding:88px 24px; opacity:1;}
+html.hero-statisch .scroll-cue,
+html.hero-statisch .intro-sweep{display:none;}
 .js .intro-panel{opacity:0;}
 .js .intro-panel.p1{opacity:1;}
 .js .intro-panel.final{opacity:0;}
@@ -535,6 +549,11 @@ footer .footer-grid{grid-template-columns:1.4fr 1fr 1fr 1fr;}
    Lösung: Header-CTA wandert ins Menü, Logo wird kleiner.            */
 @media (max-width:620px){
   .wrap{padding:0 20px;}
+  /* Nebeneinander ist auf dem Handy kein Platz: der zweite Button nahm sich
+     die volle Breite und brach um, waehrend der erste schmal blieb — das sah
+     aus, als waere der Zweitweg der Hauptweg. Untereinander, gleich breit. */
+  .form-actions{flex-direction:column; align-items:stretch;}
+  .form-actions .btn{width:100%;}
   section{padding:60px 0;}
   .navbar-cta .btn.solid.small{display:none;}   /* CTA steckt jetzt im Menü */
   header[data-open="true"] .nav-cta-mobile{display:block;}
@@ -731,6 +750,9 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .form-field input[aria-invalid="true"],
 .form-field textarea[aria-invalid="true"]{border:2px solid var(--safety);}
 .form-actions{display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; align-items:center;}
+/* Bricht eine Beschriftung doch einmal um, sollen die Zeilen aehnlich lang
+   sein statt "sechs Woerter / ein Wort". */
+.btn{text-wrap:balance;}
 .btn.whatsapp{border-color:#25D366; color:#25D366;}
 .btn.whatsapp:hover{background:#25D366; color:var(--asphalt);}
 .form-note{font-size:12.5px; color:var(--concrete); margin-top:14px;}
