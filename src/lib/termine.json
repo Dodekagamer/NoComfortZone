@@ -1,4 +1,15 @@
 {
-  "training": [],
+  "training": [
+    {
+      "tag": "Sonntag",
+      "von": "12:00",
+      "bis": "14:00",
+      "angebot": "calisthenics",
+      "titel": "10x10 Sunday Circle",
+      "ort": "SSC Karlsruhe · Calisthenics-Anlage",
+      "adresse": "Am Sportpark 5, 76131 Karlsruhe",
+      "hinweis": "Anmeldung über die WhatsApp-Community-Gruppe"
+    }
+  ],
   "events": []
 }

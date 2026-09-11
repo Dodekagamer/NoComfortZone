@@ -39,9 +39,11 @@ const fragen = [
   },
   {
     f: 'Wo und wann trainiert ihr?',
-    a: `Draußen in Karlsruhe. Treffpunkte und Termine stimmen wir aktuell direkt ab — am schnellsten
-        über unsere WhatsApp-Gruppe, sonst über das Formular. Sobald feste Zeiten stehen,
-        veröffentlichen wir sie hier auf der Seite.`
+    a: `Fest im Kalender steht der <strong>10x10 Sunday Circle</strong>: jeden Sonntag von 12 bis 14 Uhr
+        auf der Calisthenics-Anlage des SSC Karlsruhe, Am Sportpark 5. Angemeldet wird über die
+        WhatsApp-Community-Gruppe. Darüber hinaus entstehen Einheiten kurzfristig und werden ebenfalls
+        dort abgesprochen. Die aktuellen Zeiten stehen immer unter
+        <a href="/angebote/#zeiten" class="inline-link">Angebote</a>.`
   },
   {
     f: 'Was brauche ich für das erste Training?',

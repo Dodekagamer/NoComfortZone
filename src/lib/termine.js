@@ -14,8 +14,10 @@
  *     "von": "19:00",
  *     "bis": "20:30",
  *     "angebot": "boxen",              (slug aus offers.json, optional)
+ *     "titel": "10x10 Sunday Circle",  (eigener Name der Einheit, optional)
  *     "ort": "Günther-Klotz-Anlage",
- *     "hinweis": "Treffpunkt am Spielplatz"   (optional)
+ *     "adresse": "Am Sportpark 5, 76131 Karlsruhe",   (optional, wird verlinkt)
+ *     "hinweis": "Treffpunkt am Spielplatz"           (optional)
  *   }
  *
  * Und ein Termin in `events`:
@@ -134,11 +136,22 @@ function trainingszeiten({ slug = null, gruppe = null } = {}) {
       (t) => `<tr>
         <th scope="row">${esc(t.tag)}</th>
         <td><time datetime="${esc(t.von)}">${esc(t.von)}</time>–<time datetime="${esc(t.bis)}">${esc(t.bis)}</time></td>
-        <td>${t.angebot && !slug ? esc(angebotName(t.angebot)) : ''}</td>
-        <td>${esc(t.ort)}${t.hinweis ? ` <span class="zeiten-hinweis">${esc(t.hinweis)}</span>` : ''}</td>
+        <td>${bezeichnung(t, slug)}</td>
+        <td>${esc(t.ort)}${karte(t)}${t.hinweis ? `<span class="zeiten-hinweis">${esc(t.hinweis)}</span>` : ''}</td>
       </tr>`
     )
     .join('\n      ');
+
+  /* Die Tabelle zeigt die festen Termine. Dass daneben kurzfristig Einheiten
+     entstehen, steht sonst nirgends — und wer die Tabelle sieht, haelt sie
+     sonst fuer das ganze Angebot. */
+  const spontan = gruppe
+    ? `<p class="zeiten-nachsatz">Dazu entstehen immer wieder Einheiten außer der Reihe — kurzfristig
+      abgesprochen in der WhatsApp-Gruppe
+      <a href="${safeUrl(gruppe.url)}" target="_blank" rel="noopener noreferrer" class="inline-link">${esc(
+        gruppe.label
+      )}</a>.</p>`
+    : '';
 
   return `<div class="zeiten-tabelle">
   <table>
@@ -150,7 +163,30 @@ function trainingszeiten({ slug = null, gruppe = null } = {}) {
       ${zeilen}
     </tbody>
   </table>
-</div>`;
+</div>
+${spontan}`;
+}
+
+/**
+ * Was in der Spalte "Training" steht: der eigene Name der Einheit, sonst der
+ * Name des Angebots. Auf einer gefilterten Angebotsseite waere Letzterer
+ * doppelt — dort steht er nur, wenn die Einheit einen eigenen Namen hat.
+ */
+function bezeichnung(t, slug) {
+  if (t.titel) return esc(t.titel);
+  return t.angebot && !slug ? esc(angebotName(t.angebot)) : '';
+}
+
+/**
+ * Die Anschrift als Kartenlink. OpenStreetMap statt Google: es wird nichts
+ * geladen, bevor jemand tippt, und die Seite bleibt auch beim Weiterleiten bei
+ * ihrer Linie, keine Dritten einzubinden.
+ */
+function karte(t) {
+  if (!t.adresse) return '';
+  const ziel = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(t.adresse);
+  return `<span class="zeiten-adresse">${esc(t.adresse)} ·
+    <a href="${safeUrl(ziel)}" target="_blank" rel="noopener noreferrer" class="inline-link">Karte</a></span>`;
 }
 
 let angebotNamen = {};

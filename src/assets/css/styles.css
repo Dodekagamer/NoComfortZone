@@ -783,7 +783,9 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 .zeiten-tabelle td{color:var(--concrete); font-size:15px;}
 .zeiten-tabelle td time{font-family:'Space Mono', monospace; font-size:14px; color:var(--white);}
 .zeiten-hinweis{display:block; font-size:13.5px; opacity:0.75; margin-top:2px;}
+.zeiten-adresse{display:block; font-size:13.5px; margin-top:2px;}
 .zeiten-offen{color:var(--concrete); font-size:15.5px; line-height:1.7; max-width:62ch;}
+.zeiten-nachsatz{margin-top:22px; color:var(--concrete); font-size:15px; line-height:1.7; max-width:62ch;}
 
 @media (max-width:620px){
   .zeiten-tabelle thead{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%);}
