@@ -78,6 +78,16 @@ const fragen = [
 
 module.exports = {
   url: '/haeufige-fragen/',
+  /* Dieselben Fragen noch einmal als strukturierte Daten — Markup raus, damit
+     dort reiner Text steht. */
+  faq: fragen.map((q) => ({
+    frage: q.f,
+    antwort: q.a
+      .replace(/<[^>]+>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  })),
   title: 'Häufige Fragen — No Comfort Zone',
   description:
     'Muss ich Mitglied sein? Was kostet es? Wo trainiert ihr? Die häufigsten Fragen zu No Comfort Zone und Haki Sports — offen beantwortet.',

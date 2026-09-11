@@ -16,6 +16,7 @@ const ASSETS_DIR = path.join(SRC, 'assets');
 
 const { renderPage } = require('./src/lib/layout');
 const { stripCssComments, stripJsComments, stripHtmlComments } = require('./src/lib/minify');
+const site = require('./src/lib/site.json');
 const { BASE_PATH, SITE_URL } = require('./src/lib/base-path');
 const { pageHero } = require('./src/lib/components');
 
@@ -77,6 +78,7 @@ function buildPages() {
         robots: page.robots,
         bodyClass: page.bodyClass,
         url: page.url,
+        faq: page.faq,
         content: typeof page.content === 'function' ? page.content() : page.content
       });
       if (vergeben.has(page.url)) {
@@ -167,6 +169,32 @@ function buildSitemap(pages) {
   writeStaticFile('sitemap.xml', xml);
 }
 
+/**
+ * Web-App-Manifest: Legt jemand die Seite auf den Startbildschirm — auf einem
+ * Android-Handy ein Tippen — steht dort sonst die nackte URL mit einem
+ * Standard-Symbol. Damit stehen dort Name, Markenfarbe und Symbol.
+ * Die CSP erlaubt manifest-src 'self' bereits.
+ */
+function buildManifest() {
+  const manifest = {
+    name: site.name,
+    short_name: site.shortName,
+    description: site.defaultDescription,
+    start_url: `${BASE_PATH}/`,
+    scope: `${BASE_PATH}/`,
+    display: 'standalone',
+    background_color: '#15161a',
+    theme_color: '#15161a',
+    lang: 'de',
+    icons: [
+      { src: `${BASE_PATH}/assets/icon-192.png`, sizes: '192x192', type: 'image/png' },
+      { src: `${BASE_PATH}/assets/icon-512.png`, sizes: '512x512', type: 'image/png' },
+      { src: `${BASE_PATH}/assets/favicon.svg`, sizes: 'any', type: 'image/svg+xml' }
+    ]
+  };
+  writeStaticFile('site.webmanifest', JSON.stringify(manifest, null, 2) + '\n');
+}
+
 function buildRobots() {
   const robots = `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`;
   writeStaticFile('robots.txt', robots);
@@ -188,6 +216,25 @@ ${pageHero('404', 'Diese Seite gibt es nicht.', 'Der Link ist entweder veraltet 
   writeStaticFile('404.html', html);
 }
 
+/**
+ * Weist darauf hin, wenn zu einer Seite das Teilen-Vorschaubild fehlt — etwa
+ * weil eine neue Seite dazugekommen ist oder ein Titel geaendert wurde, ohne
+ * die Bilder neu zu erzeugen. Sonst faellt das erst auf, wenn jemand den Link
+ * teilt und die Vorschau nicht passt.
+ */
+function reportMissingShareImages() {
+  const { seitenFuerTeilbilder } = require('./src/lib/share-liste');
+  const ordner = path.join(ASSETS_DIR, 'share');
+  const fehlend = seitenFuerTeilbilder()
+    .filter((s) => !fs.existsSync(path.join(ordner, s.datei)))
+    .map((s) => s.datei);
+  if (!fehlend.length) return;
+  console.log(
+    `\nHinweis: ${fehlend.length} Teilen-Vorschaubilder fehlen (${fehlend.join(', ')}).\n` +
+      `Diese Seiten teilen vorerst das Hero-Foto. Neu erzeugen mit: node tools/share-images.js`
+  );
+}
+
 function reportMissingImages() {
   const { missingImages } = require('./src/pages/angebot-detail');
   const missing = missingImages();
@@ -206,9 +253,11 @@ function main() {
   copyAssets();
   buildSitemap(pages);
   buildRobots();
+  buildManifest();
   build404();
   console.log(`Build fertig: ${pages.length} Seiten -> _site/ (Base-Path: ${BASE_PATH || '(keiner)'})`);
   reportMissingImages();
+  reportMissingShareImages();
 }
 
 main();

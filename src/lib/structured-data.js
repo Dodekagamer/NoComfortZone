@@ -1,4 +1,5 @@
 const site = require('./site.json');
+const { oeffnungszeiten } = require('./termine');
 const { SITE_URL } = require('./base-path');
 
 /**
@@ -46,6 +47,12 @@ function organization() {
   };
   if (address) node.address = address;
 
+  /* Sobald in termine.json Trainingszeiten stehen, gehen sie als
+     Oeffnungszeiten mit. Erst damit kann Google "Dienstag 19 Uhr" ueberhaupt
+     anzeigen — und erst dann ist die Angabe auch wahr. */
+  const zeiten = oeffnungszeiten();
+  if (zeiten) node.openingHoursSpecification = zeiten;
+
   const socials = (site.social || [])
     .filter((s) => !s.placeholder && /^https?:/i.test(s.url || ''))
     .map((s) => s.url);
@@ -78,10 +85,30 @@ function breadcrumb(url, title) {
 }
 
 /** Liefert den fertigen <script type="application/ld+json">-Block für eine Seite. */
-function structuredData({ url, title }) {
+/**
+ * Die haeufigen Fragen auch als strukturierte Daten. Genau solche Fragen tippen
+ * Leute in die Suche ("muss ich mitglied sein", "was kostet"), und mit diesem
+ * Block kann eine Suchmaschine die Antwort direkt zuordnen.
+ */
+function faqSeite(fragen) {
+  if (!fragen || !fragen.length) return null;
+  return {
+    '@type': 'FAQPage',
+    '@id': `${SITE_URL}/haeufige-fragen/#faq`,
+    mainEntity: fragen.map((f) => ({
+      '@type': 'Question',
+      name: f.frage,
+      acceptedAnswer: { '@type': 'Answer', text: f.antwort }
+    }))
+  };
+}
+
+function structuredData({ url, title, faq }) {
   const graph = [organization(), website()];
   const crumbs = breadcrumb(url, title);
   if (crumbs) graph.push(crumbs);
+  const fragen = faqSeite(faq);
+  if (fragen) graph.push(fragen);
 
   const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
   // </script> im JSON kann das Skript-Tag vorzeitig beenden — hier kommt zwar

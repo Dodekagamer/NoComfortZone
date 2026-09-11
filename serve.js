@@ -23,6 +23,7 @@ const MIME = {
   '.xml': 'application/xml; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
   '.woff2': 'font/woff2',
+  '.webmanifest': 'application/manifest+json',
   '.webp': 'image/webp',
   '.ico': 'image/x-icon'
 };

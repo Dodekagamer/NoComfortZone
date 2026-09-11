@@ -2,6 +2,7 @@ const site = require('./site.json');
 const { SITE_URL } = require('./base-path');
 const { esc, safeUrl } = require('./escape');
 const { structuredData } = require('./structured-data');
+const { teilbildFuer } = require('./share-liste');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -92,7 +93,7 @@ function renderFooter() {
 </footer>`;
 }
 
-function renderPage({ title, description, shareTitle, robots, bodyClass, url, content }) {
+function renderPage({ title, description, shareTitle, robots, bodyClass, url, content, faq }) {
   const bodyClassAttr = bodyClass ? ` class="${esc(bodyClass)}"` : '';
   const pageTitle = title || site.name;
   const pageDescription = description || site.defaultDescription;
@@ -129,7 +130,19 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
   // mit Status 404 aus, das Meta ist die zweite, unabhaengige Absicherung).
   const robotsMeta = robots ? `\n<meta name="robots" content="${esc(robots)}">` : '';
   const canonicalUrl = `${SITE_URL}${url}`;
-  const ogImage = `${SITE_URL}/assets/img/hero-bg.jpg`;
+  /* Jede Seite bekommt ihr eigenes Vorschaubild, sofern eines vorgerendert
+     wurde (siehe tools/share-images.js). Vorher zeigte jeder geteilte Link
+     dasselbe Hero-Foto — gerade in WhatsApp-Gruppen, ueber die hier das meiste
+     laeuft, sieht man dann nicht, worauf man klickt. */
+  const teilbild = teilbildFuer(url);
+  const ogImage = teilbild
+    ? `${SITE_URL}/assets/share/${teilbild}`
+    : `${SITE_URL}/assets/img/hero-bg.jpg`;
+  const ogBreite = teilbild ? '1200' : '1500';
+  const ogHoehe = teilbild ? '630' : '730';
+  const ogAlt = teilbild
+    ? `${site.name} — ${pageTitle}`
+    : 'Gruppenfoto der No-Comfort-Zone-Community nach einem gemeinsamen Outdoor-Training in Karlsruhe';
   // Nur die Startseite zeigt das Hero-Foto — dort lohnt der Vorabruf, weil es
   // sonst erst nach dem CSS entdeckt wird (spürbar auf Mobilfunk).
   const preloadHero =
@@ -162,9 +175,9 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
 <meta property="og:description" content="${esc(pageDescription)}">
 <meta property="og:url" content="${esc(canonicalUrl)}">
 <meta property="og:image" content="${esc(ogImage)}">
-<meta property="og:image:width" content="1500">
-<meta property="og:image:height" content="730">
-<meta property="og:image:alt" content="Gruppenfoto der No-Comfort-Zone-Community nach einem gemeinsamen Outdoor-Training in Karlsruhe">
+<meta property="og:image:width" content="${ogBreite}">
+<meta property="og:image:height" content="${ogHoehe}">
+<meta property="og:image:alt" content="${esc(ogAlt)}">
 <meta property="og:locale" content="de_DE">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(socialTitle)}">
@@ -177,6 +190,7 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
      die Ueberschrift, Inter fuer den Fliesstext. Die uebrigen vier findet der
      Browser beim Lesen des Stylesheets frueh genug. crossorigin ist auch bei
      eigener Domain Pflicht, sonst laedt die Datei zweimal. -->
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preload" href="/assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <!-- Markiert <html> als "js", BEVOR der Body gerendert wird — sonst bekaemen
@@ -186,7 +200,7 @@ function renderPage({ title, description, shareTitle, robots, bodyClass, url, co
      seinen Abdruck in der Content-Security-Policy, nicht ueber 'unsafe-inline'. -->
 <script>${VORAB_SKRIPT}</script>
 <link rel="stylesheet" href="/assets/css/styles.css">${preloadHero}
-${structuredData({ url, title: pageTitle })}
+${structuredData({ url, title: pageTitle, faq })}
 </head>
 <body${bodyClassAttr}>
 

@@ -15,6 +15,9 @@ src/
     site.json           Navigation, Kontakt, Social-Links, Gruppen
     pricing.json        Mitgliedschaften und Coaching-Pakete
     offers.json         Die sechs Angebote samt Detailseiten-Inhalt
+    termine.json        Trainingszeiten und Termine — hier tragt ihr sie ein
+    termine.js          Tabelle, Terminliste, Prüfung der Eingaben
+    share-liste.js      Welche Seite welches Teilen-Vorschaubild bekommt
     layout.js           HTML-Grundgerüst: Head, CSP, Header, Footer
     components.js       Bausteine (Preis-Karte, Formulare, Hero, CTA-Band)
     escape.js           esc() und safeUrl() für alles aus den Datendateien
@@ -28,6 +31,8 @@ src/
     js/enhance.js       Winziges Vorab-Skript, wird ins HTML eingebettet
     fonts/              Anton, Space Mono, Inter (woff2, SIL OFL)
     img/                Hero in drei Breiten, Angebotsfotos, Platzhalter
+    share/              Vorschaubilder fürs Teilen (1200x630, vorgerendert)
+tools/share-images.js   Erzeugt diese Vorschaubilder neu (braucht Playwright)
 worker/                 Cloudflare Worker für den garantierten Versand
   src/index.js          Nimmt das Formular an, verschickt über Brevo (EU)
   wrangler.toml         Empfänger, erlaubte Herkunft, Absenderadresse
@@ -44,6 +49,45 @@ node serve.js      # startet einen lokalen Vorschau-Server auf http://localhost:
 ```
 
 Keine `npm install` nötig — es gibt keine externen Abhängigkeiten. Der Vorschau-Server akzeptiert sowohl `/` als auch den echten Live-Pfad `/NoComfortZone/`.
+
+## Trainingszeiten eintragen
+
+Das ist die wichtigste Angabe, die der Seite noch fehlt — und die einzige, die ihr selbst pflegen müsst. Sie steht in `src/lib/termine.json`:
+
+```json
+{
+  "training": [
+    {
+      "tag": "Dienstag",
+      "von": "19:00",
+      "bis": "20:30",
+      "angebot": "boxen",
+      "ort": "Günther-Klotz-Anlage",
+      "hinweis": "Treffpunkt am Spielplatz"
+    }
+  ],
+  "events": [
+    { "datum": "2026-10-04", "titel": "Herbstlauf", "ort": "Hauptbahnhof Nord", "text": "8 km, jedes Tempo." }
+  ]
+}
+```
+
+`angebot` und `hinweis` sind optional, alles andere ist Pflicht. `angebot` muss ein `slug` aus `offers.json` sein (`boxen`, `calisthenics`, `outdoor-training`, `kindertraining`, `praevention`, `events`).
+
+Sobald der erste Eintrag drinsteht, erscheint **von allein**:
+
+- eine Tabelle auf `/angebote/`, nach Wochentag und Uhrzeit sortiert
+- auf jeder Angebotsseite nur die Zeiten, die zu diesem Angebot gehören
+- die Zeiten als Öffnungszeiten in den strukturierten Daten, damit Suchmaschinen sie anzeigen können
+- die kommenden Termine auf `/community/` — vergangene verschwinden automatisch
+
+Solange die Listen leer sind, steht dort ein ehrlicher Satz statt eines leeren Kalenders. Tippfehler hält der Build an: falscher Wochentag, „19 Uhr" statt „19:00", Endzeit vor Startzeit, fehlender Treffpunkt oder ein unbekanntes Angebot brechen den Build mit einer Meldung ab, die sagt, welcher Eintrag gemeint ist.
+
+## Teilen-Vorschaubilder
+
+Jede wichtige Seite hat ein eigenes Bild (1200x630), das WhatsApp, Instagram und Suchmaschinen beim Teilen zeigen. Sie liegen als PNG in `src/assets/share/` und sind vorgerendert, damit der Build ohne Browser auskommt.
+
+Ändert ihr einen Seitentitel oder kommt eine Seite dazu, weist der Build darauf hin. Neu erzeugen mit `node tools/share-images.js` (braucht Playwright und Chromium). Die Texte der Bilder stehen in `src/lib/share-liste.js` — sie müssen nicht mit den Seitentiteln übereinstimmen, sie sollen gut aussehen.
 
 ## Sicherheit
 

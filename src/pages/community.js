@@ -1,4 +1,5 @@
 const { pageHero, ctaBand } = require('../lib/components');
+const { kommendeEvents, datumLang } = require('../lib/termine');
 const site = require('../lib/site.json');
 const { esc, safeUrl } = require('../lib/escape');
 
@@ -47,10 +48,23 @@ ${pageHero(
       <h2>Auf dem Weg zum Verein</h2>
       <p>No Comfort Zone ist heute eine Bewegung — und soll mittelfristig als No-Comfort-Zone e.V. offiziell organisiert sein, um Mitgliedern, Ehrenamtlichen und Partnern eine feste Struktur zu geben.</p>
     </div>
-    <div class="coming-soon">
+    ${kommendeEvents().length
+      ? `<div class="event-liste">
+      ${kommendeEvents()
+        .map(
+          (e) => `<article class="event">
+        <time class="event-datum" datetime="${esc(e.datum)}">${esc(datumLang(e.datum))}</time>
+        <h3>${esc(e.titel)}</h3>
+        ${e.ort ? `<p class="event-ort">${esc(e.ort)}</p>` : ''}
+        ${e.text ? `<p>${esc(e.text)}</p>` : ''}
+      </article>`
+        )
+        .join('\n      ')}
+    </div>`
+      : `<div class="coming-soon">
       <span class="eyebrow">Kommende Events</span>
-      <p>Hier erscheinen bald gemeinsame Veranstaltungen, Challenges und Community-Treffen. Termine und kurzfristige Absprachen laufen bis dahin über unsere WhatsApp-Gruppen.</p>
-    </div>
+      <p>Aktuell steht kein gemeinsamer Termin fest. Veranstaltungen, Challenges und Treffen sprechen wir in den WhatsApp-Gruppen ab — dort erfährst du es zuerst.</p>
+    </div>`}
   </div>
 </section>
 

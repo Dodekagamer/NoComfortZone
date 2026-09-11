@@ -763,10 +763,53 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
    trotzdem sichtbar. */
 [hidden]{display:none !important;}
 
+/* TRAININGSZEITEN
+   Die Tabelle erscheint nur, wenn in termine.json Zeiten stehen — sonst steht
+   dort ein Satz. Auf dem Handy loest sich die Tabelle in Bloecke auf: vier
+   Spalten auf 360px waeren entweder winzig oder muessten seitwaerts gescrollt
+   werden, und genau diese Angabe braucht man im Vorbeigehen. */
+.zeiten-tabelle{margin-top:8px;}
+.zeiten-tabelle table{width:100%; border-collapse:collapse; text-align:left;}
+.zeiten-tabelle th, .zeiten-tabelle td{
+  padding:14px 16px 14px 0; border-bottom:1px solid var(--line); vertical-align:top;
+}
+.zeiten-tabelle thead th{
+  font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase;
+  letter-spacing:0.06em; color:var(--concrete); font-weight:400;
+}
+.zeiten-tabelle tbody th{
+  font-family:'Inter', sans-serif; font-weight:800; font-size:16px; white-space:nowrap;
+}
+.zeiten-tabelle td{color:var(--concrete); font-size:15px;}
+.zeiten-tabelle td time{font-family:'Space Mono', monospace; font-size:14px; color:var(--white);}
+.zeiten-hinweis{display:block; font-size:13.5px; opacity:0.75; margin-top:2px;}
+.zeiten-offen{color:var(--concrete); font-size:15.5px; line-height:1.7; max-width:62ch;}
+
+@media (max-width:620px){
+  .zeiten-tabelle thead{position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%);}
+  .zeiten-tabelle table, .zeiten-tabelle tbody, .zeiten-tabelle tr, .zeiten-tabelle th, .zeiten-tabelle td{
+    display:block; width:auto;
+  }
+  .zeiten-tabelle tr{padding:14px 0; border-bottom:1px solid var(--line);}
+  .zeiten-tabelle th, .zeiten-tabelle td{border:none; padding:0 0 4px;}
+  .zeiten-tabelle td:empty{display:none;}
+}
+
+/* KOMMENDE TERMINE — erscheinen nur, wenn in termine.json welche stehen. */
+.event-liste{display:grid; gap:1px; background:var(--line); border:1px solid var(--line);}
+.event{background:var(--asphalt-2); padding:26px 24px;}
+.event-datum{
+  font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase;
+  letter-spacing:0.06em; color:var(--accent); display:block; margin-bottom:8px;
+}
+.event h3{font-family:'Inter', sans-serif; font-weight:800; font-size:19px; text-transform:none; margin-bottom:6px;}
+.event-ort{font-family:'Space Mono', monospace; font-size:13px; color:var(--concrete); margin-bottom:8px;}
+.event p{color:var(--concrete); font-size:15px; line-height:1.7;}
+
 /* Honigtopf gegen Spam-Bots: fuer Menschen unsichtbar, aber nicht per
    display:none — manche Bots ueberspringen genau das. Screenreader sind ueber
    aria-hidden und tabindex="-1" am Formularfeld aussen vor. */
-.form-honeypot{
+.form-honeypot, .visually-hidden{
   position:absolute; width:1px; height:1px; overflow:hidden;
   clip-path:inset(50%); white-space:nowrap;
 }

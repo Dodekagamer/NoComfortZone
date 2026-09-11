@@ -2,6 +2,7 @@ const { pageHero, ctaBand, inquiryForm } = require('../lib/components');
 const site = require('../lib/site.json');
 const { esc, safeUrl } = require('../lib/escape');
 const { offers } = require('../lib/offers.json');
+const { trainingszeiten } = require('../lib/termine');
 
 module.exports = {
   url: '/angebote/',
@@ -44,6 +45,18 @@ ${pageHero(
     <div class="callout">
       <p><strong>Sucht ihr 1:1-Personal-Training?</strong> Die Angebote oben sind Community-/Gruppenprogramme von No Comfort Zone. Für individuelles, professionelles 1:1-Coaching gibt es <a href="/haki-sports/" class="inline-link">Haki Sports</a> — unser eigenständiges Personal-Training-Angebot innerhalb der Bewegung.</p>
     </div>
+  </div>
+</section>
+
+<div class="hazard-strip thin"></div>
+
+<section id="zeiten">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Wann und wo</span>
+      <h2>Trainingszeiten</h2>
+    </div>
+    ${trainingszeiten({ gruppe: site.groups && site.groups[0] })}
   </div>
 </section>
 

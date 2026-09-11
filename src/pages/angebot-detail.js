@@ -3,6 +3,8 @@ const path = require('path');
 const { pageHero, ctaBand } = require('../lib/components');
 const { esc } = require('../lib/escape');
 const { offers } = require('../lib/offers.json');
+const termine = require('../lib/termine');
+const site = require('../lib/site.json');
 
 const IMG_DIR = path.join(__dirname, '..', 'assets', 'img', 'angebote');
 const PLACEHOLDER = 'platzhalter.svg';
@@ -104,6 +106,11 @@ function pruefeDaten() {
 
 pruefeDaten();
 
+/* Die Trainingszeiten haengen an denselben Slugs — also hier mitpruefen, wo die
+   Angebote ohnehin schon validiert werden. */
+termine.setzeAngebotNamen(Object.fromEntries(offers.map((o) => [o.slug, o.title])));
+termine.pruefeDaten(offers.map((o) => o.slug));
+
 function renderSection(section, index) {
   const img = resolveImage(section.image);
   return `<section class="offer-detail${index % 2 === 1 ? ' is-reversed' : ''}">
@@ -135,6 +142,18 @@ ${pageHero(esc(offer.tag), esc(offer.title), esc(offer.lead), 'Probetraining buc
 </nav>
 
 ${offer.sections.map(renderSection).join('\n\n')}
+
+<div class="hazard-strip thin"></div>
+
+<section id="zeiten">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Wann und wo</span>
+      <h2>Wann ${esc(offer.title)} stattfindet</h2>
+    </div>
+    ${termine.trainingszeiten({ slug: offer.slug, gruppe: site.groups && site.groups[0] })}
+  </div>
+</section>
 
 ${ctaBand(
   `Lust auf ${esc(offer.title)}?`,
