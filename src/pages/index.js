@@ -1,4 +1,55 @@
 const { ctaBand, quickAnswer, pillarCard } = require('../lib/components');
+const { hatStimmen, stimmenKarten } = require('../lib/stimmen');
+const { festeEinheit } = require('../lib/termine');
+const site = require('../lib/site.json');
+const { esc } = require('../lib/escape');
+
+/**
+ * Steht an der Stelle der Zitate, solange es keine echten gibt. Jede Karte ist
+ * nachpruefbar: die Zeit kommt aus termine.json, die Gruppen aus site.json.
+ * Nichts davon ist behauptet.
+ */
+function faktenKarten() {
+  const einheit = festeEinheit();
+  const karten = [];
+
+  if (einheit) {
+    karten.push({
+      kopf: `${einheit.tag}s, ${einheit.von} Uhr`,
+      /* Der Hinweis kommt aus termine.json, damit hier nicht das Gegenteil von
+         dem steht, was die Tabelle sagt. */
+      text: `${einheit.titel || 'Gemeinsames Training'} — ${einheit.ort}. Jede Woche, draußen.${
+        einheit.hinweis ? ' ' + einheit.hinweis + '.' : ''
+      }`
+    });
+  }
+
+  const gruppen = site.groups || [];
+  if (gruppen.length) {
+    karten.push({
+      kopf: gruppen.length === 1 ? 'Eine offene Gruppe' : `${gruppen.length} offene Gruppen`,
+      text: `${gruppen
+        .map((g) => g.label)
+        .join(' und ')} auf WhatsApp — dort laufen Termine, Absprachen und alles Kurzfristige.`
+    });
+  }
+
+  karten.push({
+    kopf: 'Erstes Training kostenlos',
+    text: 'Kein Beitrag, keine Mindestdauer, kein Auswahlverfahren. Du kommst, machst mit und entscheidest danach.'
+  });
+
+  return `<div class="testimonials">
+      ${karten
+        .map(
+          (k) => `<div class="t-card fakt-karte">
+        <p class="fakt-kopf">${esc(k.kopf)}</p>
+        <p class="fakt-text">${esc(k.text)}</p>
+      </div>`
+        )
+        .join('\n      ')}
+    </div>`;
+}
 
 module.exports = {
   url: '/',
@@ -166,23 +217,14 @@ module.exports = {
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Aus der Bewegung</span>
-      <h2>Echte Stimmen</h2>
-      <p>Kein Hochglanz. Nur echte Menschen, die gemeinsam gewachsen sind.</p>
+      <h2>${hatStimmen() ? 'Echte Stimmen' : 'Was gerade läuft'}</h2>
+      <p>${
+        hatStimmen()
+          ? 'Kein Hochglanz. Nur echte Menschen, die gemeinsam gewachsen sind.'
+          : 'Kein Hochglanz, keine ausgedachten Zitate. Das hier passiert wirklich — jede Woche.'
+      }</p>
     </div>
-    <div class="testimonials">
-      <div class="t-card">
-        <p class="quote">„Ich bin heute stärker geworden — nicht nur körperlich, auch mental.“</p>
-        <div class="who">Trainingsteilnehmer:in, Karlsruhe</div>
-      </div>
-      <div class="t-card">
-        <p class="quote">„Zum ersten Mal habe ich das Gefühl, Teil von etwas Größerem zu sein.“</p>
-        <div class="who">Teilnehmer:in, Familienprogramm</div>
-      </div>
-      <div class="t-card">
-        <p class="quote">„Hier zählt nicht, wie gut ich heute bin — sondern wie weit wir gemeinsam kommen.“</p>
-        <div class="who">Teilnehmer:in, Jugendtraining</div>
-      </div>
-    </div>
+    ${stimmenKarten() || faktenKarten()}
     <div class="stack-top">
       <a href="/community/" class="btn solid">Mehr aus der Community</a>
     </div>

@@ -84,6 +84,15 @@ function pruefeDaten(bekannteSlugs) {
   });
 }
 
+/**
+ * Die erste feste Einheit — fuer Stellen, die in einem Satz sagen wollen, was
+ * regelmaessig laeuft, ohne die ganze Tabelle zu zeigen. Null, solange nichts
+ * eingetragen ist.
+ */
+function festeEinheit() {
+  return sortiert(daten.training)[0] || null;
+}
+
 function hatTraining() {
   return daten.training.length > 0;
 }
@@ -211,6 +220,7 @@ function oeffnungszeiten() {
 module.exports = {
   pruefeDaten,
   hatTraining,
+  festeEinheit,
   kommendeEvents,
   datumLang,
   trainingszeiten,

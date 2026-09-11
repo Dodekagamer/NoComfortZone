@@ -1,5 +1,6 @@
 const { pageHero, ctaBand } = require('../lib/components');
 const { kommendeEvents, datumLang } = require('../lib/termine');
+const { hatStimmen, stimmenKarten } = require('../lib/stimmen');
 const site = require('../lib/site.json');
 const { esc, safeUrl } = require('../lib/escape');
 
@@ -17,29 +18,20 @@ ${pageHero(
   '/buchung/'
 )}
 
-<section class="community" id="stimmen">
+${
+  hatStimmen()
+    ? `<section class="community" id="stimmen">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Aus der Bewegung</span>
       <h2>Echte Stimmen</h2>
-      <p>Drei Menschen, die schon eine Weile dabei sind — und beschreiben, was sich für sie verändert hat.</p>
+      <p>Menschen, die schon eine Weile dabei sind — und beschreiben, was sich für sie verändert hat.</p>
     </div>
-    <div class="testimonials">
-      <div class="t-card">
-        <p class="quote">„Ich bin heute stärker geworden — nicht nur körperlich, auch mental.“</p>
-        <div class="who">Trainingsteilnehmer:in, Karlsruhe</div>
-      </div>
-      <div class="t-card">
-        <p class="quote">„Zum ersten Mal habe ich das Gefühl, Teil von etwas Größerem zu sein.“</p>
-        <div class="who">Teilnehmer:in, Familienprogramm</div>
-      </div>
-      <div class="t-card">
-        <p class="quote">„Hier zählt nicht, wie gut ich heute bin — sondern wie weit wir gemeinsam kommen.“</p>
-        <div class="who">Teilnehmer:in, Jugendtraining</div>
-      </div>
-    </div>
+    ${stimmenKarten()}
   </div>
-</section>
+</section>`
+    : ''
+}
 
 <section>
   <div class="wrap">

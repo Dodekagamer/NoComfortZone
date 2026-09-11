@@ -460,6 +460,15 @@ section{padding:100px 0;}
 .t-card p.quote{font-size:16px; margin-bottom:18px;}
 .t-card .who{font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--hazard-dim);}
 
+/* Faktenkarten stehen an derselben Stelle wie die Zitate, sind aber anders
+   gebaut: oben eine kurze Aussage, darunter ein ganzer Satz. Die Zitatklassen
+   passten dafuer nicht — der Satz landete in orangefarbenen Versalien. */
+.fakt-karte .fakt-kopf{
+  font-family:'Inter', sans-serif; font-weight:800; font-size:19px; line-height:1.3;
+  color:var(--asphalt); margin-bottom:10px;
+}
+.fakt-karte .fakt-text{font-size:15px; line-height:1.7; color:#4a4438;}
+
 /* CTA BAND */
 .cta-band{
   background:var(--accent);
