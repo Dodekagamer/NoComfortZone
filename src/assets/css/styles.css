@@ -68,7 +68,12 @@
   --takt-lang:520ms;
 
   --field-line:#6e6a61;              /* 3,4:1 auf --asphalt (WCAG 1.4.11) */
-  --maxw: 1180px;
+  /* Die Inhaltsbreite waechst mit dem Bildschirm, statt bei 1180px
+     stehenzubleiben: 94vw laesst links und rechts Luft, 1800px ist die
+     Obergrenze. Fliesstext hat eigene, engere Grenzen (.section-head,
+     .legal, .faq-antwort) — sonst liefen Zeilen auf einem grossen Monitor
+     auf ueber 150 Zeichen und waeren nicht mehr lesbar. */
+  --maxw: min(94vw, 1800px);
   --accent: var(--hazard);
 }
 *{box-sizing:border-box; margin:0; padding:0;}
@@ -399,10 +404,46 @@ html.hero-statisch .intro-sweep{display:none;}
      Desktop statt wie zuvor 2,2x, was sich am Handy zu hastig anfühlte. */
   .js .scroll-intro{height:352vh;}
 }
+/* KORN
+   Die grossen Flaechen waren glatt und dadurch eintoenig. Darueber liegt jetzt
+   eine 96x96-Kachel mit Rauschen (src/assets/img/korn.png, 2,9 KB, erzeugt von
+   tools/korn.js). Sie wiederholt sich; weil Rauschen keine Struktur hat, sieht
+   man die Nahtstellen nicht.
+
+   z-index:-1 legt die Kachel ueber den Hintergrund der Flaeche, aber unter
+   Text und Karten — die Schrift bleibt dadurch unberuehrt scharf, und Karten
+   mit eigenem Hintergrund heben sich weiter sauber von der Flaeche ab.
+   isolation:isolate ist noetig, damit das -1 nicht durch den Abschnitt
+   hindurchfaellt und hinter dem Seitenhintergrund verschwindet.
+
+   .scroll-intro ist ausgenommen: dort traegt ein angehefteter Kasten das Foto,
+   ein Rahmen ueber die volle Scroll-Strecke waere sinnlos. */
+main > section:not(.scroll-intro),
+main > .page-hero,
+.cta-band,
+footer{position:relative; isolation:isolate;}
+
+main > section:not(.scroll-intro)::before,
+main > .page-hero::before,
+.cta-band::before,
+footer::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:url('../img/korn.png') 0 0 / 96px 96px repeat;
+  opacity:0.06;
+}
+
 /* SECTION SCAFFOLDING */
-section{padding:100px 0;}
+section{padding:104px 0;}
+/* Unterschiedliche Hoehen geben der Seite einen Takt. Gleiche Abstaende
+   ueberall lesen sich wie eine Liste, nicht wie ein Aufbau. */
+.pillars{padding:76px 0;}
+.community{padding:88px 0;}
+#werte{padding:120px 0;}
 .section-head{max-width:640px; margin-bottom:56px;}
-.section-head h2{font-size:clamp(32px, 4.4vw, 52px); margin-top:12px;}
+/* Vorher war jede Abschnitts-Ueberschrift gleich gross. Die Rangfolge macht
+   sichtbar, wo eine Seite anfaengt und wo sie nur weiterlaeuft. */
+.section-head h2{font-size:clamp(30px, 3.2vw, 42px); margin-top:12px;}
+#auf-einen-blick .section-head h2{font-size:clamp(44px, 5.4vw, 76px);}
 .section-head p{color:var(--concrete); margin-top:16px; font-size:17px;}
 .section-head.center{max-width:680px; margin-left:auto; margin-right:auto; text-align:center;}
 
@@ -425,6 +466,33 @@ section{padding:100px 0;}
 .value-card .num{font-family:'Space Mono', monospace; color:var(--accent); font-size:13px; margin-bottom:14px; display:block;}
 .value-card h3{font-size:21px; margin-bottom:12px; text-transform:none; font-family:'Inter'; font-weight:800;}
 .value-card p{color:var(--concrete); font-size:15px;}
+
+/* GROSSE ZIFFERN
+   Die Nummer kommt aus einem CSS-Zaehler, nicht aus dem Markup: kommt eine
+   Kachel dazu oder faellt eine weg, stimmt die Reihenfolge von selbst.
+
+   Die zweite content-Zeile haengt " / ''" an — das sagt Vorlesesoftware, dass
+   hier nichts vorzulesen ist. Browser, die diese Schreibweise nicht kennen,
+   verwerfen nur die zweite Zeile und behalten die erste; die Ziffer bleibt
+   also in jedem Fall sichtbar. */
+.quickfacts-grid, .values-grid{counter-reset:kachel;}
+.qf-card, .value-card{position:relative; isolation:isolate; overflow:hidden; counter-increment:kachel;}
+.qf-card::after, .value-card::after{
+  /* Hinter den Text, nicht darueber: sonst liegt die Ziffer ueber dem Link
+     und nimmt ihm Kontrast. */
+  z-index:-1;
+  content:counter(kachel, decimal-leading-zero);
+  content:counter(kachel, decimal-leading-zero) / "";
+  position:absolute; right:-10px; bottom:-38px;
+  font-family:'Anton', sans-serif; font-size:140px; line-height:1;
+  color:var(--accent); opacity:0.11; pointer-events:none;
+}
+
+/* Die erste Kachel ist die wichtigste Frage — sie bekommt Gewicht ueber eine
+   Kante, nicht ueber ein zweites Rasterfeld: sechs Kacheln mit einer doppelt
+   breiten ergaeben sieben Felder in einem Dreierraster und damit ein Loch. */
+.quickfacts-grid > :first-child{box-shadow:inset 4px 0 0 var(--accent);}
+.quickfacts-grid > :first-child h3{font-size:24px;}
 
 /* AUDIENCE / OFFERS */
 .audience-list{border-top:1px solid var(--line);}
@@ -994,6 +1062,11 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
   header, footer, .hazard-strip, .skip-link, .nav-toggle, nav,
   .cta-band, .form-actions, .form-note, .scroll-cue, .breadcrumb,
   .form-fallback, .offer-more{display:none !important;}
+
+  /* Schmuck kostet auf Papier nur Toner: Korn und die grossen Ziffern raus. */
+  main > section::before, main > .page-hero::before,
+  .qf-card::after, .value-card::after{display:none !important;}
+  .quickfacts-grid > :first-child{box-shadow:none !important;}
 
   main{padding:0 !important;}
   section{padding:12pt 0 !important; break-inside:avoid;}
