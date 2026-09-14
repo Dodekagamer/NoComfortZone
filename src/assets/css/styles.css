@@ -320,6 +320,19 @@ nav a:hover, nav a[aria-current="page"]{opacity:1; color:var(--accent);}
   opacity:0.18; transform:translateX(-120%);
   pointer-events:none; z-index:1;
 }
+/* Die Kopfzeile liegt auf der Startseite fest ueber dem Hero. Ohne diesen
+   Abstand rutscht der Inhalt der Endtafel darunter — auf einem 1536x800-
+   Fenster war die gelbe Zeile "Karlsruhe · Draussen · Fuer alle" komplett vom
+   Warnstreifen verdeckt. 96px = 82px Kopfzeile samt Streifen plus Luft; mit
+   demselben Wert rechnet main.js, wenn es entscheidet, ob der Hero noch in
+   den Bildschirm passt. Die angeheftete Fassung braucht ihn, die statische
+   nicht: dort bringt die Endtafel ihren eigenen Innenabstand mit.
+
+   Bewusst top und nicht padding am Elternteil: die Tafeln sind absolut
+   positioniert, und dafuer zaehlt die Polsterkante des Elternteils — ein
+   padding-top haette sie kein Stueck bewegt. */
+.js .intro-pin .intro-panel{top:96px;}
+html.hero-statisch .intro-pin .intro-panel{top:auto;}
 .intro-panel{
   position:absolute; inset:0; z-index:2;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -429,8 +442,37 @@ main > .page-hero::before,
 footer::before{
   content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
   background:url('../img/korn.png') 0 0 / 96px 96px repeat;
-  opacity:0.06;
+  opacity:0.085;
 }
+/* Auf der hellen Flaeche dunkelt dasselbe Korn ab statt aufzuhellen, und
+   dort steht orange Schrift auf hellem Grund — die duennste Kontraststelle
+   der ganzen Seite. Gemessen: mit 0.085 faellt sie auf 4,48 und damit unter
+   die Grenze von 4,5. Deshalb hier schwaecher. */
+main > section.community::before{opacity:0.05;}
+
+/* FLAECHEN IM WECHSEL
+   Vorher hatten fast alle Abschnitte denselben Hintergrund; man sah beim
+   Scrollen nicht, wo einer endet und der naechste anfaengt. Jetzt wechselt
+   der Ton von Abschnitt zu Abschnitt.
+
+   Warum zwei Regeln: auf der Startseite ist der Hero der erste Abschnitt,
+   auf den Unterseiten steht davor der Titelbereich (.page-hero, schon im
+   helleren Ton). Der Wechsel muss deshalb einmal auf den ungeraden und
+   einmal auf den geraden Abschnitten aufsetzen, damit nie zwei gleiche
+   Flaechen aneinanderstossen.
+
+   Der Wechsel ist an die Position gebunden, nicht an einzelne Klassen:
+   kommt ein Abschnitt dazu oder faellt einer weg, ordnet sich der Rest von
+   selbst neu. Ausgenommen sind nur der Hero (traegt das Foto) und die helle
+   Flaeche (bewusster Bruch). */
+main > section{background:var(--asphalt);}
+body.home main > section:nth-of-type(odd):not(.scroll-intro):not(.community),
+body:not(.home) main > section:nth-of-type(even):not(.community){
+  background:var(--asphalt-2);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+main > section.scroll-intro{background:none;}
 
 /* SECTION SCAFFOLDING */
 section{padding:104px 0;}
@@ -448,7 +490,6 @@ section{padding:104px 0;}
 .section-head.center{max-width:680px; margin-left:auto; margin-right:auto; text-align:center;}
 
 /* MISSION / QUOTE */
-.mission{background:var(--asphalt-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
 .mission blockquote{
   font-family:'Anton', sans-serif;
   font-size:clamp(26px, 3.6vw, 44px);
@@ -710,7 +751,7 @@ a, button, input, textarea, select, summary{scroll-margin-top:96px;}
 @media (max-width:860px){ .quickfacts-grid{grid-template-columns:1fr;} }
 
 /* TWO-PILLAR SECTION (No Comfort Zone vs. Haki Sports) */
-.pillars{background:var(--asphalt-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+/* Hintergrund und Trennlinien kommen aus dem Wechsel weiter oben. */
 .pillar-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line);}
 .pillar-card{background:var(--asphalt); padding:44px 38px; display:flex; flex-direction:column;}
 .pillar-card .pillar-tag{font-family:'Space Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px;}
@@ -994,9 +1035,10 @@ body.theme-haki .mission blockquote .center{ color: var(--safety); }
    setzt denselben gelben Akzent nur für diesen Abschnitt, damit die Trennung
    Community vs. 1:1-Coaching auch dort sofort sichtbar ist. */
 .theme-haki-section{
+  /* Nur die Akzentfarbe — Hintergrund und Trennlinien kommen aus dem Wechsel
+     der Flaechen. Setzte der Abschnitt seinen Ton selbst, stuenden auf
+     /buchung/ zwei helle Flaechen nebeneinander. */
   --accent: var(--safety);
-  background:var(--asphalt-2);
-  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
 }
 
 /* 404 */
