@@ -209,7 +209,12 @@ function inquiryForm(key) {
   </div>
   <p class="form-status" id="${id}-status" data-form-status role="status" aria-live="polite"></p>
   <a class="btn whatsapp form-fallback" data-wa-fallback href="#" hidden>Per WhatsApp öffnen</a>
-  <p class="form-note">Deine Anfrage wird direkt an uns übermittelt — du bekommst hier sofort eine Bestätigung mit deiner Vorgangsnummer. Mit dem zweiten Button meldest du dieselbe Anfrage zusätzlich per WhatsApp, damit wir sie sofort sehen; die Vorgangsnummer verbindet beide, es bleibt eine Anfrage. Wir speichern deine Daten nur, um dir zu antworten.</p>
+  <p class="form-note">${site.formEndpoint
+    ? 'Deine Anfrage wird direkt an uns übermittelt — du bekommst hier sofort eine Bestätigung mit deiner Vorgangsnummer.'
+    /* Ohne Worker laeuft der Mailto-Weg: die Seite uebermittelt selbst nichts.
+       Der Hinweis darf dann nicht das Gegenteil behaupten — genau das stand
+       hier, und es widersprach der Datenschutzerklaerung. */
+    : 'Beim Absenden öffnet sich dein E-Mail-Programm mit der fertigen Nachricht an uns — du musst sie dort nur noch abschicken. Deine Vorgangsnummer steht in der Nachricht.'} Mit dem zweiten Button meldest du dieselbe Anfrage zusätzlich per WhatsApp, damit wir sie sofort sehen; die Vorgangsnummer verbindet beide, es bleibt eine Anfrage. Wir speichern deine Daten nur, um dir zu antworten.</p>
   <noscript>
     <p class="form-note form-note-warn">Die Formulare brauchen JavaScript, um deine Eingaben vorzubereiten. Schreib uns stattdessen direkt an <a href="mailto:${mail}" class="inline-link">${mail}</a> oder ruf an: <a href="tel:${esc(site.contact.phoneHref)}" class="inline-link">${esc(site.contact.phoneDisplay)}</a> — Stichwort „${esc(type)}".</p>
   </noscript>

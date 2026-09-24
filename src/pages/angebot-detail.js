@@ -149,7 +149,7 @@ ${offer.sections.map(renderSection).join('\n\n')}
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Wann und wo</span>
-      <h2>Wann ${esc(offer.title)} stattfindet</h2>
+      <h2>${esc(offer.title)}: Zeiten und Treffpunkt</h2>
     </div>
     ${termine.trainingszeiten({ slug: offer.slug, gruppe: site.groups && site.groups[0] })}
   </div>

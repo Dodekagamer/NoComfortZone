@@ -30,7 +30,6 @@ module.exports = {
 
     <h2>Bekannte Einschränkungen</h2>
     <ul>
-      <li>Die Schriftarten werden derzeit über Google Fonts geladen. Bei blockierter Verbindung greifen Systemschriften — die Lesbarkeit bleibt erhalten, das Layout kann leicht abweichen.</li>
       <li>Das Hintergrundfoto der Startseite ist gestalterisch und trägt keine eigene Information; es hat daher bewusst keine Bildbeschreibung.</li>
       <li>Die Inhalte sind in deutscher Sprache verfasst. Eine Fassung in Leichter Sprache oder Gebärdensprache gibt es noch nicht.</li>
     </ul>
@@ -41,7 +40,7 @@ module.exports = {
     Telefon: <a href="tel:${esc(site.contact.phoneHref)}" class="inline-link">${esc(site.contact.phoneDisplay)}</a></p>
     <p>Wenn du auf deine Rückmeldung keine zufriedenstellende Antwort erhältst, kannst du dich an die Schlichtungsstelle nach § 16 BGG wenden: <a href="https://www.schlichtungsstelle-bgg.de/" target="_blank" rel="noopener noreferrer" class="inline-link">schlichtungsstelle-bgg.de</a>.</p>
 
-    <p class="note-small">Diese Erklärung wurde zuletzt im August 2026 überprüft. Die Prüfung erfolgte durch eigene Tests (Tastaturbedienung, Kontrastmessung, Darstellung bei 320 Pixel Breite und 200 % Schriftgröße), nicht durch eine externe Zertifizierungsstelle.</p>
+    <p class="note-small">Diese Erklärung wurde zuletzt im September 2026 überprüft. Die Prüfung erfolgte durch eigene Tests (Tastaturbedienung, Kontrastmessung, Darstellung bei 320 Pixel Breite und 200 % Schriftgröße), nicht durch eine externe Zertifizierungsstelle.</p>
   </div>
 </section>
 `

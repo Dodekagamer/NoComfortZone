@@ -14,8 +14,8 @@ const site = require('../lib/site.json');
 const fragen = [
   {
     f: 'Muss ich Mitglied sein, um mitzumachen?',
-    a: `Nein. Dein erstes Training ist kostenlos und unverbindlich — du musst dich vorher zu nichts
-        anmelden und danach zu nichts verpflichten. Feste Mitgliedschaften gibt es aktuell ohnehin
+    a: `Nein. Dein erstes Training ist kostenlos und unverbindlich — du musst vorher nichts
+        unterschreiben und dich danach zu nichts verpflichten. Feste Mitgliedschaften gibt es aktuell ohnehin
         noch nicht, siehe die nächste Frage.`
   },
   {

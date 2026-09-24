@@ -136,7 +136,7 @@ function trainingszeiten({ slug = null, gruppe = null } = {}) {
           gruppe.url
         )}" target="_blank" rel="noopener noreferrer" class="inline-link">${esc(gruppe.label)}</a>.`
       : '';
-    return `<p class="zeiten-offen">Feste Trainingszeiten stehen noch nicht fest. Schreib uns kurz,
+    return `<p class="zeiten-offen">Hierfür gibt es noch keine festen Zeiten. Schreib uns kurz,
       dann sagen wir dir den nächsten Termin und den Treffpunkt.${weg}</p>`;
   }
 
